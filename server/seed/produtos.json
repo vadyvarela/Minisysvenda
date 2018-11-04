@@ -1,0 +1,10 @@
+[
+  {
+    "produto_nome": "Arroz agulha",
+    "produto_preco": "2200",
+    "produto_barcode": "10100001101",
+    "FornecedoreId": 1,
+    "IvaId": 1,
+    "CategoriaId": 1
+  }
+]

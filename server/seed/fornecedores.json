@@ -1,0 +1,14 @@
+[
+  {
+    "fornecedor_nome": "Vadnir Vieira",
+    "fornecedor_nif": 243546756,
+    "fornecedor_endereco": "Praia, cabo verde",
+    "fornecedor_movel": "2534567"
+  },
+  {
+    "fornecedor_nome": "Hernani Vieira",
+    "fornecedor_nif": 243546756,
+    "fornecedor_endereco": "Plateau, cabo verde",
+    "fornecedor_movel": "5467564"
+  }
+]

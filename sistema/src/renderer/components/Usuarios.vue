@@ -1,0 +1,171 @@
+<template>
+    <panel title="Usuarios">
+      <v-content>
+      <v-container fluid>
+
+          <v-dialog @keydown.esc="dialog= false" v-model="dialog" persistent max-width="500px">
+            <v-card>
+              <v-card-title>
+                <span class="headline center">Atualizar dados usuario <b> {{ user.usuario }} </b></span>
+              </v-card-title>
+              <v-card-text>
+                <v-container grid-list-md>
+
+                  <v-alert
+                    v-html="error"
+                    :value="alert"
+                    transition="scale-transition"
+                    type="error"
+                    >
+                  </v-alert>
+
+                  <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
+                    <v-text-field name="usuario" :rules="usuarioRules" v-model="user.usuario" label="Nome do usuario" type="text"></v-text-field>
+                    <v-text-field name="password" label="Palavra passe" v-model="user.password" id="password" type="password"></v-text-field>
+                    <input type="text" name="" v-model="user.password">
+                    <v-text-field name="nivel" :rules="nivelRules" v-model="user.nivel" label="Nivel de acesso" id="nivel" type="text"></v-text-field>
+                    <small>Nivel de acesso <br> <span>1 = ADMINISTRADOR <br> 2 = VENDEDOR</span></small>
+                  </v-form>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" flat @click.native="dialog = false">Cancelar</v-btn>
+                <v-btn :disabled="!valid" color="green darken-1" flat @click="update">Salvar</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <v-layout justify-end row wrap>
+              <v-flex text-lg-right xs6>
+                <v-subheader>Usuarios Cadastrados no Sistema</v-subheader>
+              </v-flex>
+              <v-flex text-lg-right xs6>
+                <v-btn router-link to="register" text-lg-right class="primary"><v-icon>perm_identity</v-icon> Novo usuario</v-btn>
+              </v-flex>
+          </v-layout>
+
+          <v-divider></v-divider>
+          <br>
+
+          <v-data-table
+              :headers="headers"
+              :items="desserts"
+              hide-actions
+              class="elevation-1"
+          >
+              <template slot="headerCell" slot-scope="props">
+              <v-tooltip bottom>
+                  <span slot="activator">
+                  {{ props.header.text }}
+                  </span>
+                  <span>
+                  {{ props.header.text }}
+                  </span>
+              </v-tooltip>
+              </template>
+              <template slot="items" slot-scope="props">
+              <td>{{ props.item.usuario }}</td>
+              <td class="text-xs-center ">{{ props.item.nivel }}</td>
+              <td class="justify-center layout px-0 dark">
+                <v-btn flat icon color="green" @click="editUser(props.item)"> <v-icon>edit</v-icon> </v-btn>
+                <v-btn flat icon color="red" @click="deleteUser(props.item)"> <v-icon>delete</v-icon> </v-btn>
+              </td>
+              </template>
+          </v-data-table>
+      </v-container>
+      <v-divider></v-divider>
+    </v-content>
+    </panel>
+</template>
+
+<script>
+import UsuariosServices from "@/services/UsuariosServices";
+import AuthenticationService from "@/services/AuthenticationService";
+
+export default {
+  data() {
+    return {
+      error: null,
+      alert: false,
+      valid: true,
+      editedIndex: -1,
+      usuarioRules: [v => !!v || "Campo nome do usuario é obrigatorio"],
+      nivelRules: [v => !!v || "Campo nivel de acesso é obrigatorio"],
+      user: {
+        usuario: null,
+        password: null,
+        nivel: null
+      },
+      dialog: false,
+      headers: [
+        { text: "Nome usuario ", align: "left", sortable: false},
+        { text: "Nivel ", align: "center", sortable: false},
+        { text: 'Actions', align: "center", value: 'name', sortable: false }
+      ],
+      desserts: []
+    };
+  },
+  async mounted() {
+    // Fazer requisicao para pegar todas os produtos
+    this.desserts = (await UsuariosServices.index()).data;
+  },
+  methods: {
+    async deleteUser (item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.user = Object.assign({}, item);
+      const res = await this.$confirm('Deseja mesmo apagar usuario?', {
+      });
+      
+      if (res) {
+        try {
+          await UsuariosServices.delete(this.user);
+          this.$toast.success({
+          title: "Aviso",
+          message: "Usuario eliminado com sucesso"
+          })
+          this.$router.push({
+            name: "usuarios"
+          });
+          this.desserts.splice(this.editedIndex, 1)
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    },
+    editUser: function(item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.user = Object.assign({}, item);
+      this.dialog = true;
+    },
+    async update() {
+      if (this.$refs.form.validate()) {
+        try {
+          this.dialog = false;
+          const response = await AuthenticationService.put({
+            id: this.user.id,
+            usuario: this.user.usuario,
+            password: this.user.password,
+            nivel: this.user.nivel
+          })
+          this.$toast.success({
+            title: "Aviso",
+            message: "Dados usuario atualizado com sucesso"
+          })
+          this.$router.push({
+            name: "usuarios"
+          });
+          Object.assign(this.desserts[this.editedIndex], this.user);
+        } catch (error) {  
+          this.dialog = true;
+          this.error = error.response.data.error;
+          this.alert = true;
+        }
+      }
+    }
+  }
+};
+</script>
+
+<style lang="css" scoped>
+</style>

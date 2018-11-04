@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Sistema venda</title>
+  <% if (htmlWebpackPlugin.options.nodeModules) { %>
+  <!-- Add `node_modules/` to global paths so `require` works properly in development-->
+  <script src="../node_modules/jquery/dist/jquery.js"></script>
+  <script src="../node_modules/jquery-ui/external/jquery-3.1.0/jquery.js"></script>
+  <script src="../node_modules/jquery-ui-dist/jquery-ui.js"></script>
+
+  <script>
+    require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
+  </script>
+  <% } %>
+  <style>
+    html {
+    overflow: auto;
+    }
+    body {
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    /* Let's get this party started */
+    ::-webkit-scrollbar {
+        width: 2px;
+    }
+    
+    /* Track */
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+    }
+    
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        background: rgba(9, 75, 173, 0.4);
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    }
+    ::-webkit-scrollbar-thumb:window-inactive {
+      background: rgba(9, 75, 173, 0.4); 
+    }
+  
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+  <!-- Set `__static` path to static files in production -->
+  <% if (process.env.NODE_ENV !== 'production') { %>
+  <script>
+    if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+  </script>
+  <% } %>
+
+  <!-- webpack builds are automatically injected -->
+</body>
+</html>

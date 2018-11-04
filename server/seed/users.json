@@ -1,0 +1,12 @@
+[
+  {
+    "usuario": "admin",
+    "password": "admin",
+    "nivel": "1"
+  },
+  {
+    "usuario": "vendedor",
+    "password": "vendedor",
+    "nivel": "2"
+  }
+]
