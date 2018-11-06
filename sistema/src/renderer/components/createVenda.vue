@@ -268,11 +268,7 @@
                     </v-flex>
                     <v-flex xs12 sm2 md2>
                       <v-text-field box v-model.number="produto.quantidade" @keyup.enter="addNewProduto(index)" ref="searchquantidade" label="Quantidade" type="number"></v-text-field>
-<<<<<<< HEAD
                       <input v-model.number="produto.quantidade" @keyup.enter="addNewProduto(index)" type="hidden" autofocus/>
-=======
-                      <input v-model.trim="produto.quantidade" @keyup.enter="addNewProduto(index)" type="hidden" autofocus/>
->>>>>>> parent of 4f18596... Modificaçoes no sistema arquitetura de pastas
                     </v-flex>
 
                     <v-dialog v-model="dialogPreco" @keydown.enter="login" persistent max-width="550px" @keydown.esc="dialogPreco = false">
@@ -379,16 +375,12 @@
                     </v-flex>
                   </v-layout>
                   </v-form>
-<<<<<<< HEAD
                 </div>
                 <v-spacer></v-spacer>
                 <v-divider></v-divider>
                 <v-flex style="float:right">
                   <v-btn large class="green" v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="modoPagamento()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> FINALIZAR </span></v-btn>
                 </v-flex>
-=======
-                </div>            
->>>>>>> parent of 4f18596... Modificaçoes no sistema arquitetura de pastas
               </v-flex>
 
             <div hidden> 
@@ -766,13 +758,10 @@ export default {
   margin: 0 auto !important;
   text-transform: uppercase
 }
-<<<<<<< HEAD
 
 .panel-body {
 	padding: 15px;
 }
 
 
-=======
->>>>>>> parent of 4f18596... Modificaçoes no sistema arquitetura de pastas
 </style>

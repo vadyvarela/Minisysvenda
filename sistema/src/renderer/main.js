@@ -10,7 +10,6 @@ import axios from 'axios'
 import VueShortkey from 'vue-shortkey'
 // Notificação
 import CxltToastr from 'cxlt-vue2-toastr'
-import BootstrapVue from 'bootstrap-vue'
 import VueGoogleCharts from 'vue-google-charts'
 
 import App from './App'
@@ -40,10 +39,6 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 // import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Print from 'vue-print-nb'
 
-import VueTouchKeyboard from "vue-touch-keyboard";
-import "vue-touch-keyboard/dist/vue-touch-keyboard.css"; // load default style
-Vue.use(VueTouchKeyboard);
-
 Vue.use(Print);
 
 // Configurar modeo exibicao notificacao
@@ -64,10 +59,7 @@ Vue.use(VuetifyConfirm, {
   width: 300,
   property: '$confirm'
 })
-<<<<<<< HEAD
 
-=======
->>>>>>> parent of 4f18596... Modificaçoes no sistema arquitetura de pastas
 Vue.use(VueNumeric)
 Vue.use(VueGoogleCharts)
 Vue.use(VueShortkey)
@@ -96,18 +88,10 @@ Vue.config.productionTip = false
 // Carregando o componente Header e Menu drawer
 Vue.component('panel', Panel)
 
-<<<<<<< HEAD
-=======
-
-Vue.use(BootstrapVue);
-// sync(store, router)
-
 /* eslint-disable no-new */
->>>>>>> parent of 4f18596... Modificaçoes no sistema arquitetura de pastas
 new Vue({
   i18n,
   components: { App },
-  template: `<App :input.sync="input" />`,
   router,
   store,
   template: '<App/>'
