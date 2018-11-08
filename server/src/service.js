@@ -2,8 +2,8 @@ var Service = require('node-windows').Service
 
 // Create a new service object
 var svc = new Service({
-  name: 'MiniSysVenda',
-  description: 'Teste de sistema de venda',
+  name: 'SistemaVenda',
+  description: 'Sistema de venda',
   script: 'C:\\Users\\Vady\\Documents\\PROJETOS\\sistemavenda\\server\\src\\app.js'
 })
 

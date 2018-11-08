@@ -1,5 +1,5 @@
 module.exports = {
-  port: process.env.PORT || 8081,
+  port: process.env.PORT || 8095,
   db: {
     database: process.env.DB_NAME || 'sistemavenda',
     user: process.env.DB_USER || 'root',

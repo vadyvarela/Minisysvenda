@@ -32,7 +32,7 @@
           color="white"
         >
           <v-icon>mdi-account</v-icon>
-           <!--  <v-btn dark small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn> -->
+          <v-btn dark small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
           <v-spacer></v-spacer>
           <v-flex text-lg-right xs6>
             <v-toolbar-title style="font-weight:bold; font-size:1.6em;" class="primary--text">{{ $t('message.listaproduto') }}</v-toolbar-title>
@@ -434,8 +434,7 @@
       fixed
       color="green"
     >
-      <v-flex xs12 sm5 md5>
-        
+      <v-flex xs12 sm8 md8>
       </v-flex>
       <!--<v-flex xs2 sm2 md2>
         <h1 style="font-size:1.7em; font-weight:300; margin-top: 10px;" class="white--text"> {{ $t('message.quantidade') }}:  <span style="font-weight:bold;">{{ totalQty }}</span>  </h1>
@@ -463,7 +462,6 @@
 </template>
 
 <script>
-
 import { mapState } from 'vuex'
 import FornecedoresService from "@/services/FornecedorService";
 import ProdutosService from "@/services/ProdutosService";

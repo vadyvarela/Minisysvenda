@@ -6,13 +6,6 @@
     <section class="section">
         <p class="time" v-text="currentTime"></p>
         <p class="date" v-text="currentDate"></p>
-
-        <!--<div id="printMe" style="background:red;">
-            <p>Teste Printer</p>
-            <p>Outro texto </p>
-            <p>...</p>
-        </div>
-        <button v-print="'#printMe'">Print local range</button>-->
     </section>
 
     <section class="margin"></section>
