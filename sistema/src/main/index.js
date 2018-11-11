@@ -1,6 +1,7 @@
 //import { app, BrowserWindow } from 'electron'
 const {app, BrowserWindow, Menu} = require('electron');
-/**escpos
+const escpos = require('escpos')
+/**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */

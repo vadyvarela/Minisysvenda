@@ -254,7 +254,7 @@
 
                     <v-flex flex xs12 sm2 md2>
                       <v-layout flex class="layoutmeu">
-                        <v-btn style="display:none;" v-shortkey="['p']" @shortkey="searchProd" @click.stop="searchProd"></v-btn>
+                        <v-btn style="display:none;" v-shortkey="['ctrl','p']" @shortkey="searchProd" @click.stop="searchProd"></v-btn>
                         <v-flex xs12 sm12 md12>
                           <v-text-field box v-model.trim="produto.search" ref="search" autofocus v-on:keyup.enter="pesquisar(index)" type="text"></v-text-field>
                           <input v-model.trim="produto.search" type="hidden" autofocus />
@@ -471,6 +471,8 @@ import listaVendaServices from "@/services/listaVendaServices"
 import stockServices from "@/services/stockServices"
 import metodoPagamentoServices from '@/services/metodoPagamentoServices'
 import AuthenticationService from "@/services/AuthenticationService";
+import moment from 'moment'
+
 export default {
   data() {
     return {
@@ -622,6 +624,101 @@ export default {
     async changePVenda() {
       this.dialogPreco = true
     },
+    async PrintDiv(index) {
+        const recibo = (await VendaServices.index({ userId: this.user.id })).data[0].ListaVendas
+        const dvenda = this.dvenda.tLiquido
+        const tapagar = this.dvenda.tapagar
+        const tapagariva = this.dvenda.tapagariva
+        const troco = this.dvenda.troco
+        const horaVenda = moment().format('LT')
+        const dataVenda = moment().format('l')
+        const vendedor = this.user.usuario
+        let dinheiro = this.pagamento.valorentregado
+        let vint4 = this.pagamento.valorentregadovint4
+        let cheque = this.pagamento.valorentregadocheque
+        let prod = ''
+        // let entregado = ''
+
+        //const dataVenda = this.venda.data_venda
+        if (dinheiro !== '') {
+          dinheiro = dinheiro
+        } else if (vint4 !== '') {
+          vint4 = vint4
+        } else {
+          cheque = cheque
+        }
+
+        const escpos = require('escpos')
+        const device = new escpos.USB()
+        const options = { encoding: 'iso-8859-1' }
+        const printer = new escpos.Printer(device, options)
+        
+          device.open(function () {
+            printer
+            .font('a')
+            .align('lt')
+            .style('bu')
+            .size(1, 1)
+            .text('MINISYSVENDA')
+            .text('Praia - Fazenda')
+            .text('NIF: 658956235')
+            .text('TEL/FAX: 2659865')
+            .text('--------------------------------')
+            .text('Data do Doc: ' + dataVenda + '  ' + horaVenda)
+            .text('VENDEDOR: ' + vendedor)
+            .text('\n')
+            // ----------------------------------------------------
+            .text('Produto                     IVA')
+            .text('  ' + 'Valor')
+            .text('-------------------------------')
+            for (var key in recibo) {
+              if (recibo.hasOwnProperty(key)) {
+                const value = recibo[key]
+                console.log("TAMANHO ", value.Produto.produto_nome.length)
+                if (value.Produto.produto_nome.length > 23) {
+                    prod = value.Produto.produto_nome + ' '
+                }else if (value.Produto.produto_nome.length > 20 && value.Produto.produto_nome.length < 22) {
+                    prod = value.Produto.produto_nome + '    '
+                }else if (value.Produto.produto_nome.length < 15 && value.Produto.produto_nome.length > 10) {
+                    prod = value.Produto.produto_nome + '             '
+                }else if (value.Produto.produto_nome.length < 10 && value.Produto.produto_nome.length > 5) {
+                    prod = value.Produto.produto_nome + '                '
+                }
+                  printer
+                  .font('b')
+                  .align('lt')
+                  .size(1, 1)
+                  
+                  .text(prod + value.Produto.Iva.iva_valor + '%')
+                  .text('  ' + value.Produto.produto_preco)
+              }
+            }
+            // ----------------------------------------------------
+            printer
+            .text('--------------------------------')
+            .text('Dinheiro                   ' + dinheiro)
+            .text('VINT4                      ' + vint4)
+            .text('Cheque                     ' + cheque)
+            .text('--------------------------------')
+            .font('b')
+            .align('lt')
+            .size(1, 1)
+            .text('==============================')
+            .text('Total Liquido:          ' + dvenda + ' CVE')
+            .text('Total Iva:            ' + tapagariva + ' CVE')
+            .text('A pagar:                ' + tapagar + ' CVE')
+            .text('Troco:                  ' + troco + ' CVE')
+            .text('==============================')
+            //.cut()
+            printer
+            .font('a')
+            .align('ct')
+            .size(1, 1)
+            .text('Obrigado e volte sempre')
+            .cut(null, 5)
+            .close()
+          })
+    },
     async createVendaProd() {
       console.log(this.produtos)
       console.log('ID PAGAMENTO: ', this.pagamento)
@@ -640,6 +737,7 @@ export default {
       }
       console.log('Dados venda: - ', this.recibo)
       console.log('DADO VENDA: ', this.dvenda)
+      this.PrintDiv()
 
       this.dialog = false
       this.produtos = [{
@@ -654,7 +752,7 @@ export default {
         search: '',
         stock_id: ''
       }]
-      this.$refs.search.focus()
+      // this.$refs.search.focus()
       this.$toast.success({
         title: "Sucesso",
         message: "Venda adicionada com sucesso no sistema"
