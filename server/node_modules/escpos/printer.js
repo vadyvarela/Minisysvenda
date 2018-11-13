@@ -488,7 +488,7 @@ Printer.prototype.qrimage = function (content, options, callback) {
  * @param  {[type]} density [description]
  * @return {[Printer]} printer  [the escpos printer instance]
  */
-Printer.prototype.image = function (image, density) {
+Printer.prototype.image = async function (image, density) {
   if (!(image instanceof Image))
     throw new TypeError('Only escpos.Image supported');
   density = density || 'd24';
@@ -499,17 +499,17 @@ Printer.prototype.image = function (image, density) {
 
   // added a delay so the printer can process the graphical data
   // when connected via slower connection ( e.g.: Serial)
+  this.lineSpace(0); // set line spacing to 0
   bitmap.data.forEach(async (line) => {
     self.buffer.write(header);
     self.buffer.writeUInt16LE(line.length / n);
     self.buffer.write(line);
-    self.buffer.write(_.ESC + _.FEED_CONTROL_SEQUENCES.CTL_GLF);
+    self.buffer.write(_.EOL);
     await new Promise((resolve, reject) => {
       setTimeout(() => { resolve(true) }, 200);
     });
   });
-
-  return this;
+  return this.lineSpace();
 };
 
 /**
@@ -548,8 +548,8 @@ Printer.prototype.cashdraw = function (pin) {
 
 /**
  * Printer Buzzer (Beep sound)
- * @param  {[String]} n Refers to the number of buzzer times
- * @param  {[String]} t Refers to the buzzer sound length in (t * 100) milliseconds.
+ * @param  {[Number]} n Refers to the number of buzzer times
+ * @param  {[Number]} t Refers to the buzzer sound length in (t * 100) milliseconds.
  */
 Printer.prototype.beep = function (n, t) {
   this.buffer.write(_.BEEP);
@@ -585,12 +585,13 @@ Printer.prototype.cut = function (part, feed) {
 /**
  * [close description]
  * @param  {Function} callback [description]
+ * @param  {[type]}   options  [description]
  * @return {[type]}            [description]
  */
-Printer.prototype.close = function (callback) {
+Printer.prototype.close = function (callback, options) {
   var self = this;
   return this.flush(function () {
-    self.adapter.close(callback);
+    self.adapter.close(callback, options);
   });
 };
 
@@ -601,7 +602,7 @@ Printer.prototype.close = function (callback) {
  */
 Printer.prototype.color = function (color) {
   this.buffer.write(_.COLOR[
-    color === 0 || color === 1 ? color: 0
+    color === 0 || color === 1 ? color : 0
   ]);
   return this;
 };

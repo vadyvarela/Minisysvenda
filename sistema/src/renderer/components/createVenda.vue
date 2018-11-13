@@ -35,7 +35,7 @@
           <v-btn dark small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
           <v-spacer></v-spacer>
           <v-flex text-lg-right xs6>
-            <v-toolbar-title style="font-weight:bold; font-size:1.6em;" class="primary--text">{{ $t('message.listaproduto') }}</v-toolbar-title>
+            <v-toolbar-title style="font-weight:bold; font-size:2em;" class="primary--text">{{ $t('message.listaproduto') }}</v-toolbar-title>
           </v-flex>
           <v-flex text-lg-right xs6>
             <v-btn right router-link to="listavendas" dark class="primary">{{ $t('message.listavendas') }}</v-btn>
@@ -87,14 +87,14 @@
                     <h4 hidden>NOME: {{ produto.nome = produtos[index].idProduto.produto_nome }}</h4>
                     <h4 hidden>IVA: {{ produto.iva = produtos[index].idProduto.Iva.iva_valor }}</h4>
                     <h4 hidden>ID PRODUTO: {{ produto.ProdutoId = produtos[index].idProduto.id }}</h4>
-                    <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ dvenda.troco = pagamento.valorentregado - totalPrice }}</h4>
-                    <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ dvenda.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
-                    <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCO: {{ dvenda.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
-                    <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCO: {{ dvenda.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
-                    <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCO: {{ dvenda.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
-                    <h4 hidden>TOTAL LIQUIDO: {{ dvenda.tLiquido = totalPriceLiquido }}</h4>
-                    <h4 hidden>TOTAL A PAGAR: {{ dvenda.tapagar = totalPrice }}</h4>
-                    <h4 hidden>TOTAL A PAGAR IVA: {{ dvenda.tapagariva = totalIva }}</h4>
+                    <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
+                    <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
+                    <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
+                    <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                    <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
+                    <h4 hidden>TOTAL LIQUIDO: {{ pagamento.tLiquido = totalPriceLiquido }}</h4>
+                    <h4 hidden>TOTAL A PAGAR: {{ pagamento.tapagar = totalPrice }}</h4>
+                    <h4 hidden>TOTAL A PAGAR IVA: {{ pagamento.tapagariva = totalIva }}</h4>
                     
                   </div>
                   <div v-else>
@@ -116,10 +116,10 @@
                               <v-flex xs12>
                                 <h4 class="primary--text text-md-center" style="font-size:1.6em;"> {{ $t('message.totalaPagar') }} </h4>
                                 <p>
-                                  <vue-numeric readonly class="green--text" style="text-align:center; font-weight:bold; font-size:2em; width:100%" :value="dvenda.tapagar"></vue-numeric>
-                                  <input name="" v-model="dvenda.tapagar" type="hidden"/>
-                                  <input name="" v-model="dvenda.tapagariva" type="hidden"/>
-                                  <input name="" v-model="dvenda.tLiquido" type="hidden"/>   
+                                  <vue-numeric readonly class="green--text" style="text-align:center; font-weight:bold; font-size:2em; width:100%" :value="pagamento.tapagar"></vue-numeric>
+                                  <input name="" v-model="pagamento.tapagar" type="hidden"/>
+                                  <input name="" v-model="pagamento.tapagariva" type="hidden"/>
+                                  <input name="" v-model="pagamento.tLiquido" type="hidden"/>   
                                 </p>
                               </v-flex>
                               <v-flex xs12 sm12 md12>
@@ -140,7 +140,7 @@
                                       <v-text-field box readonly :value="pagamento.dinheiro" type="text"></v-text-field>
                                     </v-flex>
                                     <v-flex xs5 sm5 md5>
-                                      <v-text-field box v-model.number="pagamento.valorentregado" type="number"></v-text-field>
+                                      <v-text-field box v-model.number="pagamento.valorentregado" autofocus type="number"></v-text-field>
                                     </v-flex>
                                   </v-layout>
                                   <v-layout style="margin-bottom: -35px;">
@@ -173,15 +173,15 @@
                                 ></v-select>
                               </v-flex>
                               <v-flex xs12 sm12 md12>
-                                <v-text-field box v-model="dvenda.valorentregado" label="Valor entregado" ></v-text-field>
+                                <v-text-field box v-model="pagamento.valorentregado" label="Valor entregado" ></v-text-field>
                               </v-flex>-->
                               
                               <v-flex xs12>
                                 <h4 class="primary--text text-md-center" style="font-size:2em;"> {{ $t('message.troco') }} </h4>
                                 <p v-if="pagamento.valorentregado || pagamento.valorentregadovint4 || pagamento.valorentregadocheque" >
-                                  <vue-numeric v-if="dvenda.troco < 0 " readonly class="red--text" style="text-align:center; font-size:2em; font-weight:700; width:100%" :value="dvenda.troco"></vue-numeric>
-                                  <vue-numeric v-else readonly class="green--text" style="text-align:center; font-size:2em; font-weight:700; width:100%" :value="dvenda.troco"></vue-numeric>
-                                  <input name="produto_id" v-model="dvenda.troco" type="hidden"/>   
+                                  <vue-numeric v-if="pagamento.troco < 0 " readonly class="red--text" style="text-align:center; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
+                                  <vue-numeric v-else readonly class="green--text" style="text-align:center; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
+                                  <input name="produto_id" v-model="pagamento.troco" type="hidden"/>   
                                 </p>
                                 <p v-else class="red--text" style="text-align:center; font-size:1em;"> {{ $t('message.valorEntregado') }} </p>
                               </v-flex>
@@ -192,7 +192,7 @@
                         <v-card-actions>
                           <v-spacer></v-spacer>
                           
-                          <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="dialog = false"> {{ $t('message.finalizacompra') }} </v-btn>
+                          <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="createVendaProdnoPrinter"> {{ $t('message.finalizacompra') }} </v-btn>
                           <v-btn large color="success darken-1" :disabled="!stockIsValid" @click="createVendaProd"> {{ $t('message.fcompraimprimir') }} </v-btn>
                         </v-card-actions>
                       </v-card>
@@ -379,7 +379,7 @@
                 <v-spacer></v-spacer>
                 <v-divider></v-divider>
                 <v-flex style="float:right">
-                  <v-btn large class="green" v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="modoPagamento()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> FINALIZAR </span></v-btn>
+                  <v-btn style="margin-top:20px;" large class="green" v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="modoPagamento()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> FINALIZAR </span></v-btn>
                 </v-flex>
               </v-flex>
 
@@ -412,14 +412,14 @@
                     
                     <v-divider></v-divider>
                     <v-divider></v-divider>
-                    <span class="span">Total Liquido: {{ dvenda.tLiquido }} </span>
-                    <span class="span">Total Iva: {{ dvenda.tapagariva }} </span>
+                    <span class="span">Total Liquido: {{ pagamento.tLiquido }} </span>
+                    <span class="span">Total Iva: {{ pagamento.tapagariva }} </span>
                     <v-divider></v-divider>
                     <h4>ENTREGADO</h4>
-                     <!--<span class="span">Dinheiro: {{ dvenda.valorentregado }} </span>-->
+                     <!--<span class="span">Dinheiro: {{ pagamento.valorentregado }} </span>-->
                     <span class="span"></span>
-                    <h4>A PAGAR: {{ dvenda.tapagar }} </h4>
-                    <h4>TROCO: {{ dvenda.troco }} </h4>
+                    <h4>A PAGAR: {{ pagamento.tapagar }} </h4>
+                    <h4>TROCO: {{ pagamento.troco }} </h4>
                   </div>
               </v-flex>
             </div>
@@ -529,7 +529,11 @@ export default {
         cheque: '',
         valorentregado: '',
         valorentregadovint4: '',
-        valorentregadocheque: ''
+        valorentregadocheque: '',
+        tLiquido: '',
+        tapagar: '',
+        tapagariva: '',
+        troco: ''
       },
       venda: {
         data_venda: '',
@@ -548,7 +552,7 @@ export default {
   },
   methods: {
     addNewProduto (index) {
-      if (this.produtos[index].search.length !== 0) {
+      // if (this.produtos[index].search.length !== 0) {
         this.produtos.push({
           total: '',
           totalIva: '',
@@ -561,7 +565,7 @@ export default {
           search: '',
           stock_id: ''
         })
-      }
+      // }
     },
     async login() {
       try {
@@ -624,12 +628,12 @@ export default {
     async changePVenda() {
       this.dialogPreco = true
     },
-    async PrintDiv(index) {
+    async PrintVenda(index) {
         const recibo = (await VendaServices.index({ userId: this.user.id })).data[0].ListaVendas
-        const dvenda = this.dvenda.tLiquido
-        const tapagar = this.dvenda.tapagar
-        const tapagariva = this.dvenda.tapagariva
-        const troco = this.dvenda.troco
+        const pagamento = this.pagamento.tLiquido
+        const tapagar = this.pagamento.tapagar
+        const tapagariva = this.pagamento.tapagariva
+        const troco = this.pagamento.troco
         const horaVenda = moment().format('LT')
         const dataVenda = moment().format('l')
         const vendedor = this.user.usuario
@@ -675,14 +679,20 @@ export default {
               if (recibo.hasOwnProperty(key)) {
                 const value = recibo[key]
                 console.log("TAMANHO ", value.Produto.produto_nome.length)
-                if (value.Produto.produto_nome.length > 23) {
+                if (value.Produto.produto_nome.length >= 23) {
                     prod = value.Produto.produto_nome + ' '
-                }else if (value.Produto.produto_nome.length > 20 && value.Produto.produto_nome.length < 22) {
-                    prod = value.Produto.produto_nome + '    '
-                }else if (value.Produto.produto_nome.length < 15 && value.Produto.produto_nome.length > 10) {
-                    prod = value.Produto.produto_nome + '             '
+                }else if (value.Produto.produto_nome.length > 20 && value.Produto.produto_nome.length < 23) {
+                    prod = value.Produto.produto_nome + '     '
+                }else if (value.Produto.produto_nome.length > 18 && value.Produto.produto_nome.length <= 20) {
+                    prod = value.Produto.produto_nome + '         '
+                }else if (value.Produto.produto_nome.length >= 15 && value.Produto.produto_nome.length <= 18) {
+                    prod = value.Produto.produto_nome + '           '
+                }else if (value.Produto.produto_nome.length < 15 && value.Produto.produto_nome.length >= 10) {
+                    prod = value.Produto.produto_nome + '               '
                 }else if (value.Produto.produto_nome.length < 10 && value.Produto.produto_nome.length > 5) {
-                    prod = value.Produto.produto_nome + '                '
+                    prod = value.Produto.produto_nome + '                  '
+                }else {
+                    prod = value.Produto.produto_nome + '                    '
                 }
                   printer
                   .font('b')
@@ -703,12 +713,12 @@ export default {
             .font('b')
             .align('lt')
             .size(1, 1)
-            .text('==============================')
-            .text('Total Liquido:          ' + dvenda + ' CVE')
+            .text('================================')
+            .text('Total Liquido:          ' + pagamento + ' CVE')
             .text('Total Iva:            ' + tapagariva + ' CVE')
             .text('A pagar:                ' + tapagar + ' CVE')
             .text('Troco:                  ' + troco + ' CVE')
-            .text('==============================')
+            .text('================================')
             //.cut()
             printer
             .font('a')
@@ -718,6 +728,40 @@ export default {
             .cut(null, 5)
             .close()
           })
+    },
+    async createVendaProdnoPrinter() {
+      listaVendaServices.post(this.produtos)
+      stockServices.putvendas(this.produtos)
+      VendaServices.putidpagamento(this.pagamento)
+
+      // Create nova venda
+      await VendaServices.post(this.venda)
+      this.idVenda = (await VendaServices.lastid()).data[0].id;
+
+      if (this.isUserLoggedIn) {
+        this.recibo = (await VendaServices.index({
+          userId: this.user.id
+        })).data[0].ListaVendas;
+      }
+
+      this.dialog = false
+      this.produtos = [{
+        total: '',
+        totalIva: '',
+        totalLiquido: '',
+        preco_venda: '',
+        VendaId: '',
+        ProdutoId: '',
+        idProduto: '',
+        quantidade: '1',
+        search: '',
+        stock_id: ''
+      }]
+      // this.$refs.search.focus()
+      this.$toast.success({
+        title: "Sucesso",
+        message: "Venda adicionada com sucesso no sistema NO PRINTER"
+      })
     },
     async createVendaProd() {
       console.log(this.produtos)
@@ -736,8 +780,8 @@ export default {
         })).data[0].ListaVendas;
       }
       console.log('Dados venda: - ', this.recibo)
-      console.log('DADO VENDA: ', this.dvenda)
-      this.PrintDiv()
+      console.log('DADO VENDA: ', this.pagamento)
+      this.PrintVenda()
 
       this.dialog = false
       this.produtos = [{
@@ -772,7 +816,7 @@ export default {
       'user'
     ]),
     stockIsValid() {
-      return this.dvenda.tapagar;
+      return this.pagamento.tapagar;
     },
     formIsValid () {
       return (

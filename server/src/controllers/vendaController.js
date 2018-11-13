@@ -92,7 +92,17 @@ module.exports = {
     const dados = req.body
     console.log(dados)
     try {
-      const venda = Venda.update({ meio_pagamento_dinheiro: dados.dinheiro, valor_venda_dinheiro: dados.valorentregado, meio_pagamento_vint4: dados.vint4, valor_venda_vint4: dados.valorentregadovint4, meio_pagamento_cheque: dados.cheque, valor_venda_cheque: dados.valorentregadocheque }, { where: { id: dados.VendaId } })
+      const venda = Venda.update({
+        meio_pagamento_dinheiro: dados.dinheiro,
+        valor_venda_dinheiro: dados.valorentregado,
+        meio_pagamento_vint4: dados.vint4,
+        valor_venda_vint4: dados.valorentregadovint4,
+        meio_pagamento_cheque: dados.cheque,
+        valor_venda_cheque: dados.valorentregadocheque,
+        valor_total: dados.tapagar,
+        valor_iva: dados.tapagariva,
+        valor_troco: dados.troco
+      }, { where: { id: dados.VendaId } })
       res.send(venda)
     } catch (err) {
       res.status(500).send({

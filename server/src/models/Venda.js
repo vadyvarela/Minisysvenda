@@ -7,6 +7,9 @@ module.exports = (sequelize, DataTypes) => {
     valor_venda_vint4: DataTypes.STRING,
     meio_pagamento_cheque: DataTypes.STRING,
     valor_venda_cheque: DataTypes.STRING,
+    valor_total: DataTypes.STRING,
+    valor_iva: DataTypes.STRING,
+    valor_troco: DataTypes.STRING,
     status: DataTypes.STRING
   })
 

@@ -36,8 +36,6 @@ import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 // import 'bootstrap/dist/css/bootstrap.css'
 // import 'bootstrap-vue/dist/bootstrap-vue.css'
-import Printer from 'vue-print-nb'
-Vue.use(Printer);
 
 // Configurar modeo exibicao notificacao
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css'

@@ -3,9 +3,9 @@
       <v-content >
         <v-layout justify-end row>
           <v-flex text-lg-left xs6>
-            <v-badge class='mt-3 mr-4' right>
-              <span slot="badge">{{ total }}</span>
+            <v-badge class='mt-3 mr-4' right>              
               <span class="title"> {{ $t('message.TotalVendasFeitas') }} </span>
+              <span class="TVenda"> {{ total }} </span>
             </v-badge>
           </v-flex>
           <v-flex text-lg-right xs6>
@@ -196,20 +196,20 @@
                   <td class="text-xs-left"> {{ props.item.createdAt | moment("DD-MM-YYYY") }} </td>
                   <td class="text-xs-left"> {{ props.item.createdAt | moment("HH:mm:ss") }} </td>
                   
-                    <v-expansion-panel popout>
-                      <v-expansion-panel-content>
-                        <div slot="header"> {{ $t('message.listaproduto') }} </div>
-                        <v-card>
-                          <v-card-text> 
-                            <tr class="nobordertr" v-bind:key="index" v-for="(produto,index) in props.item.ListaVendas">
-                            <td>{{produto.Produto.produto_nome}}</td>
-                            <td> / </td>
-                            <td>{{produto.quantidade}}</td>
-                            </tr>
-                          </v-card-text>
-                        </v-card>
-                      </v-expansion-panel-content>
-                    </v-expansion-panel>
+                  <v-expansion-panel popout>
+                    <v-expansion-panel-content>
+                      <div slot="header"> {{ $t('message.listaproduto') }} </div>
+                      <v-card>
+                        <v-card-text> 
+                          <tr class="nobordertr" v-bind:key="index" v-for="(produto,index) in props.item.ListaVendas">
+                          <td>{{produto.Produto.produto_nome}}</td>
+                          <td> / </td>
+                          <td>{{produto.quantidade}}</td>
+                          </tr>
+                        </v-card-text>
+                      </v-card>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
 
                   <td class="text-xs-left"> {{ props.item.User.usuario }} </td>
                   <td v-if="props.item.valor_venda_dinheiro != ''" class="text-xs-left"> {{ props.item.meio_pagamento_dinheiro }} </td>
@@ -218,7 +218,7 @@
                   <td v-else-if="props.item.valor_venda_vint4 != '' && props.item.valor_venda_dinheiro != ''" class="text-xs-left"> {{ props.item.meio_pagamento_dinheiro }} - {{ props.item.meio_pagamento_vint4 }} </td>
                   <td v-else-if="props.item.valor_venda_vint4 != ''" class="text-xs-left"> {{ props.item.meio_pagamento_vint4 }} </td>
                   <td class="text-xs-left dark">
-                    <v-btn flat icon color="primary" @click="printVenda(props.item)"> <v-icon>print</v-icon> </v-btn>
+                    <v-btn flat icon color="primary" @click="PrintVenda(props.item)"> <v-icon>print</v-icon> </v-btn>
                     <v-btn title="Anular Venda" flat icon color="red" @click="AnularVenda(props.item)"> <v-icon>error_outline</v-icon> </v-btn>
                   </td>
                   </template>
@@ -245,6 +245,7 @@ import VendaServices from "@/services/VendaServices";
 import listaVendaServices from "@/services/listaVendaServices";
 import stockServices from "@/services/stockServices"
 import AuthenticationService from "@/services/AuthenticationService";
+import moment from 'moment'
 import { mapState } from 'vuex'
 
 export default {
@@ -341,11 +342,108 @@ export default {
         this.alert = true;
       }
     },
-    printVenda: function(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.produtos = Object.assign({}, item);
-      console.log(this.produtos.ListaVendas)
-      this.dialog = true;
+    async PrintVenda(item) {
+        this.editedIndex = this.desserts.indexOf(item);
+        this.produtos = item
+        const recibo = item.ListaVendas
+        const pagamento = item.valor_total
+        const tapagar = item.valor_total
+        const tapagariva = item.valor_iva
+        const troco = item.valor_troco
+        const horaVenda = moment().format('LT')
+        const dataVenda = moment().format('l')
+        const vendedor = this.user.usuario
+        let dinheiro =  item.valor_venda_dinheiro
+        let vint4 = item.valor_venda_vint4
+        let cheque = item.valor_venda_cheque
+        let prod = ''
+
+        if (dinheiro !== '') {
+          dinheiro = dinheiro
+        } else if (vint4 !== '') {
+          vint4 = vint4
+        } else {
+          cheque = cheque
+        }
+      
+        const path = require('path');
+        const escpos = require('escpos')
+        const device = new escpos.USB()
+        const options = { encoding: 'CP860' }
+        const printer = new escpos.Printer(device, options)
+        
+          device.open(function () {
+            printer
+            .font('a')
+            .align('lt')
+            .style('bu')
+            .size(1, 1)
+            .text('FRUT&PÃO - Loja de Conveniência')
+            .text('Praia - Fazenda')
+            .text('NIF: 278272509')
+            .text('TEL/FAX: +238 3560200')
+            .text('--------------------------------')
+            .text('Data do Doc: ' + dataVenda + '  ' + horaVenda)
+            .text('VENDEDOR: ' + vendedor)
+            .text('\n')
+            // ----------------------------------------------------
+            .text('Produto                     IVA')
+            .text('  ' + 'Valor')
+            .text('-------------------------------')
+            for (var key in recibo) {
+              if (recibo.hasOwnProperty(key)) {
+                const value = recibo[key]
+                console.log("MEUS PROD", value)
+                console.log("TAMANHO ", value.Produto.produto_nome.length)
+                if (value.Produto.produto_nome.length >= 23) {
+                    prod = value.Produto.produto_nome + ' '
+                }else if (value.Produto.produto_nome.length > 20 && value.Produto.produto_nome.length < 23) {
+                    prod = value.Produto.produto_nome + '      '
+                }else if (value.Produto.produto_nome.length > 18 && value.Produto.produto_nome.length <= 20) {
+                    prod = value.Produto.produto_nome + '         '
+                }else if (value.Produto.produto_nome.length >= 15 && value.Produto.produto_nome.length <= 18) {
+                    prod = value.Produto.produto_nome + '           '
+                }else if (value.Produto.produto_nome.length < 15 && value.Produto.produto_nome.length >= 10) {
+                    prod = value.Produto.produto_nome + '               '
+                }else if (value.Produto.produto_nome.length < 10 && value.Produto.produto_nome.length > 5) {
+                    prod = value.Produto.produto_nome + '                  '
+                }else {
+                    prod = value.Produto.produto_nome + '                    '
+                }
+                  printer
+                  .font('b')
+                  .align('lt')
+                  .size(1, 1)
+                  
+                  .text(prod + value.Produto.Iva.iva_valor + '%')
+                  .text('  ' + value.Produto.produto_preco)
+              }
+            }
+            // ----------------------------------------------------
+            printer
+            .text('--------------------------------')
+            .text('Dinheiro                   ' + dinheiro)
+            .text('VINT4                      ' + vint4)
+            .text('Cheque                     ' + cheque)
+            .text('--------------------------------')
+            .font('b')
+            .align('lt')
+            .size(1, 1)
+            .text('================================')
+            .text('Total Liquido:          ' + pagamento + ' CVE')
+            .text('Total Iva:            ' + tapagariva + ' CVE')
+            .text('A pagar:                ' + tapagar + ' CVE')
+            .text('Troco:                  ' + troco + ' CVE')
+            .text('================================')
+            .cut()
+            printer
+            .font('b')
+            .align('ct')
+            .size(1, 1)
+            .text('Obrigado e volte sempre')
+            .cut(null, 5)
+            .close()
+          })
     },
     async AnularVenda (item) {
       if(this.userconfig == 0) {
@@ -394,6 +492,14 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.TVenda{
+  padding:5px 10px 5px 10px; 
+  background-color:#1976d2;
+  color:#fff;
+  font-weight:bold;
+  font-size: 1.2em;
+  border-radius:5px;
+}
 .nobordertr{
   border-bottom: 0px !important;
 }
