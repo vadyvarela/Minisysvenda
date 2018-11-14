@@ -228,7 +228,7 @@
                 </v-tooltip>
                 </template>
                 <template slot="items" slot-scope="props">
-                <tr @click="editProduto(props.item)">
+                <tr style="cursor:pointer" @click="editProduto(props.item)">
                 <td>{{ props.item.produto_nome }}</td>
                 <td class="text-xs-center ">{{ props.item.produto_preco }}</td>
                 <td class="text-xs-left">{{ props.item.Fornecedore.fornecedor_nome }}</td>
