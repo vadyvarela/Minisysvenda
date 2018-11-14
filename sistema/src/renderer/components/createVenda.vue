@@ -27,22 +27,122 @@
         class="hide-overflow"
         color="white lighten-1"
       >
-        <v-toolbar
-          card
-          color="white"
-        >
-          <v-icon>mdi-account</v-icon>
-          <v-btn dark small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
-          <v-spacer></v-spacer>
-          <v-flex text-lg-right xs6>
-            <v-toolbar-title style="font-weight:bold; font-size:2em;" class="primary--text">{{ $t('message.listaproduto') }}</v-toolbar-title>
+        <v-card-text >
+
+          <v-dialog v-model="dialogPesquisaCliente" persistent max-width="550px" @keydown.esc="dialogPesquisaCliente = false">
+            <v-card align-center justify-center>
+              <v-card-title>
+                <v-spacer></v-spacer>
+                <v-btn color="red" icon outline right small fab dark @click.native="dialogPesquisaCliente = false"><v-icon>close</v-icon></v-btn>
+              </v-card-title>
+              <v-card-text>
+                <v-container grid-list-md>
+                  <v-layout wrap>
+                    <v-flex xs12>
+                      <h4 class="primary--text text-md-center" style="font-size:2em;">DIGITE O NOME DO CLIENTE </h4>
+                      <p class="red--text" style="text-align:center; font-size:2em;">
+                        <v-autocomplete
+                          box
+                          :items="listaclientes"
+                          color="white"
+                          v-model="cliente.search"
+                          item-text="cliente_nome"
+                          item-value="cliente_nome"
+                          label="Nome cliente"
+                        ></v-autocomplete>
+                        <input name="" v-model="cliente.search" type="hidden"/>   
+                      </p>
+                    </v-flex>
+                    
+                  </v-layout>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn center large color="primary darken-1" @click.native="dialogPesquisaCliente = false; pesquisarCliente()">OK</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="dialogNewCliente" persistent max-width="550px" @keydown.esc="dialogNewCliente = false">
+              <v-card align-center justify-center>
+                <v-card-title>
+                  <span class="headline"> <v-icon>account_circle</v-icon> Novo Cliente</span>
+                  <v-spacer></v-spacer>
+                  <v-btn color="red" icon outline right small fab dark @click.native="dialogNewCliente = false"><v-icon>close</v-icon></v-btn>
+                </v-card-title>
+                <v-card-text>
+                  <v-container grid-list-md>
+                      <v-flex xs12 sm12 md12>
+                        <v-text-field box v-model="cliente.cliente_nome" label="Nome do cliente" type="text"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm12 md12>
+                        <v-text-field box v-model="cliente.cliente_morada" label="Morada do cliente" type="text"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm12 md12>
+                        <v-text-field box  v-model="cliente.cliente_nif" label="NIF" type="number"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm12 md12>
+                        <v-text-field box  v-model="cliente.cliente_telefone" label="Telefone" type="number"></v-text-field>
+                      </v-flex>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn center large color="primary darken-1" @click.native="createCliente()">Salvar</v-btn>
+                </v-card-actions>
+              </v-card>
+          </v-dialog>
+
+          <v-layout style="padding:-20px;" row >
+          <v-flex xs6 sm4 md4>
+              <span hidden> {{ dinheiro = Date() | moment("DD-MM-YYYY") }} </span>
+              <v-text-field label="NO: " box readonly :value="idVenda" type="text"></v-text-field>
+              <v-text-field label="DATA VENDA: " box readonly :value="dinheiro" type="text"></v-text-field>
           </v-flex>
-          <v-flex text-lg-right xs6>
-            <v-btn right router-link to="listavendas" dark class="primary">{{ $t('message.listavendas') }}</v-btn>
+
+          <v-flex xs1 sm1 md1>
           </v-flex>
-        </v-toolbar>
+
+          <v-flex xs6 sm7 md7>
+              <v-layout>
+                <div>
+                  <span v-if="clipesquisa[0]" hidden> 
+                    {{ cliente.cliente_nome = clipesquisa[0].cliente_nome }}
+                    {{ cliente.cliente_morada = clipesquisa[0].cliente_morada }}
+                    {{ cliente.cliente_nif = clipesquisa[0].cliente_nif }} 
+                    {{ cliente.cliente_telefone = clipesquisa[0].cliente_telefone }}
+                  </span>
+                </div>
+                <v-flex xs1 sm1 md1>
+                  <v-btn fab small dark @click="searchCliente" class="primary"> <v-icon>search</v-icon> </v-btn>
+                </v-flex>
+                <v-flex xs12 sm7 md7>
+                  <v-text-field label="CLIENTE:" readonly box v-model="cliente.cliente_nome" type="text"></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm3 md3>
+                  <v-text-field label="NIF:" readonly box v-model="cliente.cliente_nif" type="text"></v-text-field>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                  <v-btn fab small dark @click="newCliente" class="primary"> <v-icon>add</v-icon> </v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout>
+                <v-flex xs6 sm8 md8>
+                  <v-text-field label="MORADA:" readonly box v-model="cliente.cliente_morada" type="text"></v-text-field>
+                </v-flex>
+                <v-flex xs6 sm4 md4>
+                  <v-text-field label="TELEFONE:" readonly box v-model="cliente.cliente_telefone" type="text"></v-text-field>
+                </v-flex>
+              </v-layout>
+            <!-- <v-btn left router-link to="listavendas" dark class="primary">{{ $t('message.listavendas') }}</v-btn>-->
+          </v-flex>
+
+          </v-layout>
+        </v-card-text>
+
+        <v-divider></v-divider>
         <v-card-text>
-            <v-divider></v-divider>
+             <!-- <v-toolbar-title style="font-weight:bold; font-size:1.5em;" class="primary--text">{{ $t('message.listaproduto') }}</v-toolbar-title>-->
             <v-layout wrap>
                 <!-- Dados para criar nova Venda -->
                 <span hidden>{{ venda.data_venda = Date() | moment("DD-MM-YYYY HH:mm:ss") }}</span>
@@ -71,7 +171,6 @@
                       <label>{{ $t('message.total') }}</label>
                     </v-flex>
                     <v-flex text-lg-center class="titleProd" xs12 sm1 md1>
-                      <label><v-icon>remove</v-icon></label>
                     </v-flex>
                   </v-layout>
                 </div>
@@ -192,8 +291,8 @@
                         <v-card-actions>
                           <v-spacer></v-spacer>
                           
-                          <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="createVendaProdnoPrinter"> {{ $t('message.finalizacompra') }} </v-btn>
-                          <v-btn large color="success darken-1" :disabled="!stockIsValid" @click="createVendaProd"> {{ $t('message.fcompraimprimir') }} </v-btn>
+                          <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="createVendaProdnoPrinter(index)"> {{ $t('message.finalizacompra') }} </v-btn>
+                          <v-btn large color="success darken-1" :disabled="!stockIsValid" @click="createVendaProd(index)"> {{ $t('message.fcompraimprimir') }} </v-btn>
                         </v-card-actions>
                       </v-card>
                     </v-dialog>
@@ -268,7 +367,7 @@
                     </v-flex>
                     <v-flex xs12 sm2 md2>
                       <v-text-field box v-model.number="produto.quantidade" @keyup.enter="addNewProduto(index)" ref="searchquantidade" label="Quantidade" type="number"></v-text-field>
-                      <input v-model.number="produto.quantidade" @keyup.enter="addNewProduto(index)" type="hidden" autofocus/>
+                      <input v-model.number="produto.quantidade" @keyup.enter="addNewProduto(index)" type="hidden"/>
                     </v-flex>
 
                     <v-dialog v-model="dialogPreco" @keydown.enter="login" persistent max-width="550px" @keydown.esc="dialogPreco = false">
@@ -378,51 +477,13 @@
                 </div>
                 <v-spacer></v-spacer>
                 <v-divider></v-divider>
+                <v-flex style="float:left">
+                  <v-btn style="margin-top:20px;" dark small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
+                </v-flex>
                 <v-flex style="float:right">
-                  <v-btn style="margin-top:20px;" large class="green" v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="modoPagamento()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> FINALIZAR </span></v-btn>
+                 <v-btn style="margin-top:20px;" large class="green" v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="modoPagamento()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> FINALIZAR </span></v-btn>
                 </v-flex>
               </v-flex>
-
-            <div hidden> 
-              <v-flex xs12 sm3 md3>
-                <div grid-list-md>
-                  <label class="span">Dados loja</label>
-                    <v-divider></v-divider>
-                    <h3>Produtos</h3>
-                    <v-layout>
-                    <v-flex class="" xs12 sm7 md7>
-                        Produto
-                    </v-flex>
-                    <v-flex class="" xs12 sm3 md3>
-                        Valor
-                    </v-flex> <v-flex class="" xs12 sm2 md2>
-                        Iva
-                    </v-flex>
-                    </v-layout>
-                    <v-layout v-bind:key="dados.id" v-for="dados in recibo">
-                      <v-flex class="" xs12 sm7 md7>
-                          {{dados.Produto.produto_nome}}
-                      </v-flex>
-                      <v-flex class="" xs12 sm3 md3>
-                          {{dados.preco_venda}}
-                      </v-flex> <v-flex class="" xs12 sm2 md2>
-                          {{dados.Produto.Iva.iva_valor}} %
-                      </v-flex>                 
-                    </v-layout>
-                    
-                    <v-divider></v-divider>
-                    <v-divider></v-divider>
-                    <span class="span">Total Liquido: {{ pagamento.tLiquido }} </span>
-                    <span class="span">Total Iva: {{ pagamento.tapagariva }} </span>
-                    <v-divider></v-divider>
-                    <h4>ENTREGADO</h4>
-                     <!--<span class="span">Dinheiro: {{ pagamento.valorentregado }} </span>-->
-                    <span class="span"></span>
-                    <h4>A PAGAR: {{ pagamento.tapagar }} </h4>
-                    <h4>TROCO: {{ pagamento.troco }} </h4>
-                  </div>
-              </v-flex>
-            </div>
             </v-layout>
             
         </v-card-text>
@@ -463,14 +524,15 @@
 
 <script>
 import { mapState } from 'vuex'
-import FornecedoresService from "@/services/FornecedorService";
-import ProdutosService from "@/services/ProdutosService";
+import FornecedoresService from "@/services/FornecedorService"
+import ProdutosService from "@/services/ProdutosService"
 import filterServices from "@/services/filterServices"
 import VendaServices from "@/services/VendaServices"
 import listaVendaServices from "@/services/listaVendaServices"
 import stockServices from "@/services/stockServices"
+import ClienteServices from "@/services/ClienteService"
 import metodoPagamentoServices from '@/services/metodoPagamentoServices'
-import AuthenticationService from "@/services/AuthenticationService";
+import AuthenticationService from "@/services/AuthenticationService"
 import moment from 'moment'
 
 export default {
@@ -487,6 +549,8 @@ export default {
       dialogPreco: false,
       dialogStock: false,
       dialogPesquisa: false,
+      dialogNewCliente: false,
+      dialogPesquisaCliente: false,
       dialog: false,
       showNav: true,
       snack: false,
@@ -495,9 +559,11 @@ export default {
       e1: '',
       PVendaList: [],
       idVenda: [],
+      clipesquisa: [],
       metodoPagamento: [],
       recibo: [],
       listaprodutos: [],
+      listaclientes: [],
       usuario_nome: '',
       snackbar: false,
       color: 'error',
@@ -521,6 +587,13 @@ export default {
       stock: {
         quantidade: '',
         ProdutoId: '',
+      },
+      cliente: {
+        search: '',
+        cliente_nome: 'VD',
+        cliente_nif: '',
+        cliente_morada: '',
+        cliente_telefone: '' 
       },
       pagamento: {
         VendaId: '',
@@ -551,7 +624,7 @@ export default {
     };
   },
   methods: {
-    addNewProduto (index) {
+    addNewProduto () {
       // if (this.produtos[index].search.length !== 0) {
         this.produtos.push({
           total: '',
@@ -619,14 +692,41 @@ export default {
         console.log(err);
       }
     },
+    async pesquisarCliente() {
+      try {
+        this.search = this.cliente.search
+        if (this.search !== '') {
+          this.clipesquisa = (await ClienteServices.byname(this.search)).data
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async modoPagamento() {
       this.dialog = true
     },
     async searchProd() {
       this.dialogPesquisa = true
     },
+    async searchCliente() {
+      this.dialogPesquisaCliente = true
+    },
     async changePVenda() {
       this.dialogPreco = true
+    },
+    async newCliente() {
+      this.dialogNewCliente = true
+    },
+    async createCliente() {
+      this.dialogNewCliente = false
+      // Create nova venda
+      await ClienteServices.post(this.cliente)
+      this.$toast.success({
+        title: "Sucesso",
+        message: "Cliente adicionada com sucesso no sistema!"
+      })
+      console.log("DADOS CLI: ", this.cliente)
+      // this.cliente = (await ClienteServices.index()).data
     },
     async PrintVenda(index) {
         const recibo = (await VendaServices.index({ userId: this.user.id })).data[0].ListaVendas
@@ -729,11 +829,11 @@ export default {
             .close()
           })
     },
-    async createVendaProdnoPrinter() {
+    async createVendaProdnoPrinter(index) {
       listaVendaServices.post(this.produtos)
       stockServices.putvendas(this.produtos)
       VendaServices.putidpagamento(this.pagamento)
-
+      
       // Create nova venda
       await VendaServices.post(this.venda)
       this.idVenda = (await VendaServices.lastid()).data[0].id;
@@ -757,13 +857,13 @@ export default {
         search: '',
         stock_id: ''
       }]
-      // this.$refs.search.focus()
+      this.$refs.search[index].focus()
       this.$toast.success({
         title: "Sucesso",
         message: "Venda adicionada com sucesso no sistema NO PRINTER"
       })
     },
-    async createVendaProd() {
+    async createVendaProd(index) {
       console.log(this.produtos)
       console.log('ID PAGAMENTO: ', this.pagamento)
       listaVendaServices.post(this.produtos)
@@ -796,7 +896,7 @@ export default {
         search: '',
         stock_id: ''
       }]
-      // this.$refs.search.focus()
+      this.$refs.search[index].focus()
       this.$toast.success({
         title: "Sucesso",
         message: "Venda adicionada com sucesso no sistema"
@@ -805,6 +905,8 @@ export default {
   },
   async mounted() {
     this.listaprodutos = (await ProdutosService.index()).data;
+    this.listaclientes = (await ClienteServices.index()).data;
+    console.log("MEUS CLI:", this.listaclientes)
     this.metodoPagamento = (await metodoPagamentoServices.index()).data;
     console.log('Metodos pagamento', this.metodoPagamento)
     this.idVenda = (await VendaServices.lastid()).data[0].id;
@@ -901,6 +1003,12 @@ export default {
 
 .panel-body {
 	padding: 15px;
+}
+
+.dadosTolbar{
+  font-size: 1.6em;
+  color: #1976d2;
+  margin: 4px 5px 4px 0;
 }
 
 
