@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     // Venda.belongsTo(models.MeioPagamento)
     Venda.hasMany(models.ListaVenda)
     Venda.belongsTo(models.User)
+    Venda.belongsTo(models.Cliente)
   }
 
   return Venda

@@ -14,6 +14,7 @@ const listaCompraController = require('./controllers/listaCompraController')
 const vendaController = require('./controllers/vendaController')
 const listaVendaController = require('./controllers/listaVendaController')
 const metodoPagamentoController = require('./controllers/metodoPagamentoController')
+const ClienteController = require('./controllers/ClienteController')
 
 module.exports = (app) => {
   // Rotas Efetuar Login
@@ -31,6 +32,18 @@ module.exports = (app) => {
     AuthenticationController.put)
   app.delete('/usuarios/:userId',
     UsuariosController.delete)
+
+  // Rotas criar clientes e registrar
+  app.get('/clientes',
+    ClienteController.index)
+  app.get('/cliente/:search',
+    ClienteController.byname)
+  app.post('/clientes',
+    ClienteController.post)
+  app.put('/clientes/:clienteId',
+    ClienteController.put)
+  app.delete('/clientes/:clienteId',
+    ClienteController.delete)
 
   // Rotas produtos
   app.get('/produtos',
