@@ -73,7 +73,7 @@
                 <v-card-text>
                   <v-container grid-list-md>
                       <v-flex xs12 sm12 md12>
-                        <v-text-field box v-model="cliente.cliente_nome" label="Nome do cliente" type="text"></v-text-field>
+                        <v-text-field small box v-model="cliente.cliente_nome" label="Nome do cliente" type="text"></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm12 md12>
                         <v-text-field box v-model="cliente.cliente_morada" label="Morada do cliente" type="text"></v-text-field>
@@ -114,7 +114,7 @@
                 </div>
                 
                 <v-flex xs12 sm6 md6>
-                  <h2 class="myinputs">CLIENTE: <span style="width:100%; font-weight:100"> {{ cliente.cliente_nome }} </span>  </h2>
+                  <h2 class="myinputs">CLIENTE: <span style="font-weight:100"> {{ cliente.cliente_nome }} </span>  </h2>
                 </v-flex>
                 <v-flex xs12 sm5 md5>
                   <h2 class="myinputs"> NIF: <span style="font-weight:100"> {{ cliente.cliente_nif }}</span> </h2>
@@ -762,25 +762,25 @@ export default {
         
           device.open(function () {
             printer
-            .font('a')
+            .font('b')
             .align('lt')
             .style('bu')
-            .size(1, 1)
+            .size(2, 1.6)
             .text('MINISYSVENDA')
             .text('Praia - Fazenda')
             .text('NIF: 658956235')
             .text('TEL/FAX: 2659865')
-            .text('--------------------------------')
+            .text('------------------------------------------------')
             .text('Data do Doc: ' + dataVenda + '  ' + horaVenda)
             .text('VENDEDOR: ' + vendedor)
             .text('\n')
             // ----------------------------------------------------
-            .text('Produto                     IVA')
-            .text('  ' + 'Valor')
-            .text('-------------------------------')
+            .text('QT  PRODUTO                  P. UNIT  IVA  TOTAL')
+            .text('------------------------------------------------')
             for (var key in recibo) {
               if (recibo.hasOwnProperty(key)) {
                 const value = recibo[key]
+                const quantidade = value.quantidade
                 console.log("TAMANHO ", value.Produto.produto_nome.length)
                 if (value.Produto.produto_nome.length >= 23) {
                     prod = value.Produto.produto_nome + ' '
@@ -801,9 +801,7 @@ export default {
                   .font('b')
                   .align('lt')
                   .size(1, 1)
-                  
-                  .text(prod + value.Produto.Iva.iva_valor + '%')
-                  .text('  ' + value.Produto.produto_preco)
+                  .text( quantidade + ' ' + prod + value.Produto.produto_preco + '   ' + value.Produto.Iva.iva_valor + '%')
               }
             }
             // ----------------------------------------------------
@@ -813,6 +811,7 @@ export default {
             .text('VINT4                      ' + vint4)
             .text('Cheque                     ' + cheque)
             .text('--------------------------------')
+            .text('\n')
             .font('b')
             .align('lt')
             .size(1, 1)
@@ -827,6 +826,7 @@ export default {
             .font('a')
             .align('ct')
             .size(1, 1)
+            .text('\n')
             .text('Obrigado e volte sempre')
             .cut(null, 5)
             .close()
