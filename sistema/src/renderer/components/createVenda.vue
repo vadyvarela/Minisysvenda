@@ -93,14 +93,13 @@
               </v-card>
           </v-dialog>
 
-          <v-layout style="padding:-20px;" row >
-          <v-flex xs6 sm4 md4>
-              <span hidden> {{ dinheiro = Date() | moment("DD-MM-YYYY") }} </span>
-              <v-text-field label="NO: " box readonly :value="idVenda" type="text"></v-text-field>
-              <v-text-field label="DATA VENDA: " box readonly :value="dinheiro" type="text"></v-text-field>
+          <v-layout style="padding:-20px;" row>
+          <v-flex xs6 sm3 md3>
+            <h2 class="myinputs">NO: <span style="font-weight:100"> {{ idVenda }} </span> </h2>
+            <h2 class="myinputs">DATA VENDA: <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY HH:MM") }} </span></h2>
           </v-flex>
 
-          <v-flex xs1 sm1 md1>
+          <v-flex xs1 sm2 md2>
           </v-flex>
 
           <v-flex xs6 sm7 md7>
@@ -113,26 +112,30 @@
                     {{ cliente.cliente_telefone = clipesquisa[0].cliente_telefone }}
                   </span>
                 </div>
-                <v-flex xs1 sm1 md1>
-                  <v-btn fab small dark @click="searchCliente" class="primary"> <v-icon>search</v-icon> </v-btn>
+                
+                <v-flex xs12 sm6 md6>
+                  <h2 class="myinputs">CLIENTE: <span style="width:100%; font-weight:100"> {{ cliente.cliente_nome }} </span>  </h2>
                 </v-flex>
-                <v-flex xs12 sm7 md7>
-                  <v-text-field label="CLIENTE:" readonly box v-model="cliente.cliente_nome" type="text"></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm3 md3>
-                  <v-text-field label="NIF:" readonly box v-model="cliente.cliente_nif" type="text"></v-text-field>
+                <v-flex xs12 sm5 md5>
+                  <h2 class="myinputs"> NIF: <span style="font-weight:100"> {{ cliente.cliente_nif }}</span> </h2>
                 </v-flex>
                 <v-flex xs1 sm1 md1>
-                  <v-btn fab small dark @click="newCliente" class="primary"> <v-icon>add</v-icon> </v-btn>
+                  <v-btn style="margin-top:-2px" fab small dark @click="searchCliente" class="primary"> <v-icon>search</v-icon> </v-btn>
                 </v-flex>
+
               </v-layout>
-              <v-layout>
-                <v-flex xs6 sm8 md8>
-                  <v-text-field label="MORADA:" readonly box v-model="cliente.cliente_morada" type="text"></v-text-field>
+              <v-layout row>
+                
+                <v-flex xs6 sm6 md6>
+                  <h2 class="myinputs">MORADA: <span style="font-weight:100"> {{ cliente.cliente_morada }} </span> </h2>
                 </v-flex>
-                <v-flex xs6 sm4 md4>
-                  <v-text-field label="TELEFONE:" readonly box v-model="cliente.cliente_telefone" type="text"></v-text-field>
+                <v-flex xs6 sm5 md5>
+                  <h2 class="myinputs">TELEFONE: <span style="font-weight:100"> {{ cliente.cliente_telefone }} </span> </h2>
                 </v-flex>
+                <v-flex xs1 sm1 md1>
+                  <v-btn style="margin-top:-2px" fab small dark @click="newCliente" class="primary"> <v-icon>add</v-icon> </v-btn>
+                </v-flex>
+                
               </v-layout>
             <!-- <v-btn left router-link to="listavendas" dark class="primary">{{ $t('message.listavendas') }}</v-btn>-->
           </v-flex>
@@ -1009,6 +1012,15 @@ export default {
   font-size: 1.6em;
   color: #1976d2;
   margin: 4px 5px 4px 0;
+}
+
+.myinputs {
+  font-size:1.2em; 
+  padding:6px 15px; 
+  border:2px solid #dcd5d5; 
+  border-radius:5px;
+  margin-bottom: 5px;
+  margin-left: 5px
 }
 
 
