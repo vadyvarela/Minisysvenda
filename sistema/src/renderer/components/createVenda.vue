@@ -135,11 +135,9 @@
                 <v-flex xs1 sm1 md1>
                   <v-btn style="margin-top:-2px" fab small dark @click="newCliente" class="primary"> <v-icon>add</v-icon> </v-btn>
                 </v-flex>
-                
               </v-layout>
-            <!-- <v-btn left router-link to="listavendas" dark class="primary">{{ $t('message.listavendas') }}</v-btn>-->
+              <!--<v-btn left small router-link to="listavendas" dark class="primary">{{ $t('message.listavendas') }}</v-btn>-->
           </v-flex>
-
           </v-layout>
         </v-card-text>
 
@@ -207,11 +205,11 @@
                   <v-layout class="layoutmeu">
                     <v-dialog v-model="dialog" persistent max-width="550px" @keydown.esc="dialog = false">
                       <v-card align-center justify-center>
-                        <v-card-title>
+                        <!--<v-card-title>
                           <span class="headline"> {{ $t('message.metodoPagamento') }} </span>
                           <v-spacer></v-spacer>
                           <v-btn color="red" icon outline right small fab dark @click.native="dialog = false"><v-icon>close</v-icon></v-btn>
-                        </v-card-title>
+                        </v-card-title>-->
                         <v-card-text>
                           <v-container grid-list-md>
                             <v-layout wrap>
@@ -733,13 +731,14 @@ export default {
     },
     async PrintVenda(index) {
         const recibo = (await VendaServices.index({ userId: this.user.id })).data[0].ListaVendas
-        const pagamento = this.pagamento.tLiquido
+        const pagamento = this.pagamento.tLiquido - this.pagamento.tapagariva
         const tapagar = this.pagamento.tapagar
         const tapagariva = this.pagamento.tapagariva
         const troco = this.pagamento.troco
         const horaVenda = moment().format('LT')
         const dataVenda = moment().format('l')
         const vendedor = this.user.usuario
+        const idvenda = this.pagamento.VendaId
         let dinheiro = this.pagamento.valorentregado
         let vint4 = this.pagamento.valorentregadovint4
         let cheque = this.pagamento.valorentregadocheque
@@ -748,16 +747,16 @@ export default {
 
         //const dataVenda = this.venda.data_venda
         if (dinheiro !== '') {
-          dinheiro = dinheiro
+          dinheiro = dinheiro + ' CVE'
         } else if (vint4 !== '') {
-          vint4 = vint4
+          vint4 = vint4 + ' CVE'
         } else {
-          cheque = cheque
+          cheque = cheque + ' CVE'
         }
 
         const escpos = require('escpos')
         const device = new escpos.USB()
-        const options = { encoding: 'iso-8859-1' }
+        const options = { encoding: 'CP860' }
         const printer = new escpos.Printer(device, options)
         
           device.open(function () {
@@ -766,61 +765,69 @@ export default {
             .align('lt')
             .style('bu')
             .size(2, 1.6)
-            .text('MINISYSVENDA')
+            .text('FRUT&PÃO - Loja de Conveniência')
             .text('Praia - Fazenda')
-            .text('NIF: 658956235')
-            .text('TEL/FAX: 2659865')
+            .text('NIF: 278272509')
+            .text('TEL/FAX: +238 3560200')
             .text('------------------------------------------------')
+            .text('\n')
+            .text('VENDA NUMERO: ' + idvenda )
             .text('Data do Doc: ' + dataVenda + '  ' + horaVenda)
             .text('VENDEDOR: ' + vendedor)
             .text('\n')
+            .text('CLIENTE: Maria de Monte de Brito Varela')
+            .text('MORADA: Varzea - Praia')
+            .text('NIF: 378564756')
+            .text('TELEFONE: 5845777')
+            .text('\n')
             // ----------------------------------------------------
-            .text('QT  PRODUTO                  P. UNIT  IVA  TOTAL')
+            .text('QT PRODUTO                  P. UNIT  IVA  TOTAL')
             .text('------------------------------------------------')
             for (var key in recibo) {
               if (recibo.hasOwnProperty(key)) {
                 const value = recibo[key]
                 const quantidade = value.quantidade
-                console.log("TAMANHO ", value.Produto.produto_nome.length)
-                if (value.Produto.produto_nome.length >= 23) {
-                    prod = value.Produto.produto_nome + ' '
-                }else if (value.Produto.produto_nome.length > 20 && value.Produto.produto_nome.length < 23) {
-                    prod = value.Produto.produto_nome + '     '
-                }else if (value.Produto.produto_nome.length > 18 && value.Produto.produto_nome.length <= 20) {
-                    prod = value.Produto.produto_nome + '         '
-                }else if (value.Produto.produto_nome.length >= 15 && value.Produto.produto_nome.length <= 18) {
-                    prod = value.Produto.produto_nome + '           '
-                }else if (value.Produto.produto_nome.length < 15 && value.Produto.produto_nome.length >= 10) {
-                    prod = value.Produto.produto_nome + '               '
-                }else if (value.Produto.produto_nome.length < 10 && value.Produto.produto_nome.length > 5) {
-                    prod = value.Produto.produto_nome + '                  '
+                const pTotal = value.preco_venda * value.quantidade
+                console.log("TAMANHO ", value.Produto.produto_nome_rec.length)
+                if (value.Produto.produto_nome_rec.length >= 23) {
+                    prod = value.Produto.produto_nome_rec + '  '
+                }else if (value.Produto.produto_nome_rec.length > 20 && value.Produto.produto_nome_rec.length < 23) {
+                    prod = value.Produto.produto_nome_rec + '     '
+                }else if (value.Produto.produto_nome_rec.length > 18 && value.Produto.produto_nome_rec.length <= 20) {
+                    prod = value.Produto.produto_nome_rec + '         '
+                }else if (value.Produto.produto_nome_rec.length >= 15 && value.Produto.produto_nome_rec.length <= 18) {
+                    prod = value.Produto.produto_nome_rec + '           '
+                }else if (value.Produto.produto_nome_rec.length < 15 && value.Produto.produto_nome_rec.length >= 10) {
+                    prod = value.Produto.produto_nome_rec + '                '
+                }else if (value.Produto.produto_nome_rec.length < 10 && value.Produto.produto_nome_rec.length > 5) {
+                    prod = value.Produto.produto_nome_rec + '                   '
                 }else {
-                    prod = value.Produto.produto_nome + '                    '
+                    prod = value.Produto.produto_nome_rec + '                     '
                 }
                   printer
                   .font('b')
                   .align('lt')
                   .size(1, 1)
-                  .text( quantidade + ' ' + prod + value.Produto.produto_preco + '   ' + value.Produto.Iva.iva_valor + '%')
+                  .text( quantidade + '  ' + prod + value.preco_venda + '     ' + value.Produto.Iva.iva_valor + '%  ' + pTotal)
               }
             }
             // ----------------------------------------------------
             printer
-            .text('--------------------------------')
-            .text('Dinheiro                   ' + dinheiro)
-            .text('VINT4                      ' + vint4)
-            .text('Cheque                     ' + cheque)
-            .text('--------------------------------')
+            .text('\n')
+            .text('------------------------------------------------')
+            .text('Dinheiro                              ' + dinheiro)
+            .text('VINT4                                 ' + vint4)
+            .text('Cheque                                ' + cheque)
             .text('\n')
             .font('b')
             .align('lt')
             .size(1, 1)
-            .text('================================')
-            .text('Total Liquido:          ' + pagamento + ' CVE')
-            .text('Total Iva:            ' + tapagariva + ' CVE')
-            .text('A pagar:                ' + tapagar + ' CVE')
-            .text('Troco:                  ' + troco + ' CVE')
-            .text('================================')
+            .text('================================================')
+            .text('Total Liquido:                       ' + pagamento + ' CVE')
+            .text('Total Iva:                           ' + tapagariva + ' CVE')
+            .text('A pagar:                              ' + tapagar + ' CVE')
+            .text('Troco:                                ' + troco + ' CVE')
+            .text('================================================')
             //.cut()
             printer
             .font('a')
@@ -828,7 +835,8 @@ export default {
             .size(1, 1)
             .text('\n')
             .text('Obrigado e volte sempre')
-            .cut(null, 5)
+            .text('\n')
+            .cut()
             .close()
           })
     },
