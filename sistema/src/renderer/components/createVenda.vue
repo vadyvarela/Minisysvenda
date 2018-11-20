@@ -95,7 +95,15 @@
 
           <v-layout style="padding:-20px;" row>
           <v-flex xs6 sm3 md3>
-            <h2 class="myinputs">NO: <span style="font-weight:100"> {{ idVenda }} </span> </h2>
+            <v-layout>
+              <v-flex sm4 md4>
+                <v-text-field box @keyup.enter="searchIdProd()" v-model.number="idSearch" type="text"></v-text-field>  
+              </v-flex>
+              <v-flex sm2 md2>
+                <v-btn left router-link to="listavendas" dark class="primary"> {{ $t('message.listavendas') }} </v-btn>
+              </v-flex>
+            </v-layout>
+            <!--<h2 class="myinputs">NO: <span style="font-weight:100"> {{ idVenda }} </span> </h2>-->
             <h2 class="myinputs">DATA VENDA: <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY HH:MM") }} </span></h2>
           </v-flex>
 
@@ -136,7 +144,6 @@
                   <v-btn style="margin-top:-2px" fab small dark @click="newCliente" class="primary"> <v-icon>add</v-icon> </v-btn>
                 </v-flex>
               </v-layout>
-              <!--<v-btn left small router-link to="listavendas" dark class="primary">{{ $t('message.listavendas') }}</v-btn>-->
           </v-flex>
           </v-layout>
         </v-card-text>
@@ -195,7 +202,6 @@
                     <h4 hidden>TOTAL LIQUIDO: {{ pagamento.tLiquido = totalPriceLiquido }}</h4>
                     <h4 hidden>TOTAL A PAGAR: {{ pagamento.tapagar = totalPrice }}</h4>
                     <h4 hidden>TOTAL A PAGAR IVA: {{ pagamento.tapagariva = totalIva }}</h4>
-                    
                   </div>
                   <div v-else>
                     <h2 hidden>Sorry Vady</h2>
@@ -219,7 +225,7 @@
                                   <vue-numeric readonly class="green--text" style="text-align:center; font-weight:bold; font-size:2em; width:100%" :value="pagamento.tapagar"></vue-numeric>
                                   <input name="" v-model="pagamento.tapagar" type="hidden"/>
                                   <input name="" v-model="pagamento.tapagariva" type="hidden"/>
-                                  <input name="" v-model="pagamento.tLiquido" type="hidden"/>   
+                                  <input name="" v-model="pagamento.tLiquido" type="hidden"/> 
                                 </p>
                               </v-flex>
                               <v-flex xs12 sm12 md12>
@@ -539,6 +545,7 @@ import moment from 'moment'
 export default {
   data() {
     return {
+      idSearch: "",
       usuario: "",
       password: "",
       error: null,
@@ -668,6 +675,15 @@ export default {
     removeNewProduto(index) {
       this.produtos.splice(index, 1)
     },
+    async searchIdProd() {
+      if (this.idSearch !== '') {
+        this.resultadoPID = (await VendaServices.byIdVenda({
+          userId: this.user.id,
+          idSearch: this.idSearch
+        })).data
+        console.log(this.resultadoPID)
+      }
+    },
     async pesquisar(index) {
       try {
         this.search = this.produtos[index].search
@@ -738,7 +754,7 @@ export default {
         const horaVenda = moment().format('LT')
         const dataVenda = moment().format('l')
         const vendedor = this.user.usuario
-        const idvenda = this.pagamento.VendaId
+        const idvenda = this.pagamento.VendaId - 1
         let dinheiro = this.pagamento.valorentregado
         let vint4 = this.pagamento.valorentregadovint4
         let cheque = this.pagamento.valorentregadocheque
@@ -790,7 +806,7 @@ export default {
                 const pTotal = value.preco_venda * value.quantidade
                 console.log("TAMANHO ", value.Produto.produto_nome_rec.length)
                 if (value.Produto.produto_nome_rec.length >= 23) {
-                    prod = value.Produto.produto_nome_rec + '  '
+                    prod = value.Produto.produto_nome_rec + '   '
                 }else if (value.Produto.produto_nome_rec.length > 20 && value.Produto.produto_nome_rec.length < 23) {
                     prod = value.Produto.produto_nome_rec + '     '
                 }else if (value.Produto.produto_nome_rec.length > 18 && value.Produto.produto_nome_rec.length <= 20) {
@@ -800,9 +816,9 @@ export default {
                 }else if (value.Produto.produto_nome_rec.length < 15 && value.Produto.produto_nome_rec.length >= 10) {
                     prod = value.Produto.produto_nome_rec + '                '
                 }else if (value.Produto.produto_nome_rec.length < 10 && value.Produto.produto_nome_rec.length > 5) {
-                    prod = value.Produto.produto_nome_rec + '                   '
+                    prod = value.Produto.produto_nome_rec + '                  '
                 }else {
-                    prod = value.Produto.produto_nome_rec + '                     '
+                    prod = value.Produto.produto_nome_rec + '                    '
                 }
                   printer
                   .font('b')
@@ -825,8 +841,8 @@ export default {
             .text('================================================')
             .text('Total Liquido:                       ' + pagamento + ' CVE')
             .text('Total Iva:                           ' + tapagariva + ' CVE')
-            .text('A pagar:                              ' + tapagar + ' CVE')
-            .text('Troco:                                ' + troco + ' CVE')
+            .text('A pagar:                             ' + tapagar + ' CVE')
+            .text('Troco:                               ' + troco + ' CVE')
             .text('================================================')
             //.cut()
             printer

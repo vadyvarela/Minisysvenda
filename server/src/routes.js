@@ -138,6 +138,8 @@ module.exports = (app) => {
     vendaController.index)
   app.get('/vend',
     vendaController.indexTotal)
+  app.get('/ven',
+    vendaController.byIdVenda)
   app.get('/venda',
     vendaController.lastid)
   app.post('/vendas',

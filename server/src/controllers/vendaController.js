@@ -25,6 +25,31 @@ module.exports = {
       })
     }
   },
+  async byIdVenda (req, res) {
+    try {
+      const { userId, idSearch } = req.query
+      console.log('MEU ID: ', idSearch)
+      const venda = await Venda.findAll({
+        include: [
+          { model: User },
+          { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva } ] } ] }
+        ],
+        where: {
+          UserId: userId,
+          status: 'vendido',
+          id: idSearch,
+          meio_pagamento_dinheiro: {
+            $ne: null
+          }
+        }
+      })
+      res.send(venda)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar dados de venda total'
+      })
+    }
+  },
   async indexTotal (req, res) {
     try {
       const { userId, dataIni, dataFim } = req.query
