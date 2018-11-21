@@ -46,7 +46,7 @@ module.exports = {
       res.send(venda)
     } catch (err) {
       res.status(500).send({
-        error: 'Ocoreu um erro ao tentar pegar dados de venda total'
+        error: 'Ocoreu um erro ao tentar pegar dados de venda PESQUISA BY ID'
       })
     }
   },

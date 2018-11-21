@@ -35,7 +35,7 @@
                   <v-btn icon dark @click.native="dialogIdPesquisa = false">
                     <v-icon>close</v-icon>
                   </v-btn>
-                  <v-toolbar-title>Atualizar dados produto</v-toolbar-title>
+                  <v-toolbar-title>Mudar dados de venda</v-toolbar-title>
                   <v-spacer></v-spacer>
                   <v-toolbar-items>
                     <v-btn dark flat @click="updateVenda">Salvar</v-btn>
@@ -70,17 +70,13 @@
                     </div>
 
                     <div v-bind:key="index" v-for="(produto, index) in produtos">
-
-                      <div v-if="produto.Produto">
+                      <div hidden v-if="produto.Produto">
                         <h3>ID VENDA: {{ produto.idSearch = idSearch }}</h3>
                         <h4>NOME: {{ produto.nome = produto.Produto.produto_nome }}</h4>
                         <h4>IVA: {{ produto.iva = produto.Produto.Iva.iva_valor }}</h4>
                         <h4>IVA: {{ produto.search = produto.Produto.produto_nome }}</h4>
                         <h4>ID PRODUTO: {{ produto.ProdutoId = produto.Produto.id }}</h4>
                       </div>
-
-                      <h2> {{ produto.Produto }} </h2>
-
                       <v-form ref="form" name="cadastar" autocomplete="off" lazy-validation>
                       <v-layout class="layoutmeu">
                         <v-dialog v-model="dialog" persistent max-width="550px" @keydown.esc="dialog = false">
@@ -210,68 +206,7 @@
                             </v-card-actions>
                           </v-card>
                         </v-dialog>
-                        <v-dialog v-model="dialogPreco" @keydown.enter="login" persistent max-width="550px" @keydown.esc="dialogPreco = false">
-                          <v-card align-center justify-center>
-                            <v-card-text>
-                              <v-container grid-list-md>
-                                <v-layout align-center justify-center>
-                                <v-flex xs12 sm12 md12 lg12>
-                                  <v-alert
-                                    v-html="error"
-                                    :value="alert"
-                                    transition="scale-transition"
-                                    type="error"
-                                    >
-                                  </v-alert>
-                                  <v-alert
-                                    v-html="noadmin"
-                                    :value="alertadmin"
-                                    transition="scale-transition"
-                                    type="warning"
-                                  >
-                                  </v-alert>
-
-                                  <v-card class="elevation-0 pa-3">
-                                  <v-card-title>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="red" icon outline right small fab dark @click.native="dialogPreco = false"><v-icon>close</v-icon></v-btn>
-                                  </v-card-title>
-                                    <v-card-text>
-                                      <div class="layout column align-center">
-                                        <h1 class="flex my-4 primary--text">LOGIN ADMINISTRADOR</h1>
-                                      </div>                
-                                      <v-form>
-                                        <v-text-field
-                                          autofocus
-                                          prepend-icon="person" 
-                                          name="usuario" 
-                                          v-model="usuario" 
-                                          label="Nome de usuario">
-                                        </v-text-field>
-                                        <v-text-field
-                                          :append-icon="show1 ? 'visibility_off' : 'visibility'"
-                                          :type="show1 ? 'text' : 'password'"
-                                          @click:append="show1 = !show1"
-                                          prepend-icon="lock" 
-                                          name="password" 
-                                          v-model="password" 
-                                          label="Palavra passe" 
-                                          id="password">
-                                        </v-text-field>
-                                      </v-form>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                      <v-spacer></v-spacer>
-                                      <v-btn class="primary" @click="login()">Efetuar login</v-btn>
-                                    </v-card-actions>
-                                  </v-card>
-                                </v-flex>
-                              </v-layout>
-                              </v-container>
-                            </v-card-text>
-                          </v-card>
-                        </v-dialog>
-                        </v-layout>
+                      </v-layout>
                         
                          <v-layout class="">
                           <v-flex flex xs12 sm2 md2>
@@ -326,8 +261,9 @@
                             <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; padding:15px 0 12px 4px; font-size:1.4em; color: green;" :value="produto.total"></vue-numeric>
                           </v-flex>
                           <v-spacer></v-spacer>
+                          <h3>ID LV : {{ idlv = produto.id  }} </h3>
                           <v-flex text-lg-center xs12 sm1 md1>
-                            <v-btn small left fab outline @click="removeNewProduto(index)" class="red"><v-icon>remove</v-icon></v-btn>
+                            <v-btn small left fab outline @click="removeNewProduto(index, idlv)" class="red"><v-icon>remove</v-icon></v-btn>
                           </v-flex>
                         </v-layout>
                       
@@ -636,7 +572,6 @@
                         </v-card-text>
                         <v-card-actions>
                           <v-spacer></v-spacer>
-                          
                           <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="createVendaProdnoPrinter(index)"> {{ $t('message.finalizacompra') }} </v-btn>
                           <v-btn large color="success darken-1" :disabled="!stockIsValid" @click="createVendaProd(index)"> {{ $t('message.fcompraimprimir') }} </v-btn>
                         </v-card-actions>
@@ -738,10 +673,6 @@
                               </v-alert>
 
                               <v-card class="elevation-0 pa-3">
-                              <v-card-title>
-                                <v-spacer></v-spacer>
-                                <v-btn color="red" icon outline right small fab dark @click.native="dialogPreco = false"><v-icon>close</v-icon></v-btn>
-                              </v-card-title>
                                 <v-card-text>
                                   <div class="layout column align-center">
                                     <h1 class="flex my-4 primary--text">LOGIN ADMINISTRADOR</h1>
@@ -921,7 +852,6 @@ export default {
       fornecRules: [v => !!v || "Campo fornecedor é obrigatório"],
       produtos: [{
         input: null,
-        idSearch: '',
         total: '',
         totalIva: '',
         totalLiquido: '',
@@ -1006,7 +936,6 @@ export default {
           this.password = ''
         }
         console.log(this.userconfig)
-        
       } catch (error) {
         this.error = error.response.data.error;
         // this.store.commit('LOADER', false)
@@ -1014,7 +943,8 @@ export default {
       }
     },
     removeNewProduto(index) {
-      this.produtos.splice(index, 1)
+      this.teste = this.produtos.splice(index, 1)
+      console.log('TESTE: ', this.teste)
     },
     async searchIdProd() {
       if (this.idSearch !== '') {
