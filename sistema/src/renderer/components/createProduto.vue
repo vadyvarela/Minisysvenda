@@ -118,6 +118,7 @@
           <v-flex xs12 sm12 md12>
               <v-btn small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewPrice" @click="addNewPrice"><v-icon>add</v-icon></v-btn>
                 <v-form ref="form" name="cadastar" autocomplete="off" lazy-validation>
+                  <h2 style="text-align:center; font-size: 1.6em; color: #1976d2;"> PREÇO DO PRODUTO: {{ produto.produto_preco }} CVE</h2>
                   <v-container v-bind:key="index" v-for="(preco, index) in precos" grid-list-md>
                   <h5>Preco de venda #{{ index }}</h5>
 

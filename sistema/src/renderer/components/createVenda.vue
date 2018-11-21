@@ -27,7 +27,346 @@
         class="hide-overflow"
         color="white lighten-1"
       >
-        <v-card-text >
+        <v-card-text>
+
+          <v-dialog v-model="dialogIdPesquisa" persistent fullscreen hide-overlay transition="dialog-bottom-transition">
+              <v-card>
+                <v-toolbar dark color="primary">
+                  <v-btn icon dark @click.native="dialogIdPesquisa = false">
+                    <v-icon>close</v-icon>
+                  </v-btn>
+                  <v-toolbar-title>Atualizar dados produto</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                  <v-toolbar-items>
+                    <v-btn dark flat @click="updateVenda">Salvar</v-btn>
+                  </v-toolbar-items>
+                </v-toolbar>
+                <v-card-text>
+                     <v-layout wrap>
+                    <v-flex xs12 sm12 md12>
+                    <div grid-list-md class="meudiv">
+                      <v-layout style="margin-bottom: -2px;">
+                        <v-flex class="titleProd" xs12 sm2 md2>
+                          <label class=""> {{ $t('message.refCodBarra') }} </label>
+                        </v-flex>
+                        <v-flex class="titleProd" xs12 sm3 md3>
+                          <label > {{ $t('message.produto_nome') }} </label>
+                        </v-flex>
+                        <v-flex class="titleProd" xs12 sm2 md2>
+                          <label>{{ $t('message.quantidade') }} </label>
+                        </v-flex>
+                        <v-flex class="titleProd" xs12 sm2 md2>
+                          <label> {{ $t('message.precodevenda') }} </label>
+                        </v-flex>
+                        <v-flex class="titleProd" xs12 sm1 md1>
+                          <label>{{ $t('message.iva') }}</label>
+                        </v-flex>
+                        <v-flex class="titleProd" xs12 sm1 md1>
+                          <label>{{ $t('message.total') }}</label>
+                        </v-flex>
+                        <v-flex text-lg-center class="titleProd" xs12 sm1 md1>
+                        </v-flex>
+                      </v-layout>
+                    </div>
+
+                    <div v-bind:key="index" v-for="(produto, index) in produtos">
+
+                      <div v-if="produto.Produto">
+                        <h3>ID VENDA: {{ produto.idSearch = idSearch }}</h3>
+                        <h4>NOME: {{ produto.nome = produto.Produto.produto_nome }}</h4>
+                        <h4>IVA: {{ produto.iva = produto.Produto.Iva.iva_valor }}</h4>
+                        <h4>IVA: {{ produto.search = produto.Produto.produto_nome }}</h4>
+                        <h4>ID PRODUTO: {{ produto.ProdutoId = produto.Produto.id }}</h4>
+                      </div>
+
+                      <h2> {{ produto.Produto }} </h2>
+
+                      <v-form ref="form" name="cadastar" autocomplete="off" lazy-validation>
+                      <v-layout class="layoutmeu">
+                        <v-dialog v-model="dialog" persistent max-width="550px" @keydown.esc="dialog = false">
+                          <v-card align-center justify-center>
+                            <v-card-text>
+                              <v-container grid-list-md>
+                                <v-layout wrap>
+                                  <v-flex xs12>
+                                    <h4 class="primary--text text-md-center" style="font-size:1.6em;"> {{ $t('message.totalaPagar') }} </h4>
+                                    <p>
+                                      <vue-numeric readonly class="green--text" style="text-align:center; font-weight:bold; font-size:2em; width:100%" :value="pagamento.tapagar"></vue-numeric>
+                                      <input name="" v-model="pagamento.tapagar" type="hidden"/>
+                                      <input name="" v-model="pagamento.tapagariva" type="hidden"/>
+                                      <input name="" v-model="pagamento.tLiquido" type="hidden"/> 
+                                    </p>
+                                  </v-flex>
+                                  <v-flex xs12 sm12 md12>
+                                    <div grid-list-md class="meudiv">
+                                      <v-layout style="margin-bottom: -30px;">
+                                        <v-flex class="titleProdPag" xs7 sm7 md7>
+                                          <label class="">{{ $t('message.metodoPagamento') }}</label>
+                                        </v-flex>
+                                        <v-flex class="titleProdPag" xs5 sm5 md5>
+                                          <label>{{ $t('message.valor') }}</label>
+                                        </v-flex>
+                                      </v-layout>
+                                      <span hidden> {{pagamento.dinheiro = 'Dinheiro'}} </span>
+                                      <span hidden> {{pagamento.vint4 = 'Vint4'}} </span>
+                                      <span hidden> {{pagamento.cheque = 'Cheque'}} </span>
+                                      <v-layout style="margin-bottom: -35px;">
+                                        <v-flex xs7 sm7 md7>
+                                          <v-text-field box readonly :value="pagamento.dinheiro" type="text"></v-text-field>
+                                        </v-flex>
+                                        <v-flex xs5 sm5 md5>
+                                          <v-text-field box v-model.number="pagamento.valorentregado" autofocus type="number"></v-text-field>
+                                        </v-flex>
+                                      </v-layout>
+                                      <v-layout style="margin-bottom: -35px;">
+                                        <v-flex xs7 sm7 md7>
+                                          <v-text-field readonly box :value="pagamento.vint4" type="text"></v-text-field>
+                                        </v-flex>
+                                        <v-flex xs5 sm5 md5>
+                                          <v-text-field box v-model.number="pagamento.valorentregadovint4" type="number"></v-text-field>
+                                        </v-flex>
+                                      </v-layout>
+                                      <v-layout style="margin-bottom: -35px;">
+                                        <v-flex xs7 sm7 md7>
+                                          <v-text-field box readonly :value="pagamento.cheque" type="text"></v-text-field>
+                                        </v-flex>
+                                        <v-flex xs5 sm5 md5>
+                                          <v-text-field box v-model.number="pagamento.valorentregadocheque" type="text"></v-text-field>
+                                        </v-flex>
+                                      </v-layout>
+                                    </div>
+                                  </v-flex>
+                                  
+                                  <v-flex xs12>
+                                    <h4 class="primary--text text-md-center" style="font-size:2em;"> {{ $t('message.troco') }} </h4>
+                                    <p v-if="pagamento.valorentregado || pagamento.valorentregadovint4 || pagamento.valorentregadocheque" >
+                                      <vue-numeric v-if="pagamento.troco < 0 " readonly class="red--text" style="text-align:center; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
+                                      <vue-numeric v-else readonly class="green--text" style="text-align:center; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
+                                      <input name="produto_id" v-model="pagamento.troco" type="hidden"/>   
+                                    </p>
+                                    <p v-else class="red--text" style="text-align:center; font-size:1em;"> {{ $t('message.valorEntregado') }} </p>
+                                  </v-flex>
+                                  
+                                </v-layout>
+                              </v-container>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="createVendaProdnoPrinter(index)"> {{ $t('message.finalizacompra') }} </v-btn>
+                              <v-btn large color="success darken-1" :disabled="!stockIsValid" @click="createVendaProd(index)"> {{ $t('message.fcompraimprimir') }} </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
+
+                        <v-dialog v-model="dialogPesquisa" persistent max-width="550px" @keydown.esc="dialogPesquisa = false">
+                          <v-card align-center justify-center>
+                            <v-card-title>
+                              <v-spacer></v-spacer>
+                              <v-btn color="red" icon outline right small fab dark @click.native="dialogPesquisa = false"><v-icon>close</v-icon></v-btn>
+                            </v-card-title>
+                            <v-card-text>
+                              <v-container grid-list-md>
+                                <v-layout wrap>
+                                  <v-flex xs12>
+                                    <h4 class="primary--text text-md-center" style="font-size:2em;">DIGITE O NOME PRODUTO </h4>
+                                    <p class="red--text" style="text-align:center; font-size:2em;">
+                                      <v-autocomplete
+                                        box
+                                        :items="listaprodutos"
+                                        color="white"
+                                        v-model="produto.search"
+                                        item-text="produto_nome"
+                                        item-value="produto_nome"
+                                        label="Nome produto"
+                                      ></v-autocomplete>
+                                      <input name="" v-model="produto.search" type="hidden"/>   
+                                    </p>
+                                  </v-flex>
+                                  
+                                </v-layout>
+                              </v-container>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn center large color="primary darken-1" @click.native="dialogPesquisa = false; pesquisar(index)">OK</v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
+
+                        <v-dialog v-model="dialogStock" persistent max-width="550px" @keydown.esc="dialogStock = false">
+                          <v-card align-center justify-center>
+                            <v-card-text>
+                              <v-container grid-list-md>
+                                <v-layout wrap>
+                                  <v-flex xs12>
+                                    <h4 class="red--text text-md-center" style="font-size:2em;">Esse produto não tem estoque </h4>
+                                  </v-flex>
+                                </v-layout>
+                              </v-container>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn center large color="primary darken-1" @click.native="dialogStock = false; removeNewProduto(index)">OK</v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
+                        <v-dialog v-model="dialogPreco" @keydown.enter="login" persistent max-width="550px" @keydown.esc="dialogPreco = false">
+                          <v-card align-center justify-center>
+                            <v-card-text>
+                              <v-container grid-list-md>
+                                <v-layout align-center justify-center>
+                                <v-flex xs12 sm12 md12 lg12>
+                                  <v-alert
+                                    v-html="error"
+                                    :value="alert"
+                                    transition="scale-transition"
+                                    type="error"
+                                    >
+                                  </v-alert>
+                                  <v-alert
+                                    v-html="noadmin"
+                                    :value="alertadmin"
+                                    transition="scale-transition"
+                                    type="warning"
+                                  >
+                                  </v-alert>
+
+                                  <v-card class="elevation-0 pa-3">
+                                  <v-card-title>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="red" icon outline right small fab dark @click.native="dialogPreco = false"><v-icon>close</v-icon></v-btn>
+                                  </v-card-title>
+                                    <v-card-text>
+                                      <div class="layout column align-center">
+                                        <h1 class="flex my-4 primary--text">LOGIN ADMINISTRADOR</h1>
+                                      </div>                
+                                      <v-form>
+                                        <v-text-field
+                                          autofocus
+                                          prepend-icon="person" 
+                                          name="usuario" 
+                                          v-model="usuario" 
+                                          label="Nome de usuario">
+                                        </v-text-field>
+                                        <v-text-field
+                                          :append-icon="show1 ? 'visibility_off' : 'visibility'"
+                                          :type="show1 ? 'text' : 'password'"
+                                          @click:append="show1 = !show1"
+                                          prepend-icon="lock" 
+                                          name="password" 
+                                          v-model="password" 
+                                          label="Palavra passe" 
+                                          id="password">
+                                        </v-text-field>
+                                      </v-form>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                      <v-spacer></v-spacer>
+                                      <v-btn class="primary" @click="login()">Efetuar login</v-btn>
+                                    </v-card-actions>
+                                  </v-card>
+                                </v-flex>
+                              </v-layout>
+                              </v-container>
+                            </v-card-text>
+                          </v-card>
+                        </v-dialog>
+                        </v-layout>
+                        
+                         <v-layout class="">
+                          <v-flex flex xs12 sm2 md2>
+                              <v-btn style="display:none;" v-shortkey="['ctrl','p']" @shortkey="searchProd" @click.stop="searchProd"></v-btn>
+                              <v-flex xs12 sm12 md12>
+                                <v-text-field box v-model.trim="produto.search" ref="search" autofocus v-on:keyup.enter="pesquisar(index)" type="text"></v-text-field>
+                                <input v-model.trim="produto.search" type="hidden" autofocus />
+                                <input v-model="produto.ProdutoId" type="hidden"/>
+                              </v-flex>
+                          </v-flex>
+                          <v-flex xs12 sm3 md3>
+                            <v-text-field box readonly :value="produto.nome" type="text"></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm2 md2>
+                            <v-text-field box v-model.number="produto.quantidade" @keyup.enter="addNewProduto(index)" ref="searchquantidade" label="Quantidade" type="number"></v-text-field>
+                            <input v-model.number="produto.quantidade" @keyup.enter="addNewProduto(index)" type="hidden"/>
+                          </v-flex>
+                          <v-flex xs12 sm2 md2>
+                            <v-select
+                              v-if="user.nivel == 1"
+                              box color="blue"
+                              v-model="produto.preco_venda"
+                              :items="produto.PVendaList"
+                              label="Preço de venda"
+                              item-text="pvenda_preco"
+                              item-value="pvenda_preco"
+                            ></v-select>
+                  
+                          <v-select
+                            v-if="user.nivel == 2 && userconfig == 1"
+                            box color="blue"
+                            v-model="produto.preco_venda"
+                            :items="produto.PVendaList"
+                            label="Preço de venda"
+                            item-text="pvenda_preco"
+                            item-value="pvenda_preco"
+                          ></v-select>
+
+                            <v-text-field box readonly v-if="userconfig != 1 && user.nivel == 2" v-model="produto.preco_venda" @click="changePVenda" name="" type="number"></v-text-field>
+                            <span v-if="produto.preco_venda">
+                            <h4 hidden>TOTAL LIQUIDO: {{ produto.totalLiquido = produto.quantidade * produto.preco_venda }}</h4>
+                            <h4 hidden>TOTAL: {{ produto.total = produto.quantidade * produto.preco_venda }}</h4>
+                            <span hidden> TOTAL IVA:  {{ produto.totalIva = produto.preco_venda * produto.iva / 100 }}</span>
+                            </span>
+
+                          </v-flex>
+                          <v-flex xs12 sm1 md1>
+                            <v-text-field box readonly :value="produto.iva" name="" type="number"></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm1 md1>
+                            <!--<v-text-field box readonly :value="produto.total" name="" type="number"></v-text-field>-->
+                            <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; padding:15px 0 12px 4px; font-size:1.4em; color: green;" :value="produto.total"></vue-numeric>
+                          </v-flex>
+                          <v-spacer></v-spacer>
+                          <v-flex text-lg-center xs12 sm1 md1>
+                            <v-btn small left fab outline @click="removeNewProduto(index)" class="red"><v-icon>remove</v-icon></v-btn>
+                          </v-flex>
+                        </v-layout>
+                      
+                      </v-form>
+                      </div>
+                    <v-spacer></v-spacer>
+                    <v-divider></v-divider>
+                    <v-flex style="float:left">
+                      <v-btn style="margin-top:20px;" dark small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
+                    </v-flex>
+                    <v-flex style="float:right">
+                    <v-btn style="margin-top:20px;" large class="green" v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="modoPagamento()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> FINALIZAR </span></v-btn>
+                    </v-flex>
+                  </v-flex>
+                </v-layout>
+                </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn outline right color="red" flat @click.native="dialogIdPesquisa = false">Cancelar</v-btn>
+                <v-btn outline :disabled="!valid" color="green" flat @click="updateVenda">Salvar dados</v-btn>
+              </v-card-actions>
+            </v-card>
+
+            <v-bottom-nav
+              :value="showNav"
+              fixed
+              color="green"
+            >
+            <v-flex xs12 sm8 md8>
+            </v-flex>
+            <v-flex class="text-xs-right" xs12 sm3 md3>
+              <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.total') }}: </span>
+            </v-flex>
+            <v-flex class="" xs12 sm1 md1>
+              <vue-numeric v-if="totalPrice === ''" read-only style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="0"></vue-numeric>
+              <vue-numeric v-else read-only style="font-size:2.5em; font-weight:700; color: #fff;" class="text-xs-left white--text" :value="totalPrice"></vue-numeric>
+            </v-flex>
+            </v-bottom-nav>
+          </v-dialog>
 
           <v-dialog v-model="dialogPesquisaCliente" persistent max-width="550px" @keydown.esc="dialogPesquisaCliente = false">
             <v-card align-center justify-center>
@@ -559,6 +898,7 @@ export default {
       dialogPesquisa: false,
       dialogNewCliente: false,
       dialogPesquisaCliente: false,
+      dialogIdPesquisa: false,
       dialog: false,
       showNav: true,
       snack: false,
@@ -581,6 +921,7 @@ export default {
       fornecRules: [v => !!v || "Campo fornecedor é obrigatório"],
       produtos: [{
         input: null,
+        idSearch: '',
         total: '',
         totalIva: '',
         totalLiquido: '',
@@ -677,12 +1018,32 @@ export default {
     },
     async searchIdProd() {
       if (this.idSearch !== '') {
-        this.resultadoPID = (await VendaServices.byIdVenda({
+        this.produtos = (await VendaServices.byIdVenda({
           userId: this.user.id,
           idSearch: this.idSearch
-        })).data
-        console.log(this.resultadoPID)
+        })).data[0].ListaVendas
+        this.dialogIdPesquisa = true
+        console.log(this.produtos)
       }
+    },
+    async updateVenda() {
+      //listaVendaServices.post(this.produtos)
+      /*stockServices.putvendas(this.produtos)
+      VendaServices.putidpagamento(this.pagamento)*/
+      console.log("TESTE:- ", this.produtos)
+      this.dialogIdPesquisa = false
+      this.produtos = [{
+        total: '',
+        totalIva: '',
+        totalLiquido: '',
+        preco_venda: '',
+        VendaId: '',
+        ProdutoId: '',
+        idProduto: '',
+        quantidade: '1',
+        search: '',
+        stock_id: ''
+      }]
     },
     async pesquisar(index) {
       try {
