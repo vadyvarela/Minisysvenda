@@ -10,7 +10,13 @@ export default {
     post ( listavendas ) {
         return Api().post('listavendas', listavendas)
     },
+    postnewprod ( listavendas ) {
+        return Api().post('listavenda', listavendas)
+    },
     put ( listavendas ) {
         return Api().put(`listavendas`, listavendas)
+    },
+    delete ( listavendas ) {
+        return Api().delete(`listavendas/${listavendas.id}`, listavendas)
     }
 }

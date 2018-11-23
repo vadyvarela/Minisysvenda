@@ -1,4 +1,4 @@
-const { Stock, Sequelize } = require('../models')
+const { Stock, ListaVenda, Sequelize } = require('../models')
 
 module.exports = {
   async index (req, res) {
@@ -21,12 +21,13 @@ module.exports = {
       })
     }
   },
+
+  // Remove do stock quando um produto é vendido
   putvendas (req, res) {
     const dados = req.body
     for (var key in dados) {
       if (dados.hasOwnProperty(key)) {
         let value = dados[key]
-        // console.log(value.quantidade)
         try {
           Stock.update({ quantidade: Sequelize.literal('quantidade -' + value.quantidade) }, { where: { ProdutoId: value.ProdutoId } })
         } catch (err) {
@@ -38,23 +39,62 @@ module.exports = {
     }
     res.send(dados)
   },
-  /* putcompras (req, res) {
+
+  // Adiciona ou remove stock de acordo com quantidade seleciona na edicao de venda
+  async putstockaddremove (req, res) {
     const dados = req.body
-    for (var key in dados) {
-      if (dados.hasOwnProperty(key)) {
-        let value = dados[key]
-        // console.log(value.quantidade)
-        try {
-          Stock.update({ quantidade: Sequelize.literal('quantidade +' + value.quantidade) }, { where: { ProdutoId: value.ProdutoId } })
-        } catch (err) {
-          res.status(500).send({
-            error: 'Um erro ocoreu ao tentar update STOCK'
-          })
-        }
+    let value = dados
+    const listavendas = await ListaVenda.findOne({
+      where: {
+        ProdutoId: value.ProdutoId,
+        vendaId: value.idSearch
       }
+    })
+    console.log('QUANTIDADE ATUAL --- ', listavendas.quantidade)
+    console.log('QUANTIDADE NOVO --- ', value.quantidade)
+    if (listavendas.quantidade > value.quantidade) {
+      console.log('ADICIONAR')
+      try {
+        const qtd = listavendas.quantidade - value.quantidade
+        console.log('RES ----- ', qtd)
+        Stock.update({ quantidade: Sequelize.literal('quantidade + ' + qtd) }, { where: { ProdutoId: value.ProdutoId } })
+        ListaVenda.update({ quantidade: value.quantidade }, { where: { ProdutoId: value.ProdutoId, vendaId: value.idSearch } })
+      } catch (err) {
+        res.status(500).send({
+          error: 'Um erro ocoreu ao tentar update STOCK'
+        })
+      }
+      res.send(dados)
+    } else {
+      console.log('REMOVER')
+      try {
+        const qtd = value.quantidade - listavendas.quantidade
+        console.log('RES ----- ', qtd)
+        Stock.update({ quantidade: Sequelize.literal('quantidade - ' + qtd) }, { where: { ProdutoId: value.ProdutoId } })
+        ListaVenda.update({ quantidade: value.quantidade }, { where: { ProdutoId: value.ProdutoId, vendaId: value.idSearch } })
+      } catch (err) {
+        res.status(500).send({
+          error: 'Um erro ocoreu ao tentar update STOCK'
+        })
+      }
+      res.send(dados)
+    }
+  },
+  // Adiciona na stock quando um produto e removido da lista de venda
+  putstockvenda (req, res) {
+    const dados = req.body
+    let value = dados
+    try {
+      Stock.update({ quantidade: Sequelize.literal('quantidade + ' + value.quantidade) }, { where: { ProdutoId: value.ProdutoId } })
+    } catch (err) {
+      res.status(500).send({
+        error: 'Um erro ocoreu ao tentar update STOCK'
+      })
     }
     res.send(dados)
-  }, */
+  },
+
+  // Adiciona produtos no stock quando é efetuado uma compra
   putcompras (req, res) {
     const dados = req.body
     for (var key in dados) {

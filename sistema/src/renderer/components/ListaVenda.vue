@@ -116,9 +116,6 @@
               <v-divider></v-divider>
 
               <v-card-title>
-                  <v-flex sm1 md1>
-                    <v-text-field box @keyup.enter="searchIdProd()" v-model.number="idSearch" type="text"></v-text-field>  
-                  </v-flex>
                   <v-flex xs12 sm3 md3>
                     <v-menu
                       ref="menu2"
@@ -223,7 +220,6 @@
                   <td class="text-xs-left dark">
                     <v-btn flat icon color="primary" @click="PrintVenda(props.item)"> <v-icon>print</v-icon> </v-btn>
                     <v-btn title="Anular Venda" flat icon color="red" @click="AnularVenda(props.item)"> <v-icon>error_outline</v-icon> </v-btn>
-                    <v-btn title="Anular Venda" flat icon color="red" @click="EditarVenda(props.item)"> <v-icon>edit</v-icon> </v-btn>
                   </td>
                   </template>
                   <template slot="no-data">
@@ -307,15 +303,6 @@ export default {
     };
   },
   methods: {
-    async searchIdProd() {
-      if (this.idSearch !== '') {
-        this.resultadoPID = (await VendaServices.byIdVenda({
-          userId: this.user.id,
-          idSearch: this.idSearch
-        })).data
-        console.log(this.resultadoPID)
-      }
-    },
     async AnularVendaAdmin() {
       this.dialogUser = true
     },
@@ -458,11 +445,6 @@ export default {
             .cut(null, 5)
             .close()
           })
-    },
-    async EditarVenda(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.produto = Object.assign({}, item)
-      console.log(this.produto)
     },
     async AnularVenda (item) {
       if(this.userconfig == 0) {

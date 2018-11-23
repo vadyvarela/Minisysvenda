@@ -27,8 +27,5 @@ export default {
     },
     putidpagamento ( venda ) {
         return Api().put('venda', venda)
-    },
-    delete ( venda ) {
-        return Api().delete(`vendas/${venda.id}`, venda)
     }
 }

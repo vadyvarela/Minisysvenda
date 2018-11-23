@@ -156,6 +156,10 @@ module.exports = (app) => {
     listaVendaController.pmaisvendido)
   app.post('/listavendas',
     listaVendaController.post)
+  app.post('/listavenda',
+    listaVendaController.postnewprod)
+  app.delete('/listavendas/:listavendasId',
+    listaVendaController.delete)
 
   // Rotas Stock
   app.get('/stock',
@@ -164,6 +168,10 @@ module.exports = (app) => {
     stockController.post)
   app.put('/stock',
     stockController.putcompras)
+  app.put('/stoc',
+    stockController.putstockvenda)
+  app.put('/sto',
+    stockController.putstockaddremove)
   app.put('/stocks',
     stockController.putvendas)
   app.delete('/stock/:stockId',

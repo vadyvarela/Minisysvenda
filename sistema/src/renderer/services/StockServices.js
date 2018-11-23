@@ -10,6 +10,12 @@ export default {
     putcompras ( stock ) {
         return Api().put(`stock`, stock)
     },
+    putstockvenda ( stock ) {
+        return Api().put(`stoc`, stock)
+    },
+    putstockaddremove ( stock ) {
+        return Api().put(`sto`, stock)
+    },
     putvendas ( stock ) {
         return Api().put(`stocks`, stock)
     },
