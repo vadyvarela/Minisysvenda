@@ -183,6 +183,7 @@
                 </div>
                 
                 <div v-bind:key="index" v-for="(produto, index) in produtos">
+
                   <h3 hidden>ID Pesquisa: {{ produto.idSearchNew = idSearch }}</h3>
                   <div v-if="produto.idSearchNew == ''">
                     <h3 hidden>ID VENDA: {{ produto.VendaId = idVenda }}</h3>
@@ -191,6 +192,15 @@
                     <h3 hidden>ID VENDA: {{ produto.VendaId = idSearch }}</h3>
                   </div>
 
+                  <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
+                  <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
+                  <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
+                  <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                  <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
+                  <h4 hidden>TOTAL LIQUIDO: {{ pagamento.tLiquido = totalPriceLiquido }}</h4>
+                  <h4 hidden>TOTAL A PAGAR: {{ pagamento.tapagar = totalPrice }}</h4>
+                  <h4 hidden>TOTAL A PAGAR IVA: {{ pagamento.tapagariva = totalIva }}</h4>
+                  
                   <div hidden v-if="produto.Produto">
                     <h3>ID Pesquisa: {{ produto.idSearch = idSearch }}</h3>
                     <h4>NOME: {{ produto.nome = produto.Produto.produto_nome }}</h4>
@@ -207,19 +217,10 @@
                     <h4 hidden>NOME: {{ produto.nome = produtos[index].idProduto.produto_nome }}</h4>
                     <h4 hidden>IVA: {{ produto.iva = produtos[index].idProduto.Iva.iva_valor }}</h4>
                     <h4 hidden>ID PRODUTO: {{ produto.ProdutoId = produtos[index].idProduto.id }}</h4>
-                    <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
-                    <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
-                    <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
-                    <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
-                    <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
-                    <h4 hidden>TOTAL LIQUIDO: {{ pagamento.tLiquido = totalPriceLiquido }}</h4>
-                    <h4 hidden>TOTAL A PAGAR: {{ pagamento.tapagar = totalPrice }}</h4>
-                    <h4 hidden>TOTAL A PAGAR IVA: {{ pagamento.tapagariva = totalIva }}</h4>
                   </div>
                   <div v-else>
                     <h2 hidden>Sorry Vady</h2>
                   </div>
-
                   <v-form ref="form" name="cadastar" autocomplete="off" lazy-validation>
                   <v-layout class="layoutmeu">
                     <v-dialog v-model="dialog" persistent max-width="550px" @keydown.esc="dialog = false">
@@ -310,10 +311,16 @@
                         </v-card-text>
                         <v-card-actions>
                           <v-spacer></v-spacer>
-                          
-                          <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="createVendaProdnoPrinter(index)"> {{ $t('message.finalizacompra') }} </v-btn>
-                          <v-btn large color="success darken-1" :disabled="!stockIsValid" @click="createVendaProd(index)"> {{ $t('message.fcompraimprimir') }} </v-btn>
-                        </v-card-actions>
+                          <div v-if="idSearch == ''">
+                            <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="createVendaProdnoPrinter(index)"> {{ $t('message.finalizacompra') }} </v-btn>
+                            <v-btn large color="success darken-1" :disabled="!stockIsValid" @click="createVendaProd(index)"> {{ $t('message.fcompraimprimir') }} </v-btn>
+                          </div>
+                          <div v-else>
+                            <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="updateVenda(index)"> Atualizar Venda </v-btn>
+                            <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="updateVenda(index)"> Atualizar & Imprimir Venda </v-btn>
+                            
+                          </div>
+                          </v-card-actions>
                       </v-card>
                     </v-dialog>
 
@@ -452,7 +459,6 @@
                       </v-card>
                     </v-dialog>
                     <v-flex xs12 sm2 md2>
-
                       <v-select
                         v-if="user.nivel == 1"
                         box color="blue"
@@ -498,17 +504,17 @@
                 <v-spacer></v-spacer>
                 <v-divider></v-divider>
                 <v-flex style="float:left">
-                  <v-btn style="margin-top:20px;" dark small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
+                  <v-btn style="margin-top:20px;" dark small fab class="primary"><v-icon>shopping_basket</v-icon></v-btn>
                 </v-flex>
                 <v-flex style="float:right">
-                  <div v-if="idSearch == ''">
-                    <v-btn style="margin-top:20px;" large class="green" v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="modoPagamento()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> FINALIZAR </span></v-btn>
-                  </div>
-                  <div v-else>
-                    <v-btn style="margin-top:20px;" large class="green" v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="updateVenda"> <span style="font-size:2em; font-weight:bold; color: #fff;">Salvar dados</span> </v-btn>
-                  </div>
-                 
+                  <v-btn style="margin-top:20px;" dark small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
                 </v-flex>
+              </v-flex>
+              <v-divider></v-divider>
+              <v-flex>
+                <div style="float:right">
+                  <v-btn style="margin-top:20px;" large class="green" v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="modoPagamento()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> FINALIZAR </span></v-btn>
+                </div>
               </v-flex>
             </v-layout>
             
@@ -731,15 +737,12 @@ export default {
           this.produtos = this.res[0].ListaVendas
         }else{
           this.snackbar = true
-          this.dialogIdPesquisa = false
         }
       }
     },
     async updateVenda() {
       console.log("TESTE:- ", this.produtos)
       listaVendaServices.postnewprod(this.produtos)
-
-      this.dialogIdPesquisa = false
       this.produtos = [{
         total: '',
         totalIva: '',
@@ -751,7 +754,25 @@ export default {
         quantidade: '1',
         search: '',
         stock_id: ''
-      }]
+      }],
+      this.pagamento = {
+        VendaId: '',
+        dinheiro: '',
+        vint4: '',
+        cheque: '',
+        valorentregado: '',
+        valorentregadovint4: '',
+        valorentregadocheque: '',
+        tLiquido: '',
+        tapagar: '',
+        tapagariva: '',
+        troco: ''
+      },
+      this.$refs.search[index].focus()
+      this.$toast.success({
+        title: "Sucesso",
+        message: "Venda atualizada com sucesso no sistema!"
+      })
     },
     async pesquisar(index) {
       try {

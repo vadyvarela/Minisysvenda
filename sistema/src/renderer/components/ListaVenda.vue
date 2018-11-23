@@ -114,7 +114,6 @@
       <v-container grid-list-md>
             <v-card flat>
               <v-divider></v-divider>
-
               <v-card-title>
                   <v-flex xs12 sm3 md3>
                     <v-menu
