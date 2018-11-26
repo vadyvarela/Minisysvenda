@@ -78,10 +78,10 @@
                         <v-text-field box v-model="cliente.cliente_morada" label="Morada do cliente" type="text"></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm12 md12>
-                        <v-text-field box  v-model="cliente.cliente_nif" label="NIF" type="number"></v-text-field>
+                        <v-text-field box v-model="cliente.cliente_nif" label="NIF" type="number"></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm12 md12>
-                        <v-text-field box  v-model="cliente.cliente_telefone" label="Telefone" type="number"></v-text-field>
+                        <v-text-field box v-model="cliente.cliente_telefone" label="Telefone" type="number"></v-text-field>
                       </v-flex>
                   </v-container>
                 </v-card-text>
@@ -94,16 +94,19 @@
 
           <v-layout style="padding:-20px;" row>
           <v-flex xs6 sm3 md3>
-            <v-layout>
-              <v-flex sm4 md4>
-                <v-text-field box @keyup.enter="searchIdProd()" v-model.number="idSearch" type="text"></v-text-field>  
+            <v-layout style="margin-top:-10px">
+              <v-flex sm3 md3>
+                <v-text-field outline label="N. Venda" @keyup.enter="searchIdProd()" v-model.number="idSearch" type="text"></v-text-field> 
+              </v-flex>
+              <v-flex sm7 md7>
+                <h2 class="myinputsdata">DATA VENDA: <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY HH:MM") }} </span></h2>
               </v-flex>
               <v-flex sm2 md2>
-                <v-btn left router-link to="listavendas" dark class="primary"> {{ $t('message.listavendas') }} </v-btn>
+                <v-btn large left router-link to="listavendas" dark class="primary"> {{ $t('message.listavendas') }} </v-btn>
               </v-flex>
             </v-layout>
             <!--<h2 class="myinputs">NO: <span style="font-weight:100"> {{ idVenda }} </span> </h2>-->
-            <h2 class="myinputs">DATA VENDA: <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY HH:MM") }} </span></h2>
+            
           </v-flex>
 
           <v-flex xs1 sm2 md2>
@@ -112,32 +115,42 @@
           <v-flex xs6 sm7 md7>
               <v-layout>
                 <div>
-                  <span v-if="clipesquisa[0]" hidden> 
-                    {{ cliente.cliente_nome = clipesquisa[0].cliente_nome }}
-                    {{ cliente.cliente_morada = clipesquisa[0].cliente_morada }}
-                    {{ cliente.cliente_nif = clipesquisa[0].cliente_nif }} 
-                    {{ cliente.cliente_telefone = clipesquisa[0].cliente_telefone }}
+                  <span v-if="clipesquisa !== ''" hidden> 
+                    {{ cliente.cliente_no = clipesquisa.cliente_nome }}
+                    {{ cliente.cliente_mor = clipesquisa.cliente_morada }}
+                    {{ cliente.cliente_ni = clipesquisa.cliente_nif }} 
+                    {{ cliente.cliente_tel = clipesquisa.cliente_telefone }}
+                  </span>
+                  <span v-if="clienteNow !== ''" hidden> 
+                    {{ cliente.cliente_no = clienteNow.cliente_nome }}
+                    {{ cliente.cliente_mor = clienteNow.cliente_morada }}
+                    {{ cliente.cliente_ni = clienteNow.cliente_nif }} 
+                    {{ cliente.cliente_tel = clienteNow.cliente_telefone }}
+                  </span>
+                  <span v-else hidden> 
+                    {{ cliente.cliente_no = "VD" }}
+                    {{ cliente.cliente_mor = "" }}
+                    {{ cliente.cliente_ni = "" }} 
+                    {{ cliente.cliente_tel = "" }}
                   </span>
                 </div>
-                
                 <v-flex xs12 sm6 md6>
-                  <h2 class="myinputs">CLIENTE: <span style="font-weight:100"> {{ cliente.cliente_nome }} </span>  </h2>
+                  <h2 class="myinputs">CLIENTE: <span style="font-weight:100"> {{ cliente.cliente_no }} </span>  </h2>
                 </v-flex>
                 <v-flex xs12 sm5 md5>
-                  <h2 class="myinputs"> NIF: <span style="font-weight:100"> {{ cliente.cliente_nif }}</span> </h2>
+                  <h2 class="myinputs"> NIF: <span style="font-weight:100"> {{ cliente.cliente_ni }}</span> </h2>
                 </v-flex>
                 <v-flex xs1 sm1 md1>
                   <v-btn style="margin-top:-2px" fab small dark @click="searchCliente" class="primary"> <v-icon>search</v-icon> </v-btn>
                 </v-flex>
-
               </v-layout>
               <v-layout row>
                 
                 <v-flex xs6 sm6 md6>
-                  <h2 class="myinputs">MORADA: <span style="font-weight:100"> {{ cliente.cliente_morada }} </span> </h2>
+                  <h2 class="myinputs">MORADA: <span style="font-weight:100"> {{ cliente.cliente_mor }} </span> </h2>
                 </v-flex>
                 <v-flex xs6 sm5 md5>
-                  <h2 class="myinputs">TELEFONE: <span style="font-weight:100"> {{ cliente.cliente_telefone }} </span> </h2>
+                  <h2 class="myinputs">TELEFONE: <span style="font-weight:100"> {{ cliente.cliente_tel }} </span> </h2>
                 </v-flex>
                 <v-flex xs1 sm1 md1>
                   <v-btn style="margin-top:-2px" fab small dark @click="newCliente" class="primary"> <v-icon>add</v-icon> </v-btn>
@@ -182,35 +195,41 @@
                   </v-layout>
                 </div>
                 
+                <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
+                <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
+                <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
+                <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadocheque != ''">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
+                <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
+                <h4 hidden>TOTAL LIQUIDO: {{ pagamento.tLiquido = totalPriceLiquido }}</h4>
+                <h4 hidden>TOTAL A PAGAR: {{ pagamento.tapagar = totalPrice }}</h4>
+                <h4 hidden>TOTAL A PAGAR IVA: {{ pagamento.tapagariva = totalIva }}</h4>
+                <h4 hidden v-if="clipesquisa !== ''"> ID CLIENTE {{ pagamento.ClienteId = clipesquisa.id }} </h4>
+                <h4 hidden v-else-if="clienteNow !== ''">ID CLIENTE {{ pagamento.ClienteId = clienteNow.id }} </h4>
+                <h4 hidden v-else>ID CLIENTE {{ pagamento.ClienteId = 1 }} </h4>
+                  
                 <div v-bind:key="index" v-for="(produto, index) in produtos">
-
                   <h3 hidden>ID Pesquisa: {{ produto.idSearchNew = idSearch }}</h3>
                   <div v-if="produto.idSearchNew == ''">
                     <h3 hidden>ID VENDA: {{ produto.VendaId = idVenda }}</h3>
+                    <h3 hidden>ID VENDA UPDATE: {{ pagamento.VendaId = idVenda }}</h3>
                   </div>
                   <div v-else>
                     <h3 hidden>ID VENDA: {{ produto.VendaId = idSearch }}</h3>
+                    <h3 hidden>ID VENDA UPDATE: {{ pagamento.VendaId = idSearch }}</h3>
                   </div>
-
-                  <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
-                  <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
-                  <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
-                  <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
-                  <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
-                  <h4 hidden>TOTAL LIQUIDO: {{ pagamento.tLiquido = totalPriceLiquido }}</h4>
-                  <h4 hidden>TOTAL A PAGAR: {{ pagamento.tapagar = totalPrice }}</h4>
-                  <h4 hidden>TOTAL A PAGAR IVA: {{ pagamento.tapagariva = totalIva }}</h4>
-                  
                   <div hidden v-if="produto.Produto">
                     <h3>ID Pesquisa: {{ produto.idSearch = idSearch }}</h3>
                     <h4>NOME: {{ produto.nome = produto.Produto.produto_nome }}</h4>
+                    <h2 v-if="user.nivel == 2 && userconfig != 1">PRECO VENDA: {{ produto.preco_venda = produto.Produto.PVendas[0].pvenda_preco }} </h2>
+                    <h2>PRECO VENDA 1: {{ produto.PVendaListOne = produto.Produto.PVendas[0] }} </h2>
+                    <h2>SELECT PRECO VENDA: {{ produto.PVendaList = produto.Produto.PVendas }} </h2>
                     <h4>IVA: {{ produto.iva = produto.Produto.Iva.iva_valor }}</h4>
                     <h4>IVA: {{ produto.search = produto.Produto.produto_nome }}</h4>
                     <h4>ID PRODUTO: {{ produto.ProdutoId = produto.Produto.id }}</h4>
                   </div>
 
                   <div v-if="produtos[index].idProduto && produtos[index].idProduto.Iva">
-                    <h3 hidden>ID VENDA UPDATE: {{ pagamento.VendaId = idVenda }}</h3>
                     <h2 hidden v-if="user.nivel == 2 && userconfig != 1">PRECO VENDA: {{ produto.preco_venda = produtos[index].idProduto.PVendas[0].pvenda_preco }} </h2>
                     <h2 hidden>PRECO VENDA 1: {{ produto.PVendaListOne = produtos[index].idProduto.PVendas[0] }} </h2>
                     <h2 hidden >SELECT PRECO VENDA: {{ produto.PVendaList = produtos[index].idProduto.PVendas }} </h2>
@@ -311,16 +330,39 @@
                         </v-card-text>
                         <v-card-actions>
                           <v-spacer></v-spacer>
-                          <div v-if="idSearch == ''">
+                          <div v-if="idSearch == '' && pagamento.troco >= 0">
                             <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="createVendaProdnoPrinter(index)"> {{ $t('message.finalizacompra') }} </v-btn>
                             <v-btn large color="success darken-1" :disabled="!stockIsValid" @click="createVendaProd(index)"> {{ $t('message.fcompraimprimir') }} </v-btn>
                           </div>
-                          <div v-else>
+                          <div v-if="idSearch !== '' && pagamento.troco >= 0">
                             <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="updateVenda(index)"> Atualizar Venda </v-btn>
-                            <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="updateVenda(index)"> Atualizar & Imprimir Venda </v-btn>
-                            
+                            <v-btn large color="success darken-1" :disabled="!stockIsValid" @click.native="updateVenda(index)"> Atualizar & Imprimir Venda </v-btn>
                           </div>
-                          </v-card-actions>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+
+
+                    <v-dialog v-model="dialogPesquisaCategoria" persistent max-width="850px" @keydown.esc="dialogPesquisaCategoria = false">
+                      <v-card align-center justify-center>
+                        <v-card-title>
+                          <v-spacer></v-spacer>
+                          <v-btn color="red" icon outline right small fab dark @click.native="dialogPesquisaCategoria = false"><v-icon>close</v-icon></v-btn>
+                        </v-card-title>
+                        <h4 class="primary--text text-md-center" style="font-size:2em;">SELECIONE A CATEGORIA DO PRODUTO </h4>
+                        <v-card-text>
+                          <v-container grid-list-md>
+                            <v-layout wrap>
+
+                              <div v-bind:key="index" v-for="(categoria, index) in categorias">
+                                <v-flex xs12>
+                                  <v-btn outline color="indigo"> {{ categoria.categoria_nome }} </v-btn>
+                                </v-flex>
+                              </div>
+                              
+                            </v-layout>
+                          </v-container>
+                        </v-card-text>
                       </v-card>
                     </v-dialog>
 
@@ -360,6 +402,26 @@
                       </v-card>
                     </v-dialog>
 
+                    <v-dialog v-model="dialogPesquisaBolsa" persistent max-width="550px" @keydown.esc="dialogPesquisaBolsa = false">
+                      <v-card align-center justify-center>
+                        <v-card-title>
+                          <v-spacer></v-spacer>
+                          <v-btn color="red" icon outline right small fab dark @click.native="dialogPesquisaBolsa = false"><v-icon>close</v-icon></v-btn>
+                        </v-card-title>
+                        <v-card-text>
+                          <v-container grid-list-md>
+                            <v-layout wrap>
+                              <h4 class="primary--text text-md-center" style="font-size:1.5em;">ADICIONAR BOLSA A LISTA DE COMPRAS? </h4>
+                            </v-layout>
+                          </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn center large color="primary darken-1" @click.native="dialogPesquisaBolsa = false; pesquisarBolsa(index)">SIM</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+
                     <v-dialog v-model="dialogStock" persistent max-width="550px" @keydown.esc="dialogStock = false">
                       <v-card align-center justify-center>
                         <v-card-text>
@@ -381,9 +443,10 @@
                     <v-flex flex xs12 sm2 md2>
                       <v-layout flex class="layoutmeu">
                         <v-btn style="display:none;" v-shortkey="['ctrl','p']" @shortkey="searchProd" @click.stop="searchProd"></v-btn>
+                        <v-btn style="display:none;" v-shortkey="['f2']" @shortkey="searchProdCat" @click.stop="searchProdCat"></v-btn>
                         <v-flex xs12 sm12 md12>
                           <v-text-field box v-model.trim="produto.search" ref="search" autofocus v-on:keyup.enter="pesquisar(index)" type="text"></v-text-field>
-                          <input v-model.trim="produto.search" type="hidden" autofocus />
+                          <input v-model.trim="produto.search"  ref="search" type="hidden" autofocus />
                           <input v-model="produto.ProdutoId" type="hidden"/>
                         </v-flex>
                       </v-layout>
@@ -479,7 +542,7 @@
                         item-value="pvenda_preco"
                       ></v-select>
 
-                      <v-text-field box readonly v-if="userconfig != 1 && user.nivel == 2" v-model="produto.preco_venda" @click="changePVenda" name="" type="number"></v-text-field>
+                      <v-text-field box readonly v-if="userconfig != 1 && user.nivel == 2" v-model.number="produto.preco_venda" @click="changePVenda" name="" type="number"></v-text-field>
                       <span v-if="produto.preco_venda">
                       <h4 hidden>TOTAL LIQUIDO: {{ produto.totalLiquido = produto.quantidade * produto.preco_venda }}</h4>
                       <h4 hidden>TOTAL: {{ produto.total = produto.quantidade * produto.preco_venda }}</h4>
@@ -504,7 +567,7 @@
                 <v-spacer></v-spacer>
                 <v-divider></v-divider>
                 <v-flex style="float:left">
-                  <v-btn style="margin-top:20px;" dark small fab class="primary"><v-icon>shopping_basket</v-icon></v-btn>
+                  <v-btn style="margin-top:20px;" dark small fab class="primary" v-shortkey="['ctrl','b']" @shortkey="addBolsa" @click.native="addBolsa"><v-icon>shopping_basket</v-icon></v-btn>
                 </v-flex>
                 <v-flex style="float:right">
                   <v-btn style="margin-top:20px;" dark small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
@@ -529,7 +592,7 @@
     >
       <v-flex xs12 sm8 md8>
       </v-flex>
-      <!--<v-flex xs2 sm2 md2>
+       <!--<v-flex xs2 sm2 md2>
         <h1 style="font-size:1.7em; font-weight:300; margin-top: 10px;" class="white--text"> {{ $t('message.quantidade') }}:  <span style="font-weight:bold;">{{ totalQty }}</span>  </h1>
       </v-flex>
       <v-flex xs12 sm3 md3>
@@ -538,7 +601,7 @@
       <v-flex xs12 sm3 md3>
         <h1 style="font-size:1.5em; font-weight:bold; margin-top: 10px;" class="text-xs-center white--text"> T. LIQUIDO:  {{ totalPriceLiquido}} </h1>
       </v-flex> 
-      ( isNaN(totalPrice ))
+      
       <v-flex style="display:none" class="primary" xs12 sm3 md3>
         <v-btn large dark v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="modoPagamento()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> FINALIZAR </span></v-btn>
       </v-flex>-->
@@ -557,6 +620,7 @@
 <script>
 import { mapState } from 'vuex'
 import FornecedoresService from "@/services/FornecedorService"
+import CategoriasService from "@/services/CategoriasService"
 import ProdutosService from "@/services/ProdutosService"
 import filterServices from "@/services/filterServices"
 import VendaServices from "@/services/VendaServices"
@@ -573,6 +637,7 @@ export default {
       idSearch: "",
       usuario: "",
       password: "",
+      clienteNow: '',
       error: null,
       alert: false,
       noadmin: "Por Favor entre com uma conta de administrador",
@@ -584,6 +649,8 @@ export default {
       dialogPesquisa: false,
       dialogNewCliente: false,
       dialogPesquisaCliente: false,
+      dialogPesquisaCategoria: false,
+      dialogPesquisaBolsa: false,
       dialog: false,
       showNav: true,
       snack: false,
@@ -591,8 +658,9 @@ export default {
       snackText: '',
       e1: '',
       PVendaList: [],
+      categorias: [],
       idVenda: [],
-      clipesquisa: [],
+      clipesquisa: '',
       metodoPagamento: [],
       recibo: [],
       listaprodutos: [],
@@ -624,12 +692,13 @@ export default {
       },
       cliente: {
         search: '',
-        cliente_nome: 'VD',
+        cliente_nome: '',
         cliente_nif: '',
         cliente_morada: '',
         cliente_telefone: '' 
       },
       pagamento: {
+        ClienteId: '',
         VendaId: '',
         dinheiro: '',
         vint4: '',
@@ -736,13 +805,20 @@ export default {
         if(this.res.length !== 0 ) {
           this.produtos = this.res[0].ListaVendas
         }else{
-          this.snackbar = true
+          this.$toast.error({
+            title: "Aviso",
+            message: "Venda com esse id de registro nao existe no sistema!"
+          })
         }
       }
     },
-    async updateVenda() {
-      console.log("TESTE:- ", this.produtos)
+    async updateVenda(index) {
+      console.log("TESTE:- ", this.pagamento)
       listaVendaServices.postnewprod(this.produtos)
+      VendaServices.putidpagamento(this.pagamento)
+      
+      this.idSearch = ''
+      this.dialog = false
       this.produtos = [{
         total: '',
         totalIva: '',
@@ -756,6 +832,7 @@ export default {
         stock_id: ''
       }],
       this.pagamento = {
+        ClienteId: '',
         VendaId: '',
         dinheiro: '',
         vint4: '',
@@ -773,6 +850,32 @@ export default {
         title: "Sucesso",
         message: "Venda atualizada com sucesso no sistema!"
       })
+    },
+    async pesquisarBolsa(index) {
+      try {
+        this.search = 'Bolsa'
+        this.produtos[index].search = 'Bolsa'
+        if (this.search !== '') {
+          this.produtos[index].idProduto = (await filterServices.bynamevenda(this.search)).data
+          console.log(this.produtos[index].idProduto)
+          Object.keys(this.produtos[index].idProduto).forEach(key => {
+            this.produtos[index].idProduto = this.produtos[index].idProduto[key];
+            if (this.produtos[index].idProduto.Stock.quantidade === 0) {
+              this.dialogStock = true
+            }
+          });
+          if (this.produtos[index].idProduto.length === 0) {
+            this.snackbar = true
+            this.$refs.search[index].reset();
+            this.$refs.search[index].focus();
+          } else {
+            this.$refs.searchquantidade[index].focus();
+          }
+          this.userconfig = ''
+        }
+      } catch (err) {
+        console.log(err);
+      }
     },
     async pesquisar(index) {
       try {
@@ -802,18 +905,25 @@ export default {
     async pesquisarCliente() {
       try {
         this.search = this.cliente.search
+        this.clienteNow = ''
         if (this.search !== '') {
-          this.clipesquisa = (await ClienteServices.byname(this.search)).data
+          this.clipesquisa = (await ClienteServices.byname(this.search)).data[0]
         }
       } catch (err) {
         console.log(err);
       }
+    },
+    async addBolsa() {
+      this.dialogPesquisaBolsa = true
     },
     async modoPagamento() {
       this.dialog = true
     },
     async searchProd() {
       this.dialogPesquisa = true
+    },
+    async searchProdCat() {
+      this.dialogPesquisaCategoria = true
     },
     async searchCliente() {
       this.dialogPesquisaCliente = true
@@ -822,18 +932,23 @@ export default {
       this.dialogPreco = true
     },
     async newCliente() {
+      this.cliente.cliente_nome = "",
+      this.cliente.cliente_morada = "",
+      this.cliente.cliente_nif = "",
+      this.cliente.cliente_telefone = ""
       this.dialogNewCliente = true
     },
     async createCliente() {
       this.dialogNewCliente = false
+      this.clipesquisa = ''
       // Create nova venda
       await ClienteServices.post(this.cliente)
       this.$toast.success({
         title: "Sucesso",
         message: "Cliente adicionada com sucesso no sistema!"
       })
-      console.log("DADOS CLI: ", this.cliente)
-      // this.cliente = (await ClienteServices.index()).data
+      // console.log("DADOS CLI: ", this.cliente)
+      this.clienteNow = (await ClienteServices.lastid()).data[0]
     },
     async PrintVenda(index) {
         const recibo = (await VendaServices.index({ userId: this.user.id })).data[0].ListaVendas
@@ -951,6 +1066,7 @@ export default {
       stockServices.putvendas(this.produtos)
       VendaServices.putidpagamento(this.pagamento)
       
+      console.log("MEU PROD ---- ", this.produtos)
       // Create nova venda
       await VendaServices.post(this.venda)
       this.idVenda = (await VendaServices.lastid()).data[0].id;
@@ -977,6 +1093,7 @@ export default {
         stock_id: ''
       }],
       this.pagamento = {
+        ClienteId: '',
         VendaId: '',
         dinheiro: '',
         vint4: '',
@@ -992,7 +1109,7 @@ export default {
       this.$refs.search[index].focus()
       this.$toast.success({
         title: "Sucesso",
-        message: "Venda adicionada com sucesso no sistema NO PRINTER"
+        message: "Venda adicionada com sucesso no sistema!"
       })
     },
     async createVendaProd(index) {
@@ -1043,6 +1160,8 @@ export default {
     console.log('Metodos pagamento', this.metodoPagamento)
     this.idVenda = (await VendaServices.lastid()).data[0].id;
     console.log("ID VENDA: ", this.idVenda)
+    this.categorias = (await CategoriasService.index()).data;
+    console.log("MEUS CAT:", this.categorias)
   },
   computed: {
     ...mapState([
@@ -1076,17 +1195,17 @@ export default {
     },
     totalPrice() {
       return this.produtos.reduce((total, produto) => {
-        return total + Number(produto.total);
+        return total + Number(produto.quantidade * produto.preco_venda);
       }, 0);
     },
     totalIva() {
       return this.produtos.reduce((total, produto) => {
-        return total + Number(produto.totalIva);
+        return total + Number(produto.preco_venda * produto.iva / 100);
       }, 0);
     },
     totalPriceLiquido() {
       return this.produtos.reduce((total, produto) => {
-        return total + Number(produto.totalLiquido);
+        return total + Number(produto.quantidade * produto.preco_venda);
       }, 0);
     }
   }
@@ -1156,6 +1275,13 @@ export default {
   margin-bottom: 5px;
   margin-left: 5px
 }
-
+.myinputsdata {
+  font-size:1.2em; 
+  padding:14px 16px; 
+  border:2px solid rgba(0,0,0,.54);
+  border-radius:5px;
+  margin-bottom: 5px;
+  margin-left: 5px
+}
 
 </style>

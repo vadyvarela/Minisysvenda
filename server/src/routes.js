@@ -36,6 +36,8 @@ module.exports = (app) => {
   // Rotas criar clientes e registrar
   app.get('/clientes',
     ClienteController.index)
+  app.get('/cliente',
+    ClienteController.lastid)
   app.get('/cliente/:search',
     ClienteController.byname)
   app.post('/clientes',

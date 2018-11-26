@@ -1,4 +1,4 @@
-const { ListaVenda, Produtos, Sequelize } = require('../models')
+const { ListaVenda, Produtos, Stock, Sequelize } = require('../models')
 
 module.exports = {
   async index (req, res) {
@@ -16,6 +16,7 @@ module.exports = {
       })
     }
   },
+  // consulta os produtos mais vendidos
   async pmaisvendido (req, res) {
     try {
       const listavenda = await ListaVenda.findAll({
@@ -34,6 +35,7 @@ module.exports = {
       })
     }
   },
+  // adiciona os produtos na lista de vendas quando efetuar uma venda
   post (req, res) {
     const dados = req.body
     for (var key in dados) {
@@ -57,6 +59,24 @@ module.exports = {
       let value = dados[key]
       if (value.idSearch == null) {
         console.log('PARA CADASTRAR - ')
+
+        for (var index in dados) {
+          if (dados.hasOwnProperty(index)) {
+            let value = dados[index]
+            if (value.idSearch == null) {
+              try {
+                Stock.update({ quantidade: Sequelize.literal('quantidade -' + value.quantidade) }, { where: { ProdutoId: value.ProdutoId } })
+              } catch (err) {
+                res.status(500).send({
+                  error: 'Um erro ocoreu ao tentar update STOCK'
+                })
+              }
+            } else {
+              console.log('Nao podem ser atualizados - ')
+            }
+          }
+        }
+
         try {
           ListaVenda.create(value)
         } catch (err) {

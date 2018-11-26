@@ -111,7 +111,6 @@
           </v-card>
         </v-dialog>
 
-      <v-container grid-list-md>
             <v-card flat>
               <v-divider></v-divider>
               <v-card-title>
@@ -192,9 +191,7 @@
                   </v-tooltip>
                   </template>
                   <template slot="items" slot-scope="props">
-                  <td class="text-xs-left"> {{ props.item.createdAt | moment("DD-MM-YYYY") }} </td>
-                  <td class="text-xs-left"> {{ props.item.createdAt | moment("HH:mm:ss") }} </td>
-                  
+                  <td class="text-xs-left"> {{ props.item.createdAt | moment("DD-MM-YYYY") }} - {{ props.item.createdAt | moment("HH:mm:ss") }} </td>
                   <v-expansion-panel popout>
                     <v-expansion-panel-content>
                       <div slot="header"> {{ $t('message.listaproduto') }} </div>
@@ -209,13 +206,28 @@
                       </v-card>
                     </v-expansion-panel-content>
                   </v-expansion-panel>
-
                   <td class="text-xs-left"> {{ props.item.User.usuario }} </td>
-                  <td v-if="props.item.valor_venda_dinheiro != ''" class="text-xs-left"> {{ props.item.meio_pagamento_dinheiro }} </td>
-                  <td v-else-if="props.item.valor_venda_cheque != ''" class="text-xs-left"> {{ props.item.meio_pagamento_cheque }} </td>
-                  <td v-else-if="props.item.valor_venda_cheque != '' && props.item.valor_venda_dinheiro != ''" class="text-xs-left"> {{ props.item.meio_pagamento_cheque }} - {{ props.item.meio_pagamento_dinheiro }} </td>
+
+                  <td v-if="props.item.valor_venda_dinheiro != '' && props.item.valor_venda_cheque == '' && props.item.valor_venda_vint4 == '' " class="text-xs-left"> {{ props.item.meio_pagamento_dinheiro }} </td>
+                  <td v-else-if="props.item.valor_venda_cheque != '' && props.item.valor_venda_dinheiro == '' && props.item.valor_venda_vint4 == '' " class="text-xs-left"> {{ props.item.meio_pagamento_cheque }} </td>
+                  <td v-else-if="props.item.valor_venda_vint4 != '' && props.item.valor_venda_dinheiro == '' && props.item.valor_venda_cheque == '' " class="text-xs-left"> {{ props.item.meio_pagamento_vint4 }} </td>
                   <td v-else-if="props.item.valor_venda_vint4 != '' && props.item.valor_venda_dinheiro != ''" class="text-xs-left"> {{ props.item.meio_pagamento_dinheiro }} - {{ props.item.meio_pagamento_vint4 }} </td>
-                  <td v-else-if="props.item.valor_venda_vint4 != ''" class="text-xs-left"> {{ props.item.meio_pagamento_vint4 }} </td>
+                  <td v-else-if="props.item.valor_venda_cheque != '' && props.item.valor_venda_dinheiro != ''" class="text-xs-left"> {{ props.item.meio_pagamento_dinheiro }} - {{ props.item.meio_pagamento_cheque }} </td>
+                  <td v-else-if="props.item.valor_venda_vint4 != '' && props.item.valor_venda_cheque != '' " class="text-xs-left"> {{ props.item.meio_pagamento_vint4 - props.item.meio_pagamento_cheque }} </td>
+                  <td v-else-if="props.item.valor_venda_dinheiro != '' && props.item.valor_venda_vint4 != '' && props.item.valor_venda_cheque != '' " class="text-xs-left"> {{ props.item.meio_pagamento_dinheiro - props.item.meio_pagamento_vint4 - props.item.meio_pagamento_cheque }} </td>
+                  
+                  
+                  <td class="text-xs-left"> <span class="boxquantidadegreen"> {{ props.item.valor_total }} CVE </span></td>
+                  <td class="text-xs-left"> 
+                    <span v-if="props.item.valor_venda_dinheiro != '' && props.item.valor_venda_cheque == '' && props.item.valor_venda_vint4 == '' " class="text-xs-left boxquantidade"> {{ props.item.valor_venda_dinheiro }} CVE </span>
+                    <span v-else-if="props.item.valor_venda_cheque != '' && props.item.valor_venda_dinheiro == '' && props.item.valor_venda_vint4 == '' " class="text-xs-left boxquantidade"> {{ props.item.valor_venda_cheque }} CVE</span>
+                    <span v-else-if="props.item.valor_venda_vint4 != '' && props.item.valor_venda_dinheiro == '' && props.item.valor_venda_cheque == '' " class="text-xs-left boxquantidade"> {{ props.item.valor_venda_vint4 }} CVE</span>
+                    <span v-else-if="props.item.valor_venda_vint4 != '' && props.item.valor_venda_dinheiro != ''" class="text-xs-left boxquantidade"> {{ props.item.valor_venda_dinheiro }} - {{ props.item.valor_venda_vint4 }} CVE</span>
+                    <span v-else-if="props.item.valor_venda_cheque != '' && props.item.valor_venda_dinheiro != ''" class="text-xs-left boxquantidade"> {{ props.item.valor_venda_dinheiro }} - {{ props.item.valor_venda_cheque }} CVE</span>
+                    <span v-else-if="props.item.valor_venda_vint4 != '' && props.item.valor_venda_cheque != '' " class="text-xs-left boxquantidade"> {{ props.item.valor_venda_vint4 - props.item.valor_venda_cheque }} CVE</span>
+                    <span v-else-if="props.item.valor_venda_dinheiro != '' && props.item.valor_venda_vint4 != '' && props.item.valor_venda_cheque != '' " class="text-xs-left boxquantidade"> {{ props.item.valor_venda_dinheiro - props.item.valor_venda_vint4 - props.item.valor_venda_cheque }} CVE</span>
+                  </td>
+                  <td class="text-xs-left"> <span class="boxquantidadered"> {{ props.item.valor_troco }} CVE </span> </td>
                   <td class="text-xs-left dark">
                     <v-btn flat icon color="primary" @click="PrintVenda(props.item)"> <v-icon>print</v-icon> </v-btn>
                     <v-btn title="Anular Venda" flat icon color="red" @click="AnularVenda(props.item)"> <v-icon>error_outline</v-icon> </v-btn>
@@ -232,7 +244,6 @@
               </v-card-text>
             </v-card>
           
-      </v-container>
       <v-divider></v-divider>
     </v-content>
     </panel>
@@ -290,11 +301,13 @@ export default {
         ProdutoId: '',
       },
       headers: [
-        { text: "Data", align: "left", sortable: false },
-        { text: "Hora", align: "left", sortable: false },
+        { text: "Data / Hora", value: "createdAt", align: "left", sortable: true },
         { text: "Produto / Quantidade", align: "left", sortable: false },
         { text: "Vendedor", align: "left", sortable: false },
-        { text: "Forma Pagamento", align: "left", sortable: false },
+        { text: "F. Pagamento", align: "left", sortable: false },
+        { text: "Valor Total", value: "valor_total", align: "left", sortable: true },
+        { text: "Valor Entregue", align: "left", sortable: false },
+        { text: "Troco", value: "valor_troco", align: "left", sortable: true },
         { text: "Ações", align: "left", sortable: false },
       ],
       desserts: [],
@@ -496,20 +509,30 @@ export default {
   padding:5px 10px 5px 10px; 
   background-color:#1976d2;
   color:#fff;
-  font-weight:bold;
+  font-weight:400;
   font-size: 1.2em;
   border-radius:5px;
 }
+
 .nobordertr{
   border-bottom: 0px !important;
 }
+.boxquantidade {
+  font-weight:400;
+  background: #1976d2;
+  color: aliceblue;
+  padding: 4px 6px;
+  border-radius: 10%
+}
 .boxquantidadegreen {
+  font-weight:400;
   background: green;
   color: aliceblue;
   padding: 4px 6px;
   border-radius: 10%
 }
 .boxquantidadered {
+  font-weight:400;
   background: red;
   color: aliceblue;
   padding: 4px 6px;

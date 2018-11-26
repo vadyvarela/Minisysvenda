@@ -11,6 +11,19 @@ module.exports = {
       })
     }
   },
+  async lastid (req, res) {
+    try {
+      const cliente = await Cliente.findAll({
+        limit: 1,
+        order: [ ['id', 'DESC'] ]
+      })
+      res.send(cliente)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar listar cliente'
+      })
+    }
+  },
   async byname (req, res) {
     try {
       const { search } = req.params

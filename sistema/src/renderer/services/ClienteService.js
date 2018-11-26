@@ -4,6 +4,9 @@ export default {
     index () {
         return Api().get('clientes')
     },
+    lastid () {
+        return Api().get('cliente')
+    },
     byname ( search ) {
         return Api().get(`cliente/${search}`, search)
     },

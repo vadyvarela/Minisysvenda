@@ -87,17 +87,14 @@
         </v-stepper-content>
 
         <v-stepper-content step="2">
-
           <v-toolbar
             card
             color="white"
           >
-            <v-icon>mdi-account</v-icon>
-              <v-btn dark fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
-            <v-spacer></v-spacer>
-            <v-flex text-lg-right xs6>
+            <v-flex xs6>
               <v-toolbar-title style="font-weight:bold; font-size:1.8em;" class="primary--text">LISTA DE PRODUTOS</v-toolbar-title>
             </v-flex>
+            <v-spacer></v-spacer>
             <v-flex text-lg-right xs6>
               <v-btn right large router-link to="listacompras" dark class="primary" >Inventário de produtos</v-btn>
             </v-flex>
@@ -130,21 +127,17 @@
                       <label>Total</label>
                     </v-flex>
                     <v-flex class="titleProd" xs12 sm1 md1>
-                      <label><v-icon>add</v-icon></label>
                     </v-flex>
                   </v-layout>
                 </div>
                 <div v-bind:key="index" v-for="(produto, index) in produtos">
                   <h2 hidden>{{ produto.CompraId = idCompra }}</h2>
-
                   <div v-if="produtos[index].idProduto && produtos[index].idProduto.Iva">
-                    
                     <h4 hidden>NOME: {{ produto.nome = produtos[index].idProduto.produto_nome }}</h4>
                     <h4 hidden>IVA: {{ produto.iva = produtos[index].idProduto.Iva.iva_valor }}</h4>
                     <h4 hidden>PREÇO: {{ produto.preco = produtos[index].idProduto.produto_preco }}</h4>
                     <h4 hidden>ID PRODUTO: {{ produto.ProdutoId = produtos[index].idProduto.id }}</h4>
                     <h4 hidden>TOTAL: {{ produto.total = produtos[index].idProduto.produto_preco * ( 1 + produtos[index].idProduto.Iva.iva_valor / 100) }}</h4>
-                    
                   </div>
                   <div v-else>
                     <h2 hidden>Sorry Vady</h2>
@@ -181,11 +174,12 @@
                         item-value="id"
                       ></v-select>
                     </v-flex>
-                    <v-flex xs12 sm1 md1>
+                    <v-flex right xs12 sm1 md1>
                       <v-text-field box readonly :value="produto.iva" name="" type="number"></v-text-field>
                     </v-flex>
                     <v-flex xs12 sm1 md1>
-                      <v-text-field box readonly :value="produto.total" name="" type="number"></v-text-field>
+                      <!--<v-text-field box readonly :value="produto.total" name="" type="number"></v-text-field>-->
+                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; padding:15px 0 12px 4px; font-size:1.4em; color: green;" :value="produto.total"></vue-numeric>
                     </v-flex>
                     <v-spacer></v-spacer>
                     <v-flex xs12 sm1 md1>
@@ -197,8 +191,9 @@
                 
                 <v-spacer></v-spacer>
                 <v-card-actions>
+                  <v-btn dark fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn color="primary" @click="createCompraProd()"> Cadastrar </v-btn>
+                  <v-btn large class="green" @click="createCompraProd()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> Finalizar </span> </v-btn>
                 </v-card-actions>
               </v-flex>
             </v-layout>
@@ -213,15 +208,14 @@
       fixed
       color="green"
     >
-      <v-flex xs12 sm2 md2>
-        <h1 style="font-size:1.5em; font-weight:bold; margin-top: 10px;" class="text-xs-center white--text"> QTD:  {{ totalQty }} </h1>
+      <v-flex xs12 sm8 md8>
       </v-flex>
-      <v-flex xs12 sm2 md2>
-        <h1 v-if="totalPrice === null" style="font-size:2em; font-weight:bold; margin-top: 5px;" class="text-xs-center white--text"> TOTAL: 0 </h1>
-        <h1 v-else style="font-size:2em; font-weight:bold; margin-top: 5px;" class="text-xs-center white--text"> TOTAL: {{ totalPrice }} </h1>
+      <v-flex class="text-xs-right" xs12 sm3 md3>
+        <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.total') }}: </span>
       </v-flex>
-      <v-flex class="primary" xs12 sm2 md2>
-        <v-btn large dark v-shortkey="['ctrl','enter']" @shortkey="createCompraProd()" @click="createCompraProd()"> <span style="width:100%; font-size:2em; font-weight:bold; color: #fff"> FINALIZAR COMPRA </span></v-btn>
+      <v-flex class="" xs12 sm1 md1>
+        <vue-numeric v-if="totalPrice === ''" read-only style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="0"></vue-numeric>
+        <vue-numeric v-else read-only style="font-size:2.5em; font-weight:700; color: #fff;" class="text-xs-left white--text" :value="totalPrice"></vue-numeric>
       </v-flex>
     </v-bottom-nav>
 

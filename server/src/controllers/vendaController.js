@@ -1,4 +1,4 @@
-const { Venda, ListaVenda, User, Produtos, Iva } = require('../models')
+const { Venda, ListaVenda, User, Produtos, Iva, PVenda } = require('../models')
 
 module.exports = {
   async index (req, res) {
@@ -32,7 +32,7 @@ module.exports = {
       const venda = await Venda.findAll({
         include: [
           { model: User },
-          { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva } ] } ] }
+          { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva }, { model: PVenda } ] } ] }
         ],
         where: {
           UserId: userId,
@@ -115,7 +115,7 @@ module.exports = {
   },
   async putidpagamento (req, res) {
     const dados = req.body
-    console.log(dados)
+    // console.log(dados)
     try {
       const venda = Venda.update({
         meio_pagamento_dinheiro: dados.dinheiro,
@@ -126,7 +126,8 @@ module.exports = {
         valor_venda_cheque: dados.valorentregadocheque,
         valor_total: dados.tapagar,
         valor_iva: dados.tapagariva,
-        valor_troco: dados.troco
+        valor_troco: dados.troco,
+        ClienteId: dados.ClienteId
       }, { where: { id: dados.VendaId } })
       res.send(venda)
     } catch (err) {
