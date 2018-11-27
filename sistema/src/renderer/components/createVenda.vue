@@ -99,14 +99,13 @@
                 <v-text-field outline label="N. Venda" @keyup.enter="searchIdProd()" v-model.number="idSearch" type="text"></v-text-field> 
               </v-flex>
               <v-flex sm7 md7>
-                <h2 class="myinputsdata">DATA VENDA: <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY HH:MM") }} </span></h2>
+                <h2 class="myinputsdata">DATA: <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY") }} </span></h2>
               </v-flex>
               <v-flex sm2 md2>
                 <v-btn large left router-link to="listavendas" dark class="primary"> {{ $t('message.listavendas') }} </v-btn>
               </v-flex>
             </v-layout>
             <!--<h2 class="myinputs">NO: <span style="font-weight:100"> {{ idVenda }} </span> </h2>-->
-            
           </v-flex>
 
           <v-flex xs1 sm2 md2>
@@ -402,22 +401,20 @@
                       </v-card>
                     </v-dialog>
 
-                    <v-dialog v-model="dialogPesquisaBolsa" persistent max-width="550px" @keydown.esc="dialogPesquisaBolsa = false">
+                    <v-dialog v-model="dialogPesquisaBolsa" persistent max-width="290px" @keydown.esc="dialogPesquisaBolsa = false">
                       <v-card align-center justify-center>
-                        <v-card-title>
-                          <v-spacer></v-spacer>
-                          <v-btn color="red" icon outline right small fab dark @click.native="dialogPesquisaBolsa = false"><v-icon>close</v-icon></v-btn>
-                        </v-card-title>
                         <v-card-text>
                           <v-container grid-list-md>
                             <v-layout wrap>
-                              <h4 class="primary--text text-md-center" style="font-size:1.5em;">ADICIONAR BOLSA A LISTA DE COMPRAS? </h4>
+                              <h4 class="primary--text text-md-center" style="font-size:1.5em;">Adicionar bolsa a lista de compras? </h4>
                             </v-layout>
                           </v-container>
                         </v-card-text>
+                        <v-divider></v-divider>
                         <v-card-actions>
+                          <v-btn color="red" icon outline small fab dark @click.native="dialogPesquisaBolsa = false"><v-icon>close</v-icon></v-btn>
                           <v-spacer></v-spacer>
-                          <v-btn center large color="primary darken-1" @click.native="dialogPesquisaBolsa = false; pesquisarBolsa(index)">SIM</v-btn>
+                          <v-btn color="green" icon outline small fab dark @click.native="dialogPesquisaBolsa = false; pesquisarBolsa(index)"><v-icon>thumb_up</v-icon></v-btn>
                         </v-card-actions>
                       </v-card>
                     </v-dialog>

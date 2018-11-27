@@ -191,6 +191,7 @@
                   </v-tooltip>
                   </template>
                   <template slot="items" slot-scope="props">
+                  <td class="text-xs-left"> {{ props.item.id }} </td>
                   <td class="text-xs-left"> {{ props.item.createdAt | moment("DD-MM-YYYY") }} - {{ props.item.createdAt | moment("HH:mm:ss") }} </td>
                   <v-expansion-panel popout>
                     <v-expansion-panel-content>
@@ -301,6 +302,7 @@ export default {
         ProdutoId: '',
       },
       headers: [
+        { text: "N.", value: "id", align: "left", width: '5%', sortable: true },
         { text: "Data / Hora", value: "createdAt", align: "left", sortable: true },
         { text: "Produto / Quantidade", align: "left", sortable: false },
         { text: "Vendedor", align: "left", sortable: false },

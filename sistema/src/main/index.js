@@ -13,28 +13,35 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-function createWindow () {
-  // app.server = require('./app')
-  
+app.on('ready', () => {
   mainWindow = new BrowserWindow({
+    titleBarStyle: 'hidden',
     height: 563,
-    // resizable: false,
     useContentSize: true,
-    width: 1000
+    width: 1000,
+    show: false
   })
-  mainWindow.maximize()
-  mainWindow.loadURL(winURL)
+
+  /*mainWindow.maximize()
+  mainWindow.loadURL(winURL)*/
+
+  // create a new `splash`-Window 
+  /*splash = new BrowserWindow({width: 810, height: 610, transparent: true, frame: false, alwaysOnTop: true});
+  splash.loadURL(`file://${__dirname}/splash.html`);*/
+  mainWindow.loadURL(winURL);
 
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-
-  //Construir o nosso proprio menu
+  // Construir o nosso proprio menu
   const mainMenu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(mainMenu);
-}
-
-app.on('ready', createWindow)
+  mainWindow.once('ready-to-show', () => {
+    // splash.destroy()
+    mainWindow.maximize()
+    mainWindow.show()
+  })
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
