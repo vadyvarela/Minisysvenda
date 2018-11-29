@@ -3,10 +3,37 @@
       <v-content>
       <v-container fluid>
 
+          <v-dialog @keydown.esc="dialogSenha= false" v-model="dialogSenha" persistent max-width="500px">
+            <v-card>
+              <v-card-title >
+                <span class="headline">Atualizar senha usuario <br> <b> {{ user.nome }} </b></span>
+              </v-card-title>
+              <v-card-text>
+                <v-container grid-list-md>
+                  <v-alert
+                    v-html="error"
+                    :value="alert"
+                    transition="scale-transition"
+                    type="error"
+                    >
+                  </v-alert>
+                  <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
+                    <v-text-field name="nome" :rules="senhaRules" v-model="user.password" label="Digite a nova sennha" type="text"></v-text-field>
+                  </v-form>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" flat @click.native="dialogSenha = false">Cancelar</v-btn>
+                <v-btn :disabled="!valid" color="green darken-1" flat @click="updateSenha">Salvar</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
           <v-dialog @keydown.esc="dialog= false" v-model="dialog" persistent max-width="500px">
             <v-card>
               <v-card-title>
-                <span class="headline center">Atualizar dados usuario <b> {{ user.usuario }} </b></span>
+                <span class="headline center">Atualizar dados usuario <b> {{ user.nome }} </b></span>
               </v-card-title>
               <v-card-text>
                 <v-container grid-list-md>
@@ -20,9 +47,8 @@
                   </v-alert>
 
                   <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                    <v-text-field name="usuario" :rules="usuarioRules" v-model="user.usuario" label="Nome do usuario" type="text"></v-text-field>
-                    <v-text-field name="password" label="Palavra passe" v-model="user.password" id="password" type="password"></v-text-field>
-                    <input type="text" name="" v-model="user.password">
+                    <v-text-field name="nome" :rules="nomeRules" v-model="user.nome" label="Seu nome completo" type="text"></v-text-field>
+                    <v-text-field name="usuario" :rules="usuarioRules" v-model="user.usuario" label="Usuario" type="text"></v-text-field>
                     <v-text-field name="nivel" :rules="nivelRules" v-model="user.nivel" label="Nivel de acesso" id="nivel" type="text"></v-text-field>
                     <small>Nivel de acesso <br> <span>1 = ADMINISTRADOR <br> 2 = VENDEDOR</span></small>
                   </v-form>
@@ -65,11 +91,22 @@
               </v-tooltip>
               </template>
               <template slot="items" slot-scope="props">
+              <td>{{ props.item.nome }}</td>
               <td>{{ props.item.usuario }}</td>
               <td class="text-xs-center ">{{ props.item.nivel }}</td>
               <td class="justify-center layout px-0 dark">
-                <v-btn flat icon color="green" @click="editUser(props.item)"> <v-icon>edit</v-icon> </v-btn>
-                <v-btn flat icon color="red" @click="deleteUser(props.item)"> <v-icon>delete</v-icon> </v-btn>
+                <v-tooltip left>
+                  <v-btn slot="activator" flat icon color="green" @click="editUser(props.item)"> <v-icon>edit</v-icon> </v-btn>
+                  <span>Editar usuario</span>
+                </v-tooltip>
+                <v-tooltip left>
+                  <v-btn slot="activator" flat icon color="green" @click="editSenha(props.item)"> <v-icon>lock</v-icon> </v-btn>
+                  <span>Mudar senha</span>
+                </v-tooltip>
+                <v-tooltip left>
+                  <v-btn slot="activator" flat icon color="red" @click="deleteUser(props.item)"> <v-icon>block</v-icon> </v-btn>
+                  <span>Inativar usuario</span>
+                </v-tooltip>
               </td>
               </template>
           </v-data-table>
@@ -90,16 +127,22 @@ export default {
       alert: false,
       valid: true,
       editedIndex: -1,
-      usuarioRules: [v => !!v || "Campo nome do usuario é obrigatorio"],
+      nomeRules: [v => !!v || "Campo nome completo é obrigatorio"],
+      senhaRules: [v => !!v || "Campo senha é obrigatorio"],
+      usuarioRules: [v => !!v || "Campo usuario é obrigatorio"],
       nivelRules: [v => !!v || "Campo nivel de acesso é obrigatorio"],
       user: {
+        nome: null,
         usuario: null,
+        status: null,
         password: null,
         nivel: null
       },
       dialog: false,
+      dialogSenha: false,
       headers: [
-        { text: "Nome usuario ", align: "left", sortable: false},
+        { text: "Nome ", name:"nome", align: "left", sortable: true},
+        { text: "Usuario ", align: "left", sortable: false},
         { text: "Nivel ", align: "center", sortable: false},
         { text: 'Actions', align: "center", value: 'name', sortable: false }
       ],
@@ -138,14 +181,20 @@ export default {
       this.user = Object.assign({}, item);
       this.dialog = true;
     },
+    editSenha: function(item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.user = Object.assign({}, item);
+      this.dialogSenha = true;
+    },
     async update() {
       if (this.$refs.form.validate()) {
         try {
           this.dialog = false;
           const response = await AuthenticationService.put({
             id: this.user.id,
+            nome: this.user.nome,
             usuario: this.user.usuario,
-            password: this.user.password,
+            // password: this.user.password,
             nivel: this.user.nivel
           })
           this.$toast.success({
@@ -158,6 +207,32 @@ export default {
           Object.assign(this.desserts[this.editedIndex], this.user);
         } catch (error) {  
           this.dialog = true;
+          this.error = error.response.data.error;
+          this.alert = true;
+        }
+      }
+    },
+    async updateSenha() {
+      if (this.$refs.form.validate()) {
+        try {
+          this.dialogSenha = false;
+          const response = await AuthenticationService.put({
+            id: this.user.id,
+            nome: this.user.nome,
+            usuario: this.user.usuario,
+            nivel: this.user.nivel,
+            password: this.user.password
+          })
+          this.$toast.success({
+            title: "Aviso",
+            message: "Senha usuario atualizado com sucesso"
+          })
+          this.$router.push({
+            name: "usuarios"
+          });
+          Object.assign(this.desserts[this.editedIndex], this.user);
+        } catch (error) {  
+          this.dialogSenha = true;
           this.error = error.response.data.error;
           this.alert = true;
         }

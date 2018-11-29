@@ -25,7 +25,8 @@
               
               <v-card-text>
                 <v-form name="cadastar" autocomplete="off">
-                  <v-text-field name="usuario" v-model="usuario" label="Nome do usuario" type="text"></v-text-field>
+                  <v-text-field name="usuario" v-model="nome" label="Nome completo" type="text"></v-text-field>
+                  <v-text-field name="usuario" v-model="usuario" label="usuario" type="text"></v-text-field>
                   <v-text-field name="password" v-model="password" label="Palavra passe" id="password" type="password"></v-text-field>
                   <v-select
                     name="nivel"
@@ -58,6 +59,8 @@ export default {
   data () {
     return {
       nivel: [ { id: "1", nome: "Administrador" }, { id: "2", nome: "Vendedor"} ],
+      nome: "",
+      status: '1',
       usuario: "",
       password: "",
       error: null,
@@ -68,10 +71,16 @@ export default {
     async register() {
       try {
         const response = await AuthenticationService.register({
+          nome: this.nome,
           usuario: this.usuario,
           password: this.password,
-          nivel: this.nivel
+          nivel: this.nivel,
+          status: this.status
         });
+        this.$toast.success({
+          title: "Succeso",
+          message: "Usuario cadastrado com sucesso no sistema!"
+        })
         this.$store.dispatch("setToken", response.data.token);
         this.$store.dispatch("setToken", response.data.user);
         this.$router.push({
