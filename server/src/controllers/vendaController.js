@@ -1,4 +1,4 @@
-const { Venda, ListaVenda, User, Produtos, Iva, PVenda } = require('../models')
+const { Venda, ListaVenda, User, Produtos, Iva, PVenda, Cliente } = require('../models')
 
 module.exports = {
   async index (req, res) {
@@ -6,6 +6,7 @@ module.exports = {
       const { userId } = req.query
       const venda = await Venda.findAll({
         include: [
+          { model: Cliente },
           { model: User },
           { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva } ] } ] }
         ],

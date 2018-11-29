@@ -120,7 +120,7 @@
                     {{ cliente.cliente_ni = clipesquisa.cliente_nif }} 
                     {{ cliente.cliente_tel = clipesquisa.cliente_telefone }}
                   </span>
-                  <span v-if="clienteNow !== ''" hidden> 
+                  <span v-else-if="clienteNow !== ''" hidden> 
                     {{ cliente.cliente_no = clienteNow.cliente_nome }}
                     {{ cliente.cliente_mor = clienteNow.cliente_morada }}
                     {{ cliente.cliente_ni = clienteNow.cliente_nif }} 
@@ -334,7 +334,7 @@
                             <v-btn large color="success darken-1" :disabled="!stockIsValid" @click="createVendaProd(index)"> {{ $t('message.fcompraimprimir') }} </v-btn>
                           </div>
                           <div v-if="idSearch !== '' && pagamento.troco >= 0">
-                            <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="updateVenda(index)"> Atualizar Venda </v-btn>
+                            <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="updateVendaPrinter(index)"> Atualizar Venda </v-btn>
                             <v-btn large color="success darken-1" :disabled="!stockIsValid" @click.native="updateVenda(index)"> Atualizar & Imprimir Venda </v-btn>
                           </div>
                         </v-card-actions>
@@ -813,6 +813,8 @@ export default {
       console.log("TESTE:- ", this.pagamento)
       listaVendaServices.postnewprod(this.produtos)
       VendaServices.putidpagamento(this.pagamento)
+
+      this.PrintVenda()
       
       this.idSearch = ''
       this.dialog = false
@@ -948,11 +950,42 @@ export default {
       this.clienteNow = (await ClienteServices.lastid()).data[0]
     },
     async PrintVenda(index) {
-        const recibo = (await VendaServices.index({ userId: this.user.id })).data[0].ListaVendas
-        const pagamento = this.pagamento.tLiquido - this.pagamento.tapagariva
-        const tapagar = this.pagamento.tapagar
-        const tapagariva = this.pagamento.tapagariva
-        const troco = this.pagamento.troco
+        /*this.recibo = (await VendaServices.index({
+          userId: this.user.id
+        })).data[0].ListaVendas;*/
+        this.cliente = (await VendaServices.index({ userId: this.user.id })).data[0].Cliente
+        this.valorVenda = (await VendaServices.index({
+          userId: this.user.id
+        })).data[0];
+        console.log("Meus Valores: ----- ", this.valorVenda)
+
+        /* if(this.valorVenda.valor_venda_dinheiro != '' && this.valorVenda.valor_venda_cheque == '' && this.valorVenda.valor_venda_vint4){
+          const pagamento = this.valorVenda.valor_venda_dinheiro
+        }else if(this.valorVenda.valor_venda_cheque != '' && this.valorVenda.valor_venda_dinheiro == '' && this.valorVenda.valor_venda_vint4){
+          const pagamento = this.valorVenda.valor_venda_cheque
+        }else if(this.valorVenda.valor_venda_vint4 != '' && this.valorVenda.valor_venda_dinheiro == '' && this.valorVenda.valor_venda_cheque == ''){
+          const pagamento = this.valorVenda.valor_venda_vint4
+        }else if(this.valorVenda.valor_venda_vint4 != '' && this.valorVenda.valor_venda_dinheiro != ''){
+          const pagamento = this.valorVenda.valor_venda_vint4 + ' - ' + this.valorVenda.valor_venda_dinheiro
+        }else if(this.valorVenda.valor_venda_cheque != '' && this.valorVenda.valor_venda_dinheiro != ''){
+          const pagamento = this.valorVenda.valor_venda_cheque + ' - ' + this.valorVenda.valor_venda_dinheiro
+        }else if(this.valorVenda.valor_venda_vint4 != '' && this.valorVenda.valor_venda_cheque != '' ){
+          const pagamento = this.valorVenda.valor_venda_vint4 + ' - ' + this.valorVenda.valor_venda_cheque
+        }else if(this.valorVenda.valor_venda_dinheiro != '' && this.valorVenda.valor_venda_vint4 != '' && this.valorVenda.valor_venda_cheque != ''){
+          const pagamento = this.valorVenda.valor_venda_dinheiro + ' - ' + this.valorVenda.valor_venda_vint4 + ' - ' + this.valorVenda.valor_venda_cheque
+        } */
+        const nomeCliente = this.cliente.cliente_nome
+        const moradaCliente = this.cliente.cliente_morada
+        const nifCliente = this.cliente.cliente_nif
+        const telefoneCliente = this.cliente.cliente_telefone
+
+        const recibo = this.valorVenda.ListaVendas
+        console.log("MEU PROD -----", recibo)
+
+        const pagamento = this.valorVenda.valor_total - this.valorVenda.valor_iva
+        const tapagar = this.valorVenda.valor_total
+        const tapagariva = this.valorVenda.valor_iva
+        const troco = this.valorVenda.valor_troco
         const horaVenda = moment().format('LT')
         const dataVenda = moment().format('l')
         const vendedor = this.user.usuario
@@ -961,6 +994,7 @@ export default {
         let vint4 = this.pagamento.valorentregadovint4
         let cheque = this.pagamento.valorentregadocheque
         let prod = ''
+        let pVenda = ''
         // let entregado = ''
 
         //const dataVenda = this.venda.data_venda
@@ -968,7 +1002,20 @@ export default {
           dinheiro = dinheiro + ' CVE'
         } else if (vint4 !== '') {
           vint4 = vint4 + ' CVE'
-        } else {
+        }else if (cheque !== '') {
+          cheque = cheque + ' CVE'
+        }else if (vint4 !== '' && dinheiro !== '') {
+          dinheiro = dinheiro + ' CVE'
+          vint4 = vint4 + ' CVE'
+        }else if (cheque !== '' && dinheiro !== '') {
+          dinheiro = dinheiro + ' CVE'
+          cheque = cheque + ' CVE'
+        }else if (cheque !== '' && vint4 !== '') {
+          vint4 = vint4 + ' CVE'
+          cheque = cheque + ' CVE'
+        }else if(dinheiro !== '' && cheque !== '' && vint4 !== '') {
+          dinheiro = dinheiro + ' CVE'
+          vint4 = vint4 + ' CVE'
           cheque = cheque + ' CVE'
         }
 
@@ -993,10 +1040,10 @@ export default {
             .text('Data do Doc: ' + dataVenda + '  ' + horaVenda)
             .text('VENDEDOR: ' + vendedor)
             .text('\n')
-            .text('CLIENTE: Maria de Monte de Brito Varela')
-            .text('MORADA: Varzea - Praia')
-            .text('NIF: 378564756')
-            .text('TELEFONE: 5845777')
+            .text('CLIENTE: ' + nomeCliente)
+            .text('MORADA: ' + moradaCliente)
+            .text('NIF: ' + nifCliente)
+            .text('TELEFONE: ' + telefoneCliente)
             .text('\n')
             // ----------------------------------------------------
             .text('QT PRODUTO                  P. UNIT  IVA  TOTAL')
@@ -1008,25 +1055,35 @@ export default {
                 const pTotal = value.preco_venda * value.quantidade
                 console.log("TAMANHO ", value.Produto.produto_nome_rec.length)
                 if (value.Produto.produto_nome_rec.length >= 23) {
-                    prod = value.Produto.produto_nome_rec + '   '
+                    prod = value.Produto.produto_nome_rec + '    '
                 }else if (value.Produto.produto_nome_rec.length > 20 && value.Produto.produto_nome_rec.length < 23) {
-                    prod = value.Produto.produto_nome_rec + '     '
+                    prod = value.Produto.produto_nome_rec + '      '
                 }else if (value.Produto.produto_nome_rec.length > 18 && value.Produto.produto_nome_rec.length <= 20) {
                     prod = value.Produto.produto_nome_rec + '         '
                 }else if (value.Produto.produto_nome_rec.length >= 15 && value.Produto.produto_nome_rec.length <= 18) {
                     prod = value.Produto.produto_nome_rec + '           '
                 }else if (value.Produto.produto_nome_rec.length < 15 && value.Produto.produto_nome_rec.length >= 10) {
-                    prod = value.Produto.produto_nome_rec + '                '
+                    prod = value.Produto.produto_nome_rec + '               '
                 }else if (value.Produto.produto_nome_rec.length < 10 && value.Produto.produto_nome_rec.length > 5) {
-                    prod = value.Produto.produto_nome_rec + '                  '
+                    prod = value.Produto.produto_nome_rec + '                   '
                 }else {
-                    prod = value.Produto.produto_nome_rec + '                    '
+                    prod = value.Produto.produto_nome_rec + '                       '
+                }
+
+                if(value.preco_venda.length == 4){
+                  pVenda = value.preco_venda + '   '
+                }else if(value.preco_venda.length == 3){
+                  pVenda = value.preco_venda + '    '
+                }else if(value.preco_venda.length == 2){
+                  pVenda = value.preco_venda + '     '
+                }else if(value.preco_venda.length == 1){
+                  pVenda = value.preco_venda + '       '
                 }
                   printer
                   .font('b')
                   .align('lt')
                   .size(1, 1)
-                  .text( quantidade + '  ' + prod + value.preco_venda + '     ' + value.Produto.Iva.iva_valor + '%  ' + pTotal)
+                  .text( quantidade + '  ' + prod + pVenda + value.Produto.Iva.iva_valor + '%  ' + pTotal)
               }
             }
             // ----------------------------------------------------
@@ -1075,6 +1132,7 @@ export default {
       }
 
       this.dialog = false
+      this.clipesquisa = '',
       this.produtos = [{
         input: null,
         idSearch: '',
@@ -1129,6 +1187,7 @@ export default {
       console.log('DADO VENDA: ', this.pagamento)
       this.PrintVenda()
 
+      this.clipesquisa = '',
       this.dialog = false
       this.produtos = [{
         total: '',
