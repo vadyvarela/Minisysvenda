@@ -59,7 +59,7 @@ module.exports = {
         quantidade: 'Quantidade',
         iva: 'IVA%',
         total: 'Total',
-        metodoPagamento: 'Método de Pagamento',
+        metodoPagamento: 'Pagamento',
         totalaPagar: 'TOTAL A PAGAR',
         valor: 'Valor',
         troco: 'TROCO',

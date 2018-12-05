@@ -79,6 +79,9 @@
                 <template slot="items" slot-scope="props">
                   <td>{{ props.item.categoria_nome }}</td>
                   <td class="text-xs-center ">{{ props.item.categoria_desc }}</td>
+                  <td>
+                    <img :src="'uploads/' + props.item.filename">
+                  </td>
                   <td class="justify-center layout px-0 dark">
                     <v-btn flat icon color="green" @click="editCategoria(props.item)"> <v-icon>edit</v-icon> </v-btn>
                     <v-btn flat icon color="red" @click="deleteCategoria(props.item)"> <v-icon>delete</v-icon> </v-btn>

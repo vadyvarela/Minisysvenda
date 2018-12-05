@@ -12,14 +12,17 @@ module.exports = {
     }
   },
   async post (req, res) {
-    try {
+    console.log('Dados enviados ---- ', req.body)
+    console.log('IMG enviados ---- ', req.file)
+    /* try {
       const categorias = await Categorias.create(req.body)
+      console.log('Dados enviados ---- ', req.body, req.file)
       res.send(categorias)
     } catch (err) {
       res.status(500).send({
         error: 'Um erro ocoreu ao tentar cadastrar categoria'
       })
-    }
+    } */
   },
   async put (req, res) {
     try {

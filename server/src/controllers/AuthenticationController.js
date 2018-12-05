@@ -49,7 +49,7 @@ module.exports = {
 
       if (!user) {
         return res.status(403).send({
-          error: 'Informações de login estão incoretos! Tente novamente'
+          error: 'Informações de login estão incoretos! Tente Novamente '
         })
       }
 

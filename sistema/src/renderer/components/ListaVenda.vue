@@ -168,6 +168,26 @@
                     <v-btn dark class="primary" @click="pesquisar"><v-icon>search</v-icon> {{ $t('message.btnPesquisar') }} </v-btn>
                     <v-btn dark class="success" @click="reload"><v-icon>loop</v-icon> {{ $t('message.btnResetar') }}</v-btn>
                   </v-flex>
+                  <v-flex xs12 sm2 md2>
+                    <v-flex xs12 sm12 md12>
+                      <v-dialog
+                        ref="dialog"
+                        v-model="modal"
+                        :return-value.sync="data_hoje"
+                        persistent
+                        lazy
+                        full-width
+                        width="290px"
+                      >
+                      <v-text-field slot="activator" outline v-model="data_hoje" label="Selecione um data" prepend-icon="event" readonly></v-text-field>
+                      <v-date-picker v-model="data_hoje" scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+                        <v-btn flat color="primary" @click="$refs.dialog.save(data_hoje), pesquisarhoje()">OK</v-btn>
+                      </v-date-picker>
+                      </v-dialog>
+                    </v-flex>
+                  </v-flex>
                 </v-card-title>
 
               <v-card-text>
@@ -191,7 +211,7 @@
                   </v-tooltip>
                   </template>
                   <template slot="items" slot-scope="props">
-                  <td class="text-xs-left"> {{ props.item.id }} </td>
+                  <td class="text-xs-left"> {{ props.item.id }} <!--<router-link :to="{ name: 'venda', params: { vendasId: props.item.id }}" > TXT </router-link>--> </td>
                   <td class="text-xs-left"> {{ props.item.createdAt | moment("DD-MM-YYYY") }} - {{ props.item.createdAt | moment("HH:mm:ss") }} </td>
                   <v-expansion-panel popout>
                     <v-expansion-panel-content>
@@ -199,9 +219,9 @@
                       <v-card>
                         <v-card-text> 
                           <tr class="nobordertr" v-bind:key="index" v-for="(produto,index) in props.item.ListaVendas">
-                          <td>{{produto.Produto.produto_nome}}</td>
+                          <td>{{ produto.Produto.produto_nome }}</td>
                           <td> / </td>
-                          <td>{{produto.quantidade}}</td>
+                          <td>{{ produto.quantidade }}</td>
                           </tr>
                         </v-card-text>
                       </v-card>
@@ -262,6 +282,8 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
+      data_hoje: new Date().toISOString().substr(0, 10),
+      modal: false,
       idSearch: "",
       menu1: false,
       menu2: false,
@@ -326,6 +348,16 @@ export default {
           userId: this.user.id
         })).data;
       }
+      this.data_ini = null,
+      this.data_fim = null,
+      this.total = this.desserts.length
+    },
+    async pesquisarhoje() {
+      this.desserts = (await VendaServices.hoje({
+        userId: this.user.id,
+        dataHoje: this.data_hoje
+      })).data;
+      this.total = this.desserts.length
     },
     async pesquisar() {
       //Lista venda
@@ -334,6 +366,7 @@ export default {
         dataIni: this.data_ini,
         dataFim: this.data_fim
       })).data;
+      this.total = this.desserts.length
     },
     async login() {
       try {
@@ -487,6 +520,10 @@ export default {
         }
       }
     }
+  },
+  created() {
+    this.currentTime = moment().format('LTS')
+    this.currentDate = moment().format('l')
   },
   computed: {
     ...mapState([

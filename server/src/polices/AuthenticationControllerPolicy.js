@@ -3,10 +3,8 @@ const Joi = require('joi')
 module.exports = {
   register (req, res, next) {
     const schema = {
-      nome: Joi.string().required(),
       usuario: Joi.string().required(),
       nivel: Joi.number().integer(),
-      status: Joi.number().integer(),
       id: Joi.number().integer(),
       password: Joi.string().regex(
         new RegExp('^[a-zA-Z0-9]{4,32}$')
@@ -17,21 +15,9 @@ module.exports = {
 
     if (error) {
       switch (error.details[0].context.key) {
-        case 'nome':
-          res.status(400).send({
-            error: 'Por favor informe um nome valido.'
-          })
-          break
-
         case 'usuario':
           res.status(400).send({
             error: 'Por favor informe um usuario valido. Caracter Min (3)'
-          })
-          break
-
-        case 'status':
-          res.status(400).send({
-            error: 'Por favor informe um nome valido.'
           })
           break
 

@@ -1,15 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
   const Venda = sequelize.define('Venda', {
-    data_venda: DataTypes.DATE,
+    data_venda: DataTypes.DATEONLY,
     meio_pagamento_dinheiro: DataTypes.STRING,
-    valor_venda_dinheiro: DataTypes.STRING,
+    valor_venda_dinheiro: DataTypes.INTEGER,
     meio_pagamento_vint4: DataTypes.STRING,
-    valor_venda_vint4: DataTypes.STRING,
+    valor_venda_vint4: DataTypes.INTEGER,
     meio_pagamento_cheque: DataTypes.STRING,
-    valor_venda_cheque: DataTypes.STRING,
-    valor_total: DataTypes.STRING,
-    valor_iva: DataTypes.STRING,
-    valor_troco: DataTypes.STRING,
+    valor_venda_cheque: DataTypes.INTEGER,
+    valor_total: DataTypes.INTEGER,
+    valor_iva: DataTypes.INTEGER,
+    valor_troco: DataTypes.INTEGER,
     status: DataTypes.STRING
   })
 

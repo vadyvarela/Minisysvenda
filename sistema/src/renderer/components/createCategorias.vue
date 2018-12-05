@@ -20,9 +20,15 @@
             </v-alert>
             <v-card class="elevation-1">
               <v-card-text>
-                <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
+                <v-form method="post" name="cadastar" enctype="multipart/form-data" >
                   <v-text-field required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de catgoria" type="text"></v-text-field>
                   <v-text-field required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrisção de categoria" type="text"></v-text-field>
+                  <input ref="file" name="categoria_desc" type="text">
+                  <!-- <input 
+                    type="file"
+                    ref="file"
+                    @change="selectFile"
+                  >-->
                   <v-content>
                   <v-container fluid>
                     <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
@@ -30,17 +36,18 @@
                       <v-text-field label="Select Image" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
                       <input
                         type="file"
-                        style="display: none"
-                        ref="image"
-                        accept="image/*"
+                        ref="file"
                         @change="onFilePicked"
+                        style="display: none"
+                        name=""
+                        accept="image/*"
                       >
                     </v-flex>
                   </v-container>
                   </v-content>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn v-shortkey="['enter']" @shortkey="create" :disabled="!valid" class="primary" @click="create">Cadastrar categoria</v-btn>
+                    <v-btn v-shortkey="['enter']" @shortkey="sendFile" :disabled="!valid" class="primary" @click="sendFile">Cadastrar categoria</v-btn>
                   </v-card-actions>
                </v-form>
               </v-card-text>
@@ -53,6 +60,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import CategoriasService from "@/services/CategoriasService";
 
 export default {
@@ -65,7 +73,8 @@ export default {
       nomeRules: [v => !!v || "Campo nome categoria é obrigatorio"],
       categoria: {
         categoria_nome: null,
-        categoria_desc: null
+        categoria_desc: null,
+        categoria_file: null
       },
       error: null,
       alert: false,
@@ -73,11 +82,9 @@ export default {
     };
   },
   methods: {
-    pickFile () {
-        this.$refs.image.click ()
-    },
-		onFilePicked (e) {
-      const files = e.target.files
+    onFilePicked (e) {
+      this.categoria.categoria_file = this.$refs.file.files[0]
+			const files = e.target.files
 			if(files[0] !== undefined) {
 				this.imageName = files[0].name
 				if(this.imageName.lastIndexOf('.') <= 0) {
@@ -87,8 +94,7 @@ export default {
 				fr.readAsDataURL(files[0])
 				fr.addEventListener('load', () => {
 					this.imageUrl = fr.result
-          this.imageFile = files[0] // this is an image file that can be sent to server...
-          console.log(files)
+					this.imageFile = files[0] // this is an image file that can be sent to server...
 				})
 			} else {
 				this.imageName = ''
@@ -96,8 +102,31 @@ export default {
 				this.imageUrl = ''
 			}
 		},
-    async create() {
-      if (this.$refs.form.validate()) {
+    pickFile () {
+        this.$refs.file.click ()
+    },
+    async sendFile() {
+      const formData = new FormData()
+      formData.append('file', this.categoria.categoria_file)
+      formData.append('categoria_nome', this.categoria.categoria_nome)
+      formData.append('categoria_desc', this.categoria.categoria_desc)
+      try {
+        await CategoriasService.post(formData)
+        this.alert = false;
+        this.$toast.success({
+            title: "Sucesso",
+            message: "Categoria cadastrado com sucesso"
+          });
+          this.snackbar = true
+          this.$router.push({
+            name: "categorias"
+          });
+      } catch (error) {
+        this.error = error.response.data.error;
+        this.alert = true;
+      }
+    },
+    /* async create() {
         try {
           await CategoriasService.post(this.categoria);
           this.$toast.success({
@@ -111,8 +140,7 @@ export default {
         } catch (err) {
           console.log(err);
         }
-      }
-    }
+    } */
   }
 };
 </script>

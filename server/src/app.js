@@ -11,6 +11,7 @@ const app = express()
 app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors())
+
 require('./routes')(app)
 sequelize.sync()
   .then(() => {

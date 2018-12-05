@@ -15,6 +15,43 @@ const vendaController = require('./controllers/vendaController')
 const listaVendaController = require('./controllers/listaVendaController')
 const metodoPagamentoController = require('./controllers/metodoPagamentoController')
 const ClienteController = require('./controllers/ClienteController')
+const multer = require('multer')
+const path = require('path')
+const { Categorias } = require('./models')
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/')
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '-' + Date.now() + '-' + file.originalname)
+  }
+})
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 100000 },
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb)
+  }
+}).single('file')
+
+const errorType = 'Error: Images Only'
+// Verificar tipo arquivo
+function checkFileType (file, cb) {
+  // Estecao permitidas
+  const filetypes = /jpeg|jpg|png/
+  // Verificar estencao
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
+  // Verificar Mimetypes
+  const mimetype = filetypes.test(file.mimetype)
+
+  if (mimetype && extname) {
+    return cb(null, true)
+  } else {
+    cb(errorType)
+  }
+}
 
 module.exports = (app) => {
   // Rotas Efetuar Login
@@ -66,12 +103,39 @@ module.exports = (app) => {
     FornecedoresController.put)
   app.delete('/fornecedores/:fornecedorId',
     FornecedoresController.delete)
-
   // Rotas categorias
   app.get('/categorias',
     CategoriasController.index)
-  app.post('/categorias',
-    CategoriasController.post)
+  app.post('/categorias', (req, res) => {
+    upload(req, res, (err) => {
+      if (err) {
+        return res.status(403).send({
+          error: err
+        })
+      } else {
+        if (req.file === undefined) {
+          return res.status(403).send({
+            error: 'ERRO: Favor selecione uma imagem'
+          })
+        } else {
+          try {
+            const categorias = Categorias.create({
+              categoria_nome: req.body.categoria_nome,
+              categoria_desc: req.body.categoria_desc,
+              filename: req.file.filename
+            })
+            res.send(categorias)
+          } catch (err) {
+            res.status(500).send({
+              error: 'Um erro ocoreu ao tentar cadastrar categoria'
+            })
+          }
+          // console.log('IMG ---- ', req.file, req.body)
+        }
+      }
+    })
+  })
+  // app.post('/categorias', upload.single('file'), CategoriasController.post)
   app.put('/categorias/:categoriaId',
     CategoriasController.put)
   app.delete('/categorias/:categoriaId',
@@ -138,6 +202,8 @@ module.exports = (app) => {
   // Rotas Vendas
   app.get('/vendas',
     vendaController.index)
+  app.get('/vendashoje',
+    vendaController.hoje)
   app.get('/vend',
     vendaController.indexTotal)
   app.get('/ven',

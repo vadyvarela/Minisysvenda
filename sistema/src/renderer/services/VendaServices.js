@@ -6,6 +6,11 @@ export default {
             params: params
         })
     },
+    hoje (params) {
+        return Api().get(`vendashoje`, {
+            params: params
+        })
+    },
     lastid () {
         return Api().get('venda')
     },

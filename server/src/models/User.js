@@ -2,7 +2,7 @@ const Promise = require('bluebird')
 const bcrypt = Promise.promisifyAll(require('bcrypt-nodejs'))
 
 function hashPassword (user, options) {
-  const SALT_FACTOR = 4
+  const SALT_FACTOR = 8
 
   if (!user.changed('password')) {
     return
@@ -18,24 +18,14 @@ function hashPassword (user, options) {
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    nome: {
-      type: DataTypes.STRING,
-      unique: true
-    },
     usuario: {
       type: DataTypes.STRING,
-      unique: true
-    },
-    status: {
-      type: DataTypes.INTEGER,
       unique: true
     },
     password: DataTypes.STRING,
     nivel: DataTypes.INTEGER
   }, {
     hooks: {
-      beforeCreate: hashPassword,
-      beforeUpdate: hashPassword,
       beforeSave: hashPassword
     }
   })

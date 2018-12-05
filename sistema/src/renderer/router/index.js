@@ -101,14 +101,14 @@ export default new Router({
       component: require('@/components/ListaCompra').default
     },
     {
-      path: '/vendas',
-      name: 'vendas',
-      component: require('@/components/createVenda').default
-    },
-    {
       path: '/listavendas',
       name: 'listavendas',
       component: require('@/components/ListaVenda').default
+    },
+    {
+      path: '/vendas',
+      name: 'vendas',
+      component: require('@/components/createVenda').default
     },
     {
       path: '*',

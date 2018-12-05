@@ -45,11 +45,23 @@ module.exports = {
   },
   async post (req, res) {
     try {
-      const cliente = await Cliente.create(req.body)
-      res.send(cliente)
+      const dados = req.body
+      const cliente = await Cliente.findOne({
+        where: {
+          $or: [ { cliente_nome: dados.cliente_nome }, { cliente_nif: dados.cliente_nif } ]
+        }
+      })
+      if (cliente.cliente_nome === dados.cliente_nome) {
+        res.status(400).send({
+          error: 'Cliente ' + dados.cliente_nome + ' ja se encontra cadastrado no nosso sistema.'
+        })
+      } else {
+        const cliente = await Cliente.create(req.body)
+        res.send(cliente)
+      }
     } catch (err) {
       res.status(500).send({
-        error: 'Um erro ocoreu ao tentar cadastrar cliente'
+        error: 'Ocoreu um erro ao cadastrar esse cliente'
       })
     }
   },
