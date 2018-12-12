@@ -4,6 +4,11 @@ export default {
     index () {
         return Api().get('produtos')
     },
+    indexByCat (params) {
+        return Api().get('produtosByCat', {
+            params: params
+        })
+    },
     lastid () {
         return Api().get('produtos')
     },

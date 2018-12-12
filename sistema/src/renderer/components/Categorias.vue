@@ -80,7 +80,24 @@
                   <td>{{ props.item.categoria_nome }}</td>
                   <td class="text-xs-center ">{{ props.item.categoria_desc }}</td>
                   <td>
-                    <img :src="'uploads/' + props.item.filename">
+                    <v-card width="100" style="padding:15px" flat tile class="d-flex">
+                      <v-img
+                        :src="'uploads/' + props.item.filename"
+                        :lazy-src="'uploads/' + props.item.filename"
+                        aspect-ratio="1"
+                        class="grey lighten-2"
+                      >
+                        <v-layout
+                          slot="placeholder"
+                          fill-height
+                          align-center
+                          justify-center
+                          ma-0
+                        >
+                          <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                        </v-layout>
+                      </v-img>
+                    </v-card>
                   </td>
                   <td class="justify-center layout px-0 dark">
                     <v-btn flat icon color="green" @click="editCategoria(props.item)"> <v-icon>edit</v-icon> </v-btn>

@@ -45,7 +45,7 @@ module.exports = {
         fornecedor_nome: 'Selecionar o fornecedor',
         // Textos
         dadosProduto: 'Dados de produto',
-        precodevenda: 'Preços de venda',
+        precodevenda: 'Preços de venda (CVE)',
         finalizar: 'Finalizar',
         loginadmin: 'LOGIN ADMINISTRADOR',
         TotalVendasFeitas: 'Total de vendas feitas',
@@ -58,7 +58,8 @@ module.exports = {
         refCodBarra: 'Ref/ Cód barra',
         quantidade: 'Quantidade',
         iva: 'IVA%',
-        total: 'Total',
+        total: 'Total (CVE)',
+        totall: 'Total',
         metodoPagamento: 'Pagamento',
         totalaPagar: 'TOTAL A PAGAR',
         valor: 'Valor',

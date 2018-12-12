@@ -4,6 +4,9 @@ export default {
     index () {
         return Api().get('categorias')
     },
+    indexImage () {
+        return Api().get('categoriasImage')
+    },
     post ( categoria ) {
         return Api().post('categorias', categoria)
     },

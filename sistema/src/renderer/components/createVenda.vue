@@ -136,6 +136,7 @@
                 <h2 class="myinputsdata">DATA: <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY") }} </span></h2>
               </v-flex>
               <v-flex sm2 md2>
+                <v-btn style="display:none;" dark v-shortkey="['f3']" @shortkey="left = !left" @click.stop="left = !left"> TXT </v-btn>
                 <v-btn large left router-link to="listavendas" dark class="primary"> {{ $t('message.listavendas') }} </v-btn>
               </v-flex>
             </v-layout>
@@ -277,14 +278,29 @@
                         <v-card-text>
                           <v-container grid-list-md>
                               <v-flex xs12>
-                                
                                 <h4 class="primary--text text-md-center" style="font-size:1.6em;"> {{ $t('message.totalaPagar') }} </h4>
-                                <p>
-                                  <vue-numeric readonly class="green--text" style="text-align:center; font-weight:bold; font-size:2em; width:100%" :value="pagamento.tapagar"></vue-numeric>
+                                <!-- div v-if="idSearch !== ''">
+                                  <h4 > {{ tt = pagamento.valor_venda_dinheiro - totalPrice - pagamento.valor_troco }}</h4>
+                                  <span v-if=" tt >= 0 ">
+                                    <vue-numeric readonly class="green--text" style="text-align:center; font-weight:bold; font-size:2em; width:100%" :value="tt"></vue-numeric>
+                                  </span>
+                                  <span v-else>
+                                    <vue-numeric readonly class="red--text" style="text-align:center; font-weight:bold; font-size:2em; width:100%" :value="tt"></vue-numeric>
+                                  </span>
+                                </div -->
+                                <div>
+                                  <v-layout >
+                                  <v-flex right xs6>
+                                    <vue-numeric readonly class="green--text" style="text-align:right; font-weight:bold; font-size:2em; width:100%" :value="pagamento.tapagar"></vue-numeric>
+                                  </v-flex>
+                                  <v-flex xs6>
+                                    <span class="green--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
+                                  </v-flex>
+                                  </v-layout >
                                   <input name="" v-model="pagamento.tapagar" type="hidden"/>
                                   <input name="" v-model="pagamento.tapagariva" type="hidden"/>
                                   <input name="" v-model="pagamento.tLiquido" type="hidden"/> 
-                                </p>
+                                </div>
                               </v-flex>
                               <v-flex xs12 sm12 md12>
                                 <div grid-list-md class="meudiv">
@@ -296,14 +312,15 @@
                                       <label>{{ $t('message.valor') }}</label>
                                     </v-flex>
                                   </v-layout>
-                                  <span hidden> {{pagamento.dinheiro = 'Dinheiro'}} </span>
-                                  <span hidden> {{pagamento.vint4 = 'Vint4'}} </span>
-                                  <span hidden> {{pagamento.cheque = 'Cheque'}} </span>
+                                  <span hidden> {{ pagamento.dinheiro = 'Dinheiro' }} </span>
+                                  <span hidden> {{ pagamento.vint4 = 'Vint4' }} </span>
+                                  <span hidden> {{ pagamento.cheque = 'Cheque' }} </span>
                                   <v-layout style="margin-bottom: -35px;">
                                     <v-flex xs7 sm7 md7>
                                       <v-text-field box readonly v-model.number="pagamento.dinheiro" type="text"></v-text-field>
                                     </v-flex>
                                       <v-flex xs5 sm5 md5>
+                                        <span hidden >{{ pagamento.valorentregado = pagamento.valor_venda_dinheiro }}</span>
                                         <v-text-field box v-model.number="pagamento.valorentregado" v-on:input="update" v-if="dialog" autofocus type="number"></v-text-field>
                                       </v-flex>
                                   </v-layout>
@@ -339,24 +356,30 @@
                               <v-flex xs12 sm12 md12>
                                 <v-text-field box v-model="pagamento.valorentregado" label="Valor entregado" ></v-text-field>
                               </v-flex>-->
-                              <div v-if="idSearch !== ''">
-                                <h4>TROOCO: {{ pagamento.valor_venda_dinheiro - totalPrice }}</h4>
-                              </div>
-                              <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
-                              <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
-                              <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
-                              <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
-                              <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadocheque != ''">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
-                              <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
+                              
+                              <h4 v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
+                              <h4 v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
+                              <h4 v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
+                              <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                              <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadocheque != ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
+                              <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCOOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
                 
                               <v-flex xs12>
                                 <h4 class="primary--text text-md-center" style="font-size:2em;"> {{ $t('message.troco') }} </h4>
-                                <p v-if="pagamento.valorentregado || pagamento.valorentregadovint4 || pagamento.valorentregadocheque" >
-                                  <vue-numeric v-if="pagamento.troco < 0 " readonly class="red--text" style="text-align:center; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
-                                  <vue-numeric v-else readonly class="green--text" style="text-align:center; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
-                                  <input name="produto_id" v-model="pagamento.troco" type="hidden"/>   
-                                </p>
-                                <p v-else class="red--text" style="text-align:center; font-size:1em;"> {{ $t('message.valorEntregado') }} </p>
+                                <v-layout >
+                                  <v-flex right xs6>
+                                    <p v-if="pagamento.valorentregado || pagamento.valorentregadovint4 || pagamento.valorentregadocheque" >
+                                      <vue-numeric v-if="pagamento.troco < 0" readonly class="red--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
+                                      <vue-numeric v-else readonly class="green--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
+                                      <input name="produto_id" v-model="pagamento.troco" type="hidden"/>   
+                                    </p>
+                                    <p v-else class="red--text" style="text-align:right; font-size:1em;"> {{ $t('message.valorEntregado') }} </p>
+                                  </v-flex>
+                                  <v-flex xs6>
+                                    <span v-if="pagamento.troco < 0" class="red--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
+                                    <span v-else class="green--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
+                                  </v-flex>
+                                </v-layout >
                               </v-flex>
                               
                           </v-container>
@@ -376,7 +399,7 @@
                     </v-dialog>
 
 
-                    <v-dialog v-model="dialogPesquisaCategoria" persistent max-width="850px" @keydown.esc="dialogPesquisaCategoria = false">
+                    <v-dialog v-model="dialogPesquisaCategoria" persistent max-width="1050px" @keydown.esc="dialogPesquisaCategoria = false">
                       <v-card align-center justify-center>
                         <v-card-title>
                           <v-spacer></v-spacer>
@@ -384,21 +407,135 @@
                         </v-card-title>
                         <h4 class="primary--text text-md-center" style="font-size:2em;">SELECIONE A CATEGORIA DO PRODUTO </h4>
                         <v-card-text>
-                          <v-container grid-list-md>
-                            <v-layout wrap>
-
-                              <div v-bind:key="index" v-for="(categoria, index) in categorias">
-                                <v-flex xs12>
-                                  <v-btn outline color="indigo"> {{ categoria.categoria_nome }} </v-btn>
-                                </v-flex>
-                              </div>
-                              
-                            </v-layout>
-                          </v-container>
+                        <v-container grid-list-sm fluid>
+                          <v-layout row wrap>
+                            <v-flex
+                              v-for="(categoria, index) in categorias"
+                              :key="index"
+                              xs2
+                              d-flex
+                              @click="prodByCat(myCatId = categoria.id)"
+                            >
+                              <v-card style="padding:15px" flat tile class="d-flex">
+                                <v-img
+                                  :src="'uploads/' + categoria.filename"
+                                  :lazy-src="'uploads/' + categoria.filename"
+                                  aspect-ratio="1"
+                                  class="grey lighten-2"
+                                >
+                                  <v-layout
+                                    slot="placeholder"
+                                    fill-height
+                                    align-center
+                                    justify-center
+                                    ma-0
+                                  >
+                                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                                  </v-layout>
+                                </v-img>
+                              </v-card>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
                         </v-card-text>
                       </v-card>
                     </v-dialog>
 
+                    <v-dialog v-model="dialogProdCategorias" persistent max-width="550px" @keydown.esc="dialogProdCategorias = false">
+                      <v-card align-center justify-center>
+                        <v-card-title>
+                          <v-spacer></v-spacer>
+                          <v-btn color="red" icon outline right small fab dark @click.native="dialogProdCategorias = false"><v-icon>close</v-icon></v-btn>
+                        </v-card-title>
+                        <v-card-text>
+                          <v-container grid-list-sm fluid>
+                          <v-layout row wrap>
+                            <v-flex
+                              v-for="(prod, idx) in listaprodutosCat"
+                              :key="idx"
+                              xs2
+                              d-flex
+                            >
+                              <span hidden> {{ nome = prod.produto_nome }} </span> 
+                              <v-btn center large color="primary darken-1" @click.native="dialogProdCategorias = false; pesquisarbyCat(index, nome)"> {{ prod.produto_nome }} </v-btn>
+                            </v-flex>
+                          </v-layout>
+                          </v-container>
+                        </v-card-text>
+                      </v-card>
+                    </v-dialog>
+                    <v-navigation-drawer width="900" temporary fixed :clipped="clipped" v-model="left" enable-resize-watcher app right >
+                      <v-divider></v-divider>
+                      <h4 class="primary--text text-md-center" style="font-size:2em; margin-top:4px">SELECIONE A CATEGORIA DO PRODUTO </h4>
+                      <v-divider></v-divider>
+                        <v-card-text>
+                        <v-container grid-list-sm fluid>
+                          <v-layout row wrap>
+                            <v-flex
+                              v-for="(categoria, index) in categorias"
+                              :key="index" xs3 d-flex @click="prodByCat1(myCatId = categoria.id)"
+                            >
+                              <v-card style="padding:12px" flat tile class="d-flex">
+                                <v-img
+                                  :src="'uploads/' + categoria.filename"
+                                  :lazy-src="'uploads/' + categoria.filename"
+                                  aspect-ratio="1"
+                                  class="grey lighten-2"
+                                >
+                                  <v-layout
+                                    slot="placeholder"
+                                    fill-height
+                                    align-center
+                                    justify-center
+                                    ma-0
+                                  >
+                                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                                  </v-layout>
+                                </v-img>
+                              </v-card>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
+                        </v-card-text>
+                    </v-navigation-drawer>
+                    <v-navigation-drawer width="900" temporary fixed right :clipped="clipped" v-model="drawer1" enable-resize-watcher app >
+                      <v-divider></v-divider>
+                      <h4 class="primary--text text-md-center" style="font-size:2em;">SELECIONE O PRODUTO </h4>
+                      <v-divider></v-divider>
+                        <v-card-text>
+                        <v-container grid-list-sm fluid>
+                          <v-layout row wrap>
+                            <v-flex
+                              v-for="(prod, idx) in listaprodutosCat"
+                              :key="idx"
+                              xs4
+                              d-flex
+                            >
+                              <span hidden> {{ nome = prod.produto_nome }} </span> 
+                              <v-card style="padding:12px" flat tile class="d-flex">
+                                <v-img
+                                  :src="'uploads/' + prod.filename"
+                                  :lazy-src="'uploads/' + prod.filename"
+                                  aspect-ratio="1"
+                                  class="grey lighten-2"
+                                  @click.native="dialogProdCategorias = false; pesquisarbyCat(index, nome)"
+                                >
+                                  <v-layout
+                                    slot="placeholder"
+                                    fill-height
+                                    align-center
+                                    justify-center
+                                    ma-0
+                                  >
+                                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                                  </v-layout>
+                                </v-img>
+                              </v-card>
+                            </v-flex>
+                          </v-layout>
+                          </v-container>
+                        </v-card-text>
+                    </v-navigation-drawer>
 
                     <v-dialog v-model="dialogPesquisa" persistent max-width="550px" @keydown.esc="dialogPesquisa = false">
                       <v-card align-center justify-center>
@@ -535,7 +672,7 @@
                     </v-dialog>
                     <v-flex xs12 sm2 md2>
                       <v-select
-                      reverse
+                        reverse
                         v-if="user.nivel == 1"
                         box color="blue"
                         v-model="produto.preco_venda"
@@ -639,7 +776,7 @@
         <v-flex xs12 sm10 md10>
         </v-flex>
         <v-flex class="text-xs-right" xs12 sm2 md2>
-          <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.total') }}: </span>
+          <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.totall') }}: </span>
           <vue-numeric v-if="totalPrice === ''" read-only style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="0"></vue-numeric>
           <vue-numeric v-else read-only style="font-size:2.5em; font-weight:700; color: #fff;" class="text-xs-left white--text" :value="totalPrice"></vue-numeric>
           <span style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-right white--text" > CVE</span>
@@ -668,6 +805,10 @@ import moment from 'moment'
 export default {
   data() {
     return {
+      drawer: false,
+      left: false,
+      drawer1: false,
+      clipped: false,
       vendasId: "",
       blockRemoval: true,
       idSearch: "",
@@ -686,6 +827,7 @@ export default {
       dialogNewCliente: false,
       dialogPesquisaCliente: false,
       dialogPesquisaCategoria: false,
+      dialogProdCategorias: false,
       dialog: false,
       showNav: true,
       snack: false,
@@ -699,6 +841,7 @@ export default {
       metodoPagamento: [],
       recibo: [],
       listaprodutos: [],
+      listaprodutosCat: [],
       listaclientes: [],
       usuario_nome: '',
       snackbar: false,
@@ -775,6 +918,24 @@ export default {
     }
   },
   methods: {
+    async prodByCat (myCatId) {
+      console.log('MEU ID CAT ___________.::::::::.____________', myCatId)
+      this.listaprodutosCat = (await ProdutosService.indexByCat({
+        CategoriaId: myCatId
+      })).data;
+      console.log('Meus Produtos', this.listaprodutosCat)
+      this.dialogPesquisaCategoria = false
+      this.dialogProdCategorias = true
+    },
+    async prodByCat1 (myCatId) {
+      console.log('MEU ID CAT ___________.::::::::.____________', myCatId)
+      this.listaprodutosCat = (await ProdutosService.indexByCat({
+        CategoriaId: myCatId
+      })).data;
+      console.log('Meus Produtos', this.listaprodutosCat)
+      this.left = false
+      this.drawer1 = true
+    },
     update: function(event) {
       this.pagamento.valorentregado = this.pagamento.valorentregado 
     },
@@ -934,7 +1095,34 @@ export default {
         console.log(err);
       }
     },
-    async pesquisar(index) {
+    async pesquisarbyCat(index, nome) {
+      this.drawer1 = false
+      try {
+        this.search = nome
+        this.produtos[index].search = nome
+        if (this.search !== '') {
+          this.produtos[index].idProduto = (await filterServices.bynamevenda(this.search)).data
+          console.log(this.produtos[index].idProduto)
+          Object.keys(this.produtos[index].idProduto).forEach(key => {
+            this.produtos[index].idProduto = this.produtos[index].idProduto[key];
+            if (this.produtos[index].idProduto.Stock.quantidade === 0) {
+              this.dialogStock = true
+            }
+          });
+          if (this.produtos[index].idProduto.length === 0) {
+            this.snackbar = true
+            this.$refs.search[index].reset();
+            this.$refs.search[index].focus();
+          } else {
+            this.$refs.searchquantidade[index].focus();
+          }
+          this.userconfig = ''
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async pesquisar(index, nome) {
       try {
         this.search = this.produtos[index].search
         if (this.search !== '') {
@@ -1269,13 +1457,14 @@ export default {
   },
   async mounted() {
     this.listaprodutos = (await ProdutosService.index()).data;
+    console.log('Meus Produtos', this.listaprodutos)
     this.listaclientes = (await ClienteServices.index()).data;
     console.log("MEUS CLI:", this.listaclientes)
     this.metodoPagamento = (await metodoPagamentoServices.index()).data;
     console.log('Metodos pagamento', this.metodoPagamento)
     this.idVenda = (await VendaServices.lastid()).data[0].id;
     console.log("ID VENDA: ", this.idVenda)
-    this.categorias = (await CategoriasService.index()).data;
+    this.categorias = (await CategoriasService.indexImage()).data;
     console.log("MEUS CAT:", this.categorias)
   },
   computed: {

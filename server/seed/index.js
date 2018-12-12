@@ -1,7 +1,8 @@
 const {
   sequelize,
   User,
-  MeioPagamento
+  MeioPagamento,
+  Usuarios
   /* Fornecedores,
   Produtos,
   Categorias,
@@ -11,8 +12,8 @@ const {
 const Promise = require('bluebird')
 const users = require('./users.json')
 const meiopagamento = require('./meiopagamento.json')
-/* const produtos = require('./produtos.json')
-const categorias = require('./categorias.json')
+const usuarios = require('./usuarios.json')
+/* const categorias = require('./categorias.json')
 const ivas = require('./iva.json') */
 
 sequelize.sync({ force: true })
@@ -29,13 +30,13 @@ sequelize.sync({ force: true })
       })
     )
 
-    /* await Promise.all(
-      produtos.map(produto => {
-        Produtos.create(produto)
+    await Promise.all(
+      usuarios.map(usuario => {
+        Usuarios.create(usuario)
       })
     )
 
-    await Promise.all(
+    /* await Promise.all(
       categorias.map(categoria => {
         Categorias.create(categoria)
       })

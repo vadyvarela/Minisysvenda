@@ -29,8 +29,6 @@
                     ref="file"
                     @change="selectFile"
                   >-->
-                  <v-content>
-                  <v-container fluid>
                     <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
                       <img :src="imageUrl" height="150" v-if="imageUrl"/>
                       <v-text-field label="Select Image" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
@@ -43,8 +41,6 @@
                         accept="image/*"
                       >
                     </v-flex>
-                  </v-container>
-                  </v-content>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn v-shortkey="['enter']" @shortkey="sendFile" :disabled="!valid" class="primary" @click="sendFile">Cadastrar categoria</v-btn>

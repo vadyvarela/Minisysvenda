@@ -15,12 +15,29 @@ module.exports = {
       const user = await User.create(req.body)
       const userJson = user.toJSON()
       res.send({
-        user: userJson,
-        token: jwtSignUser(userJson)
+        user: userJson
+        // token: jwtSignUser(userJson)
       })
     } catch (err) {
       res.status(400).send({
         error: 'Esse usuario ja se encontra cadastrado no nosso sistema.'
+      })
+    }
+  },
+  async putsenha (req, res) {
+    const dados = req.body
+    try {
+      const user = await User.update(req.body, {
+        where: { id: dados.id }
+      })
+      const userJson = user.toJSON()
+      console.log('================================ :::::::::::::::::::::::::::: ============================================', dados)
+      res.send({
+        user: userJson
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: err + 'Um erro ocoreu ao tentar atualizar dados do usuario'
       })
     }
   },
@@ -31,6 +48,20 @@ module.exports = {
           id: req.params.userId
         }
       })
+      res.send(req.body)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Um erro ocoreu ao tentar atualizar dados do usuario'
+      })
+    }
+  },
+  async inativar (req, res) {
+    const dados = req.body
+    console.log('================================:::::::::::::::::::::::::::: ============================================', dados)
+    try {
+      User.update({
+        status: 2
+      }, { where: { id: req.params.userId } })
       res.send(req.body)
     } catch (err) {
       res.status(500).send({
@@ -67,7 +98,7 @@ module.exports = {
       })
     } catch (err) {
       res.status(500).send({
-        error: 'Ocoreu um erro ao tenta efetuar login'
+        error: err + 'Ocoreu um erro ao tenta efetuar login'
       })
     }
   }

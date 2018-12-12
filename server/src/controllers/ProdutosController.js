@@ -19,6 +19,32 @@ module.exports = {
       })
     }
   },
+  async indexByCat (req, res) {
+    const { CategoriaId } = req.query
+    try {
+      const produtos = await Produtos.findAll({
+        include: [
+          { model: Fornecedores, required: true },
+          { model: Categorias, required: true },
+          { model: Iva, required: true },
+          { model: Stock, required: true },
+          { model: PVenda, required: true, order: [ ['id', 'ASC'] ] }
+        ],
+        where: {
+          CategoriaId: CategoriaId,
+          filename: {
+            $ne: null
+          }
+        },
+        order: [ ['id', 'DESC'] ]
+      })
+      res.send(produtos)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar os produtos', err
+      })
+    }
+  },
   async lastid (req, res) {
     try {
       await Produtos.findAll({

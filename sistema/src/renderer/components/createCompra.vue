@@ -137,7 +137,11 @@
                     <h4 hidden>IVA: {{ produto.iva = produtos[index].idProduto.Iva.iva_valor }}</h4>
                     <h4 hidden>PREÇO: {{ produto.preco = produtos[index].idProduto.produto_preco }}</h4>
                     <h4 hidden>ID PRODUTO: {{ produto.ProdutoId = produtos[index].idProduto.id }}</h4>
-                    <h4 hidden>TOTAL: {{ produto.total = produtos[index].idProduto.produto_preco * ( 1 + produtos[index].idProduto.Iva.iva_valor / 100) }}</h4>
+                    <span v-if="produto.preco">
+                      <h4 hidden>TOTAL LIQUIDO: {{ produto.totalLiquido = produto.quantidade * produto.preco_venda }}</h4>
+                      <h4 hidden>TOTAL: {{ produto.total = produto.quantidade * produto.preco }}*</h4>
+                      <span hidden> TOTAL IVA:  {{ produto.totalIva = produto.preco_venda * produto.iva / 100 }}</span>
+                      </span>
                   </div>
                   <div v-else>
                     <h2 hidden>Sorry Vady</h2>
@@ -145,7 +149,44 @@
 
                   <v-form ref="form" name="cadastar" autocomplete="off" lazy-validation>
                   <v-layout class="layoutmeu">
+                  
+                  <v-dialog v-model="dialogPesquisa" persistent max-width="550px" @keydown.esc="dialogPesquisa = false">
+                      <v-card align-center justify-center>
+                        <v-card-title>
+                          <v-spacer></v-spacer>
+                          <v-btn color="red" icon outline right small fab dark @click.native="dialogPesquisa = false"><v-icon>close</v-icon></v-btn>
+                        </v-card-title>
+                        <v-card-text>
+                          <v-container grid-list-md>
+                            <v-layout wrap>
+                              <v-flex xs12>
+                                <h4 class="primary--text text-md-center" style="font-size:2em;">DIGITE O NOME PRODUTO </h4>
+                                <p class="red--text" style="text-align:center; font-size:2em;">
+                                  <v-autocomplete
+                                    box
+                                    :items="listaprodutos"
+                                    color="white"
+                                    v-model="produto.search"
+                                    item-text="produto_nome"
+                                    item-value="produto_nome"
+                                    label="Nome produto"
+                                  ></v-autocomplete>
+                                  <input name="" v-model="produto.search" type="hidden"/>   
+                                </p>
+                              </v-flex>
+                              
+                            </v-layout>
+                          </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn center large color="primary darken-1" @click.native="dialogPesquisa = false; pesquisar(index)">OK</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+
                     <v-flex xs12 sm2 md2>
+                      <v-btn style="display:none;" v-shortkey="['ctrl','p']" @shortkey="searchProd" @click.stop="searchProd"></v-btn>
                       <v-text-field box v-model.trim="produto.search" ref="search" autofocus v-on:keyup.enter="pesquisar(index)" type="text"></v-text-field>
                       <input v-model="produto.search" type="hidden" autofocus />
                       <input v-model="produto.CompraId" type="hidden"/>
@@ -239,9 +280,11 @@ export default {
       showNav: true,
       snackText: '',
       e1: '',
+      listaprodutos: [],
       idCompra: [],
       usuario_nome: '',
       snackbar: false,
+      dialogPesquisa: false,
       color: 'error',
       mode: '',
       timeout: 6000,
@@ -285,6 +328,9 @@ export default {
     },
     removeNewProduto(index) {
       this.produtos.splice(index, 1)
+    },
+    async searchProd() {
+      this.dialogPesquisa = true
     },
     async pesquisar(index) {
       try {
@@ -330,6 +376,8 @@ export default {
     }
   },
   async mounted() {
+    this.listaprodutos = (await ProdutosService.index()).data;
+    console.log('Meus Produtos', this.listaprodutos)
     // Fazer requisicao para pegar todas os fornecedores
     this.FornecedoreId = (await FornecedoresService.index()).data;
     //this.ProdutoId = (await ProdutosService.index()).data;

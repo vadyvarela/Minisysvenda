@@ -11,6 +11,22 @@ module.exports = {
       })
     }
   },
+  async indexImage (req, res) {
+    try {
+      const categorias = await Categorias.findAll({
+        where: {
+          filename: {
+            $ne: null
+          }
+        }
+      })
+      res.send(categorias)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar as categorias com imagens'
+      })
+    }
+  },
   async post (req, res) {
     console.log('Dados enviados ---- ', req.body)
     console.log('IMG enviados ---- ', req.file)

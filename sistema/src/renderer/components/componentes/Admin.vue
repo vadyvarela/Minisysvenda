@@ -178,7 +178,6 @@
                 :dark="dark"
                 hide-details
               ></v-switch>
-
               </v-list-tile-content>
             </v-list-tile>
           </v-list>

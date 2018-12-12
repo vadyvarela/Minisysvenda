@@ -157,15 +157,15 @@ export default {
     async deleteUser (item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.user = Object.assign({}, item);
-      const res = await this.$confirm('Deseja mesmo apagar usuario?', {
+      const res = await this.$confirm('Deseja mesmo inativar usuario?', {
       });
       
       if (res) {
         try {
-          await UsuariosServices.delete(this.user);
+          await UsuariosServices.inativar(this.user);
           this.$toast.success({
           title: "Aviso",
-          message: "Usuario eliminado com sucesso"
+          message: "Usuario inativado com sucesso no sistema!"
           })
           this.$router.push({
             name: "usuarios"
@@ -216,12 +216,12 @@ export default {
       if (this.$refs.form.validate()) {
         try {
           this.dialogSenha = false;
-          const response = await AuthenticationService.put({
+          const response = await AuthenticationService.putsenha({
             id: this.user.id,
             nome: this.user.nome,
             usuario: this.user.usuario,
-            nivel: this.user.nivel,
-            password: this.user.password
+            password: this.user.password,
+            nivel: this.user.nivel
           })
           this.$toast.success({
             title: "Aviso",

@@ -5,6 +5,7 @@
           <v-toolbar color="primary" dark fixed app>
           <v-toolbar-title> {{ $t('message.bemvindominivenda') }} </v-toolbar-title>
           <v-spacer></v-spacer>
+          <v-btn :to="{name: 'registrarLoja'}" outline>Fazer cadastro</v-btn>
           <v-menu offset-y>
             <v-btn
               fab

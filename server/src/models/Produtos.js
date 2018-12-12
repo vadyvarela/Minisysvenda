@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     produto_nome: DataTypes.TEXT,
     produto_nome_rec: DataTypes.STRING,
     produto_barcode: DataTypes.STRING,
-    produto_preco: DataTypes.INTEGER
+    produto_preco: DataTypes.INTEGER,
+    filename: DataTypes.STRING
   })
 
   Produtos.associate = function (models) {

@@ -73,17 +73,17 @@
                   </v-flex>
 
                   <v-flex xs12 sm6 md4>
-                  <v-select
-                    box color="blue"
-                    name="IvaId"
-                    v-model="produto.IvaId"
-                    :items="IvaId"
-                    :label="$t('message.iva_valor')"
-                    required
-                    :rules="ivaRules"
-                    item-text="iva_valor"
-                    item-value="id"
-                  ></v-select>
+                    <v-select
+                      box color="blue"
+                      name="IvaId"
+                      v-model="produto.IvaId"
+                      :items="IvaId"
+                      :label="$t('message.iva_valor')"
+                      required
+                      :rules="ivaRules"
+                      item-text="iva_valor"
+                      item-value="id"
+                    ></v-select>
                   </v-flex>
 
                   <v-flex xs12 sm6 md4>
@@ -99,13 +99,25 @@
                     item-value="id"
                   ></v-select>
                   </v-flex>
+                  <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
+                      <img :src="imageUrl" height="150" v-if="imageUrl"/>
+                      <v-text-field label="Select Image" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
+                      <input
+                        type="file"
+                        ref="file"
+                        @change="onFilePicked"
+                        style="display: none"
+                        name=""
+                        accept="image/*"
+                      >
+                    </v-flex>
                   </v-layout>
                   </v-container>
                   <v-spacer></v-spacer>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <!--<v-btn v-shortkey="['enter']" @shortkey="create" :disabled="!valid" class="primary" @click="create">Cadastrar produto</v-btn>-->
-                    <v-btn color="primary" :disabled="!formIsValid" @click="create(), e1 = 2"> {{ $t('message.btnContinuar') }} </v-btn>
+                    <v-btn color="primary" :disabled="!formIsValid" @click="sendFile(), e1 = 2"> {{ $t('message.btnContinuar') }} </v-btn>
                   </v-card-actions>
               </v-form>
               </v-card-text>
@@ -196,6 +208,9 @@ import CBarraService from "@/services/CBarraService";
 export default {
   data() {
     return {
+      imageName: '',
+      imageUrl: '',
+      imageFile: '',
       e1: "",
       dialogPesquisa: false,
       snackbar: false,
@@ -250,6 +265,29 @@ export default {
     };
   },
   methods: {
+    onFilePicked (e) {
+      this.produto.produto_file = this.$refs.file.files[0]
+			const files = e.target.files
+			if(files[0] !== undefined) {
+				this.imageName = files[0].name
+				if(this.imageName.lastIndexOf('.') <= 0) {
+					return
+				}
+				const fr = new FileReader ()
+				fr.readAsDataURL(files[0])
+				fr.addEventListener('load', () => {
+					this.imageUrl = fr.result
+					this.imageFile = files[0]
+				})
+			} else {
+				this.imageName = ''
+				this.imageFile = ''
+				this.imageUrl = ''
+			}
+		},
+    pickFile () {
+      this.$refs.file.click ()
+    },
     openPriceModal() {
       this.dialog = true;
       console.log("Testando");
@@ -263,6 +301,30 @@ export default {
     },
     removeNewPrice(index) {
       this.precos.splice(index, 1);
+    },
+    async sendFile() {
+      const formData = new FormData()
+      formData.append('file', this.produto.produto_file)
+      formData.append('produto_code', this.produto.produto_code)
+      formData.append('produto_nome', this.produto.produto_nome)
+      formData.append('produto_nome_rec', this.produto.produto_nome_rec)
+      formData.append('produto_preco', this.produto.produto_preco)
+      formData.append('produto_barcode', this.produto.produto_barcode)
+      formData.append('FornecedoreId', this.produto.FornecedoreId)
+      formData.append('IvaId', this.produto.IvaId)
+      formData.append('CategoriaId', this.produto.CategoriaId)
+      try {
+        await ProdutosService.post(formData)
+        this.idProduto = (await filterServices.lastid()).data[0].id;
+        this.alert = false;
+        this.$toast.success({
+          title: "Sucesso",
+          message: "Produto cadastrado com sucesso"
+        })
+      } catch (error) {
+        this.error = error.response.data.error;
+        this.alert = true;
+      }
     },
     async cadProd() {
       try {
@@ -288,18 +350,18 @@ export default {
         console.log(err);
       }
     },
-    async create() {
+    /* async create() {
       try {
         await ProdutosService.post(this.produto);
         this.idProduto = (await filterServices.lastid()).data[0].id;
-        /* this.$toast.success({
+         this.$toast.success({
           title: "Sucesso",
           message: "Produto cadastrado com sucesso"
-        }) */
+        }) 
       } catch (err) {
         console.log(err);
       }
-    }
+    } */
   },
   computed: {
     formIsValid() {

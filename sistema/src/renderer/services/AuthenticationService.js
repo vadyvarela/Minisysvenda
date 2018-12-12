@@ -10,4 +10,7 @@ export default {
     put ( user ) {
         return Api().put(`usuarios/${user.id}`, user)
     },
+    putsenha ( credentials ) {
+        return Api().put(`usuario`, credentials)
+    }
 }
