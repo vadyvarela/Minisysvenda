@@ -418,8 +418,8 @@
                             >
                               <v-card style="padding:15px" flat tile class="d-flex">
                                 <v-img
-                                  :src="'uploads/' + categoria.filename"
-                                  :lazy-src="'uploads/' + categoria.filename"
+                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
+                                  :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
                                   aspect-ratio="1"
                                   class="grey lighten-2"
                                 >
@@ -477,8 +477,8 @@
                             >
                               <v-card style="padding:12px" flat tile class="d-flex">
                                 <v-img
-                                  :src="'uploads/' + categoria.filename"
-                                  :lazy-src="'uploads/' + categoria.filename"
+                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
+                                  :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
                                   aspect-ratio="1"
                                   class="grey lighten-2"
                                 >
@@ -514,8 +514,8 @@
                               <span hidden> {{ nome = prod.produto_nome }} </span> 
                               <v-card style="padding:12px" flat tile class="d-flex">
                                 <v-img
-                                  :src="'uploads/' + prod.filename"
-                                  :lazy-src="'uploads/' + prod.filename"
+                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + prod.filename"
+                                  :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + prod.filename"
                                   aspect-ratio="1"
                                   class="grey lighten-2"
                                   @click.native="dialogProdCategorias = false; pesquisarbyCat(index, nome)"
@@ -704,12 +704,14 @@
                     <v-flex xs12 sm1 md1>
                       <v-text-field reverse box readonly :value="produto.iva" name="" type="number"></v-text-field>
                     </v-flex>
-                    <v-flex xs12 sm2 md2>
+                    <v-flex xs12 sm1 md1>
                       <!--<v-text-field box readonly :value="produto.total" name="" type="number"></v-text-field>-->
                       <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; padding:15px 0px 12px 4px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>
-                      <v-btn small left fab outline @click="removeNewProdutoUpdate(index)" class="red"><v-icon>remove</v-icon></v-btn>
                     </v-flex>
                     <v-spacer></v-spacer>
+                    <v-flex xs12 sm1 md1>
+                      <v-btn small left fab outline @click="removeNewProdutoUpdate(index)" class="red"><v-icon>remove</v-icon></v-btn>
+                    </v-flex>
                   </v-layout>
                   </v-form>
                 </div>

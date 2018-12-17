@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import Vuetify from 'vuetify'
 import VeeValidate from 'vee-validate'
 import VueNumeric from 'vue-numeric'
-import { sync } from 'vuex-router-sync'
+// import { sync } from 'vuex-router-sync'
 // import store from '@/store/store'
 import axios from 'axios'
 // Atalhos teclado
@@ -83,7 +83,7 @@ Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 // Carregando o componente Header e Menu drawer
 Vue.component('panel', Panel)
-sync(store, router)
+// sync(store, router)
 /* eslint-disable no-new */
 new Vue({
   i18n,
