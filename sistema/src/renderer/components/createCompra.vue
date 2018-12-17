@@ -254,9 +254,9 @@
       <v-flex class="text-xs-right" xs12 sm3 md3>
         <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.total') }}: </span>
       </v-flex>
-      <v-flex class="" xs12 sm1 md1>
-        <vue-numeric v-if="totalPrice === ''" read-only style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="0"></vue-numeric>
-        <vue-numeric v-else read-only style="font-size:2.5em; font-weight:700; color: #fff;" class="text-xs-left white--text" :value="totalPrice"></vue-numeric>
+      <v-flex class="text-xs-right pr-4" xs12 sm2 md2>
+        <vue-numeric v-if="totalPrice === ''" read-only style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-right white--text" :value="0"></vue-numeric>
+        <vue-numeric v-else read-only style="font-size:2.5em; font-weight:700; color: #fff;" class="text-xs-right white--text" :value="totalPrice"></vue-numeric>
       </v-flex>
     </v-bottom-nav>
 
