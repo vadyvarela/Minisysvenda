@@ -17,8 +17,8 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" flat @click.native="dialog = false">Cancelar</v-btn>
-                <v-btn :disabled="!valid" color="blue darken-1" flat @click="update">Salvar</v-btn>
+                <v-btn color="blue darken-1" flat outline @click.native="dialog = false">Cancelar</v-btn>
+                <v-btn :disabled="!valid" outline color="green darken-1" flat @click="update">Salvar</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -53,7 +53,7 @@
                   <td class="text-xs-center ">{{ props.item.iva_desc }}</td>
                   <td class="justify-center layout px-0 dark">
                     <v-btn flat icon color="green" @click="editIva(props.item)"> <v-icon>edit</v-icon> </v-btn>
-                    <v-btn flat icon color="red" @click="deleteIva(props.item)"> <v-icon>delete</v-icon> </v-btn>
+                    <!--v-btn flat icon color="red" @click="deleteIva(props.item)"> <v-icon>delete</v-icon> </v-btn-->
                   </td>
                 </template>
             </v-data-table>

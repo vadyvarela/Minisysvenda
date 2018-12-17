@@ -7,7 +7,7 @@ module.exports = {
           { model: Fornecedores, required: true },
           { model: Categorias, required: true },
           { model: Iva, required: true },
-          { model: Stock, required: true },
+          { model: Stock, required: true, order: [ ['quantidade', 'ASC'] ] },
           { model: PVenda, required: true, order: [ ['id', 'ASC'] ] }
         ],
         order: [ ['id', 'DESC'] ]

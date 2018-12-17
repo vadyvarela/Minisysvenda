@@ -40,6 +40,7 @@
                   </v-flex>
                   <v-flex xs12 sm4 md4>
                     <v-btn dark class="primary" v-shortkey="['ctrl','p']" @shortkey="pesquisar" @click="pesquisar"><v-icon>search</v-icon> Pesquisar</v-btn>
+                    <v-btn dark class="success" @click="reload"><v-icon>loop</v-icon> {{ $t('message.btnResetar') }}</v-btn>
                   </v-flex>
                 </v-card-title>
                 <v-data-table
@@ -103,14 +104,18 @@ export default {
       dialog: false,
       headers: [
         { text: "Nome produto", value: "produto_nome", align: "left", sortable: true },
-        { text: "Categoria ", sortable: false },
-        { text: "Quantidade ", sortable: false }
+        { text: "Categoria ", sortable: true,  value: "categoria_nome" },
+        { text: "Quantidade ", sortable: true, value: "quantidade" }
       ],
       resultado: [],
       CategoriaId: []
     };
   },
   methods: {
+    async reload() {
+      this.resultado = (await ProdutosService.index()).data;
+      this.search = null
+    },
     async pesquisar(index) {
       try {
         this.resultado = (await filterServices.bycategory(this.search)).data
@@ -128,7 +133,7 @@ export default {
   },
   async mounted() {
     // Fazer requisicao para pegar todas os produtos
-    // this.desserts = (await ProdutosService.index()).data;
+    this.resultado = (await ProdutosService.index()).data;
     this.CategoriaId = (await CategoriasService.index()).data;
   }
 };

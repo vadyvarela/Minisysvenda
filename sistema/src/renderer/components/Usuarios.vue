@@ -18,7 +18,7 @@
                     >
                   </v-alert>
                   <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                    <v-text-field name="nome" :rules="senhaRules" v-model="user.password" label="Digite a nova sennha" type="text"></v-text-field>
+                    <v-text-field name="nome" :rules="senhaRules" v-model="password" label="Digite a nova sennha" type="text"></v-text-field>
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -68,6 +68,7 @@
               </v-flex>
               <v-flex text-lg-right xs6>
                 <v-btn router-link to="register" text-lg-right class="primary"><v-icon>perm_identity</v-icon> Novo usuario</v-btn>
+                <v-btn router-link to="inativeuser" text-lg-right dark class="red"><v-icon>block</v-icon> Usuarios Bloqueados</v-btn>
               </v-flex>
           </v-layout>
 
@@ -123,6 +124,7 @@ import AuthenticationService from "@/services/AuthenticationService";
 export default {
   data() {
     return {
+      password: null,
       error: null,
       alert: false,
       valid: true,
@@ -220,7 +222,7 @@ export default {
             id: this.user.id,
             nome: this.user.nome,
             usuario: this.user.usuario,
-            password: this.user.password,
+            password: this.password,
             nivel: this.user.nivel
           })
           this.$toast.success({

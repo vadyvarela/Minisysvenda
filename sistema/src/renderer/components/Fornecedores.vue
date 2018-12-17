@@ -19,8 +19,8 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" flat @click.native="dialog = false">Cancelar</v-btn>
-                <v-btn :disabled="!valid" color="blue darken-1" flat @click="update">Salvar dados</v-btn>
+                <v-btn color="blue darken-1" outline flat @click.native="dialog = false">Cancelar</v-btn>
+                <v-btn :disabled="!valid" outline color="green darken-1" flat @click="update">Salvar dados</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -85,7 +85,7 @@
                   <td class="text-sm-left">{{ props.item.fornecedor_movel }} </td>
                   <td class="justify-center layout px-0 dark">
                     <v-btn flat icon color="green" @click="editFornecedor(props.item)"> <v-icon>edit</v-icon> </v-btn>
-                    <v-btn flat icon color="red" @click="deleteFornecedor(props.item)"> <v-icon>delete</v-icon> </v-btn>
+                    <!-- v-btn flat icon color="red" @click="deleteFornecedor(props.item)"> <v-icon>delete</v-icon> </v-btn -->
                   </td>
                 </template>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">

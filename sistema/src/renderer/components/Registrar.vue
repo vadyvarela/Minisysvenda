@@ -25,13 +25,13 @@
               
               <v-card-text>
                 <v-form name="cadastar" autocomplete="off">
-                  <v-text-field name="usuario" v-model="nome" label="Nome completo" type="text"></v-text-field>
-                  <v-text-field name="usuario" v-model="usuario" label="usuario" type="text"></v-text-field>
-                  <v-text-field name="password" v-model="password" label="Palavra passe" id="password" type="password"></v-text-field>
+                  <v-text-field name="usuario" v-model="user.nome" label="Nome completo" type="text"></v-text-field>
+                  <v-text-field name="usuario" v-model="user.usuario" label="usuario" type="text"></v-text-field>
+                  <v-text-field name="password" v-model="user.password" label="Palavra passe" id="password" type="password"></v-text-field>
                   <v-select
                     name="nivel"
-                    v-model="nivel"
-                    :items="nivel"
+                    v-model="user.nivel"
+                    :items="user.nivel"
                     label="Nivel do usuario"
                     required
                     item-text="nome"
@@ -58,11 +58,13 @@ import AuthenticationService from "@/services/AuthenticationService";
 export default {
   data () {
     return {
-      nivel: [ { id: "1", nome: "Administrador" }, { id: "2", nome: "Vendedor"} ],
-      nome: "",
-      status: '1',
-      usuario: "",
-      password: "",
+      user: {
+        nivel: [ { id: "1", nome: "Administrador" }, { id: "2", nome: "Vendedor"} ],
+        nome: "",
+        status: '1',
+        usuario: "",
+        password: ""
+      },
       error: null,
       alert: false
     };
@@ -71,11 +73,11 @@ export default {
     async register() {
       try {
         const response = await AuthenticationService.register({
-          nome: this.nome,
-          usuario: this.usuario,
-          password: this.password,
-          nivel: this.nivel,
-          status: this.status
+          nome: this.user.nome,
+          usuario: this.user.usuario,
+          password: this.user.password,
+          nivel: this.user.nivel,
+          status: this.user.status
         });
         this.$toast.success({
           title: "Succeso",

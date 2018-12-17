@@ -296,7 +296,7 @@
                                   <v-flex xs6>
                                     <span class="green--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
                                   </v-flex>
-                                  </v-layout >
+                                  </v-layout>
                                   <input name="" v-model="pagamento.tapagar" type="hidden"/>
                                   <input name="" v-model="pagamento.tapagariva" type="hidden"/>
                                   <input name="" v-model="pagamento.tLiquido" type="hidden"/> 
@@ -321,6 +321,8 @@
                                     </v-flex>
                                       <v-flex xs5 sm5 md5>
                                         <span hidden >{{ pagamento.valorentregado = pagamento.valor_venda_dinheiro }}</span>
+                                        <span hidden >{{ pagamento.valorentregadovint4 = '' }}</span>
+                                        <span hidden >{{ pagamento.valorentregadocheque = '' }}</span>
                                         <v-text-field box v-model.number="pagamento.valorentregado" v-on:input="update" v-if="dialog" autofocus type="number"></v-text-field>
                                       </v-flex>
                                   </v-layout>
