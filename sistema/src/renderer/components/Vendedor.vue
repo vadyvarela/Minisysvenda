@@ -33,7 +33,7 @@
 </template>
 
 <script>
-
+import offline from 'v-offline';
 import { mapState } from 'vuex'
 import VendaServices from "@/services/VendaServices"
 import moment from 'moment'
@@ -49,7 +49,13 @@ export default {
             }
         }
     },
+    components: {
+        offline
+    },
     methods: {
+        handleConnectivityChange(status) {
+            console.log("MEU STATUS NA INTERNET", status);
+        },
         async createVenda() {
             console.log(this.venda)
             await VendaServices.post(this.venda);

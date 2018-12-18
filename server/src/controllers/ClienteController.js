@@ -51,17 +51,22 @@ module.exports = {
           $or: [ { cliente_nome: dados.cliente_nome }, { cliente_nif: dados.cliente_nif } ]
         }
       })
-      if (cliente.cliente_nome === dados.cliente_nome) {
-        res.status(400).send({
-          error: 'Cliente ' + dados.cliente_nome + ' ja se encontra cadastrado no nosso sistema.'
-        })
+      if (cliente !== null) {
+        if (cliente.cliente_nome === dados.cliente_nome) {
+          res.status(400).send({
+            error: 'Cliente ' + dados.cliente_nome + ' ja se encontra cadastrado no nosso sistema.'
+          })
+        } else {
+          const cliente = await Cliente.create(req.body)
+          res.send(cliente)
+        }
       } else {
         const cliente = await Cliente.create(req.body)
         res.send(cliente)
       }
     } catch (err) {
       res.status(500).send({
-        error: 'Ocoreu um erro ao cadastrar esse cliente'
+        error: 'Ocoreu um erro ao cadastrar esse cliente no sistema' + err
       })
     }
   },

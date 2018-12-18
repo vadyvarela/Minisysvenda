@@ -276,7 +276,7 @@
                       <v-card align-center justify-center>
                         <v-card-title>
                           <v-spacer></v-spacer>
-                          <v-btn color="red" icon outline right small fab dark @click.native="dialog = false"><v-icon>close</v-icon></v-btn>
+                          <v-btn color="red" small icon outline right fab dark @click.native="dialog = false"><v-icon>close</v-icon></v-btn>
                         </v-card-title>
                         <v-card-text>
                           <v-container grid-list-md>
@@ -362,12 +362,12 @@
                                 <v-text-field box v-model="pagamento.valorentregado" label="Valor entregado" ></v-text-field>
                               </v-flex>-->
                               
-                              <h4 v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
-                              <h4 v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
-                              <h4 v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
-                              <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
-                              <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadocheque != ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
-                              <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCOOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
+                              <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
+                              <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
+                              <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
+                              <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                              <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadocheque != ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
+                              <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCOOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
                 
                               <v-flex xs12>
                                 <h4 class="primary--text text-md-center" style="font-size:2em;"> {{ $t('message.troco') }} </h4>
@@ -378,11 +378,13 @@
                                       <vue-numeric v-else readonly class="green--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
                                       <input name="produto_id" v-model="pagamento.troco" type="hidden"/>   
                                     </p>
-                                    <p v-else class="red--text" style="text-align:right; font-size:1em;"> {{ $t('message.valorEntregado') }} </p>
+                                    <!--p v-else class="red--text" style="text-align:center; font-size:1em;"> {{ $t('message.valorEntregado') }} </p-->
                                   </v-flex>
                                   <v-flex xs6>
-                                    <span v-if="pagamento.troco < 0" class="red--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
-                                    <span v-else class="green--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
+                                    <p v-if="pagamento.valorentregado || pagamento.valorentregadovint4 || pagamento.valorentregadocheque" >
+                                      <span v-if="pagamento.troco < 0" class="red--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
+                                      <span v-else class="green--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
+                                    </p>
                                   </v-flex>
                                 </v-layout >
                               </v-flex>
@@ -423,8 +425,8 @@
                             >
                               <v-card style="padding:15px" flat tile class="d-flex">
                                 <v-img
-                                  :src="'uploads/' + categoria.filename"
-                                  :lazy-src="'uploads/' + categoria.filename"
+                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
+                                  :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
                                   aspect-ratio="1"
                                   class="grey lighten-2"
                                 >
@@ -482,8 +484,8 @@
                             >
                               <v-card style="padding:12px" flat tile class="d-flex">
                                 <v-img
-                                  :src="'uploads/' + categoria.filename"
-                                  :lazy-src="'uploads/' + categoria.filename"
+                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
+                                  :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
                                   aspect-ratio="1"
                                   class="grey lighten-2"
                                 >
@@ -503,24 +505,28 @@
                         </v-container>
                         </v-card-text>
                     </v-navigation-drawer>
-                    <v-navigation-drawer width="900" temporary fixed right :clipped="clipped" v-model="drawer1" enable-resize-watcher app >
+                    <v-navigation-drawer width="700" temporary fixed right :clipped="clipped" v-model="drawer1" enable-resize-watcher app >
                       <v-divider></v-divider>
+                      <v-btn small fab outline color="red" dark @click="backToCat"> <v-icon>keyboard_backspace</v-icon> </v-btn>
+                      
                       <h4 class="primary--text text-md-center" style="font-size:2em;">SELECIONE O PRODUTO </h4>
                       <v-divider></v-divider>
                         <v-card-text>
                         <v-container grid-list-sm fluid>
                           <v-layout row wrap>
+                            <h2 class="text-md-center red--text" v-if="listaprodutosCat.length === 0">Nenhum produro encontrado nessa categoria!</h2>
                             <v-flex
                               v-for="(prod, idx) in listaprodutosCat"
                               :key="idx"
                               xs4
                               d-flex
                             >
-                              <span hidden> {{ nome = prod.produto_nome }} </span> 
+                              <span hidden> {{ nome = prod.produto_nome }} </span>
+                              
                               <v-card style="padding:12px" flat tile class="d-flex">
                                 <v-img
-                                  :src="'uploads/' + prod.filename"
-                                  :lazy-src="'uploads/' + prod.filename"
+                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + prod.filename"
+                                  :lazy-src="'http://minisysvenda.innovatmedialab.com/server/src/uploads/' + prod.filename"
                                   aspect-ratio="1"
                                   class="grey lighten-2"
                                   @click.native="dialogProdCategorias = false; pesquisarbyCat(index, nome)"
@@ -709,14 +715,15 @@
                     <v-flex xs12 sm1 md1>
                       <v-text-field reverse box readonly :value="produto.iva" name="" type="number"></v-text-field>
                     </v-flex>
-                    <v-flex xs12 sm1 md1>
+                    <v-flex xs12 sm2 md2>
+                      <content>
                       <!--<v-text-field box readonly :value="produto.total" name="" type="number"></v-text-field>-->
-                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; width:100%; padding:15px 0px 12px 4px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>
+                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; width:80%; padding:15px 0px 12px 4px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>
+                      <v-btn style="margin-left:-4px; width:10%;" small icon left dark @click="removeNewProdutoUpdate(index)" class="red"><v-icon>remove</v-icon></v-btn>
+                      </content>
                     </v-flex>
                     <v-spacer></v-spacer>
-                    <v-flex xs12 sm1 md1>
-                      <v-btn small left fab outline @click="removeNewProdutoUpdate(index)" class="red"><v-icon>remove</v-icon></v-btn>
-                    </v-flex>
+                    
                   </v-layout>
                   </v-form>
                 </div>
@@ -749,7 +756,7 @@
     >
     <v-container>
       <v-layout style="margin-top:-22px;" wrap>
-        <v-flex class="text-xs-left" xs12 sm11 md11>
+        <v-flex class="text-xs-left" xs12 sm10 md10>
            <v-btn
             color="white"
             flat
@@ -767,7 +774,7 @@
             <v-icon>shopping_basket</v-icon>
           </v-btn>
         </v-flex>
-        <v-flex class="text-xs-left" xs12 sm1 md1>
+        <v-flex class="text-xs-right" xs12 sm2 md2>
           <v-btn
             color="white"
             flat
@@ -780,13 +787,15 @@
       </v-layout>
       <v-divider dark></v-divider>
       <v-layout style="">
-        <v-flex xs12 sm10 md10>
+        <v-flex xs12 sm9 md9>
         </v-flex>
-        <v-flex class="text-xs-right" xs12 sm2 md2>
+        <v-flex class="text-xs-right" xs12 sm3 md3>
           <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.totall') }}: </span>
           <vue-numeric v-if="totalPrice === ''" read-only style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="0"></vue-numeric>
+          <vue-numeric v-if="totalPrice >= 100000" read-only style="font-size:1.6em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="totalPrice"></vue-numeric>
           <vue-numeric v-else read-only style="font-size:2.5em; font-weight:700; color: #fff;" class="text-xs-left white--text" :value="totalPrice"></vue-numeric>
-          <span style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-right white--text" > CVE</span>
+          <span v-if="totalPrice >= 100000" style="font-size:1.6em; font-weight:700; color: #fff;" class="text-xs-right white--text" > CVE</span>
+          <span v-else style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-right white--text" > CVE</span>
         </v-flex>
       </v-layout>
     </v-container>
@@ -955,6 +964,10 @@ export default {
         tapagariva: '',
         troco: ''
       }
+    },
+    async backToCat () {
+      this.left = true
+      this.drawer1 = false
     },
     async prodByCat (myCatId) {
       console.log('MEU ID CAT ___________.::::::::.____________', myCatId)
