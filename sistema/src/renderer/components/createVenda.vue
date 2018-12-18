@@ -135,7 +135,10 @@
               <v-flex sm7 md7>
                 <h2 class="myinputsdata">DATA: <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY") }} </span></h2>
               </v-flex>
-              <v-flex sm2 md2>
+              <v-flex v-if="idSearch !== ''" sm1 md1>
+                <v-btn class="error" fab small @click.stop="reset"> <v-icon>loop</v-icon> </v-btn>
+              </v-flex>
+              <v-flex sm1 md1>
                 <v-btn style="display:none;" dark v-shortkey="['f3']" @shortkey="left = !left" @click.stop="left = !left"> TXT </v-btn>
                 <v-btn large left router-link to="listavendas" dark class="primary"> {{ $t('message.listavendas') }} </v-btn>
               </v-flex>
@@ -320,9 +323,9 @@
                                       <v-text-field box readonly v-model.number="pagamento.dinheiro" type="text"></v-text-field>
                                     </v-flex>
                                       <v-flex xs5 sm5 md5>
-                                        <span hidden >{{ pagamento.valorentregado = pagamento.valor_venda_dinheiro }}</span>
+                                        <!--span hidden >{{ pagamento.valorentregado = pagamento.valor_venda_dinheiro }}</span>
                                         <span hidden >{{ pagamento.valorentregadovint4 = '' }}</span>
-                                        <span hidden >{{ pagamento.valorentregadocheque = '' }}</span>
+                                        <span hidden >{{ pagamento.valorentregadocheque = '' }}</span -->
                                         <v-text-field box v-model.number="pagamento.valorentregado" v-on:input="update" v-if="dialog" autofocus type="number"></v-text-field>
                                       </v-flex>
                                   </v-layout>
@@ -706,12 +709,14 @@
                     <v-flex xs12 sm1 md1>
                       <v-text-field reverse box readonly :value="produto.iva" name="" type="number"></v-text-field>
                     </v-flex>
-                    <v-flex xs12 sm2 md2>
+                    <v-flex xs12 sm1 md1>
                       <!--<v-text-field box readonly :value="produto.total" name="" type="number"></v-text-field>-->
-                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; padding:15px 0px 12px 4px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>
-                      <v-btn small left fab outline @click="removeNewProdutoUpdate(index)" class="red"><v-icon>remove</v-icon></v-btn>
+                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; width:100%; padding:15px 0px 12px 4px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>
                     </v-flex>
                     <v-spacer></v-spacer>
+                    <v-flex xs12 sm1 md1>
+                      <v-btn small left fab outline @click="removeNewProdutoUpdate(index)" class="red"><v-icon>remove</v-icon></v-btn>
+                    </v-flex>
                   </v-layout>
                   </v-form>
                 </div>
@@ -920,6 +925,37 @@ export default {
     }
   },
   methods: {
+    async reset () {
+      this.idSearch = '',
+      this.produtos = [{
+        input: null,
+        idSearch: '',
+        total: '',
+        totalIva: '',
+        totalLiquido: '',
+        preco_venda: '',
+        VendaId: '',
+        ProdutoId: '',
+        idProduto: '',
+        quantidade: '1',
+        search: '',
+        stock_id: ''
+      }],
+      this.pagamento = {
+        ClienteId: '',
+        VendaId: '',
+        dinheiro: '',
+        vint4: '',
+        cheque: '',
+        valorentregado: '',
+        valorentregadovint4: '',
+        valorentregadocheque: '',
+        tLiquido: '',
+        tapagar: '',
+        tapagariva: '',
+        troco: ''
+      }
+    },
     async prodByCat (myCatId) {
       console.log('MEU ID CAT ___________.::::::::.____________', myCatId)
       this.listaprodutosCat = (await ProdutosService.indexByCat({
@@ -1589,9 +1625,24 @@ export default {
   margin-bottom: 5px;
   margin-left: 5px
 }
+@media only screen and (min-width: 1264px){
+  .container {
+      max-width: 100% !important;
+  }
+}
+@media only screen and (min-width: 960px){
+  .container {
+      max-width: 900px !important;
+  }
+}
 @media only screen and (min-width: 1904px){
   .container {
-      max-width: 100%;
+      max-width: 100% !important;
+  }
+}
+@media only screen and (min-width: 960px){
+  .container[data-v-51dca86c] {
+      max-width: 100% !important;
   }
 }
 .v-bottom-nav .v-btn {
