@@ -281,25 +281,43 @@
                         <v-card-text>
                           <v-container grid-list-md>
                               <v-flex xs12>
-                                <h4 class="primary--text text-md-center" style="font-size:1.6em;"> {{ $t('message.totalaPagar') }} </h4>
-                                <!-- div v-if="idSearch !== ''">
-                                  <h4 > {{ tt = pagamento.valor_venda_dinheiro - totalPrice - pagamento.valor_troco }}</h4>
-                                  <span v-if=" tt >= 0 ">
-                                    <vue-numeric readonly class="green--text" style="text-align:center; font-weight:bold; font-size:2em; width:100%" :value="tt"></vue-numeric>
-                                  </span>
-                                  <span v-else>
-                                    <vue-numeric readonly class="red--text" style="text-align:center; font-weight:bold; font-size:2em; width:100%" :value="tt"></vue-numeric>
-                                  </span>
-                                </div -->
-                                <div>
-                                  <v-layout >
-                                  <v-flex right xs6>
-                                    <vue-numeric readonly class="green--text" style="text-align:right; font-weight:bold; font-size:2em; width:100%" :value="pagamento.tapagar"></vue-numeric>
-                                  </v-flex>
-                                  <v-flex xs6>
-                                    <span class="green--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
-                                  </v-flex>
+                                <div v-if="idSearch !== ''">
+                                  
+                                  <h4 hidden> {{ tt = totalPrice - (pagamento.valor_venda_dinheiro - pagamento.valor_troco) }}</h4>
+                                  <v-layout v-if=" tt >= 0">
+                                    <h4 class="primary--text text-md-center" style="font-size:1.6em;"> A PAGAR </h4>
+                                    <v-flex right xs6>
+                                      <vue-numeric readonly class="green--text" style="text-align:right; font-weight:bold; font-size:2em; width:100%" :value="tt"></vue-numeric>
+                                    </v-flex>
+                                    <v-flex xs6>
+                                      <span class="green--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
+                                    </v-flex>
                                   </v-layout>
+                                  <v-layout v-else>
+                                    <v-flex md12 sm12 xs12>
+                                      <h4 class="primary--text text-md-center" style="font-size:1.6em;"> A DEVOLVER </h4>
+                                    </v-flex>
+                                    <v-flex right xs6>
+                                      <vue-numeric readonly class="red--text" style="text-align:right; font-weight:bold; font-size:2em; width:100%" :value="tt"></vue-numeric>
+                                    </v-flex>
+                                    <v-flex xs6>
+                                      <span class="red--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
+                                    </v-flex>
+                                  </v-layout>
+                                </div>
+                                <div>
+                                  <div v-if="idSearch === ''">
+                                    <h4 class="primary--text text-md-center" style="font-size:1.6em;"> {{ $t('message.totalaPagar') }} </h4>
+                                
+                                  <v-layout >
+                                    <v-flex right xs6>
+                                      <vue-numeric readonly class="green--text" style="text-align:right; font-weight:bold; font-size:2em; width:100%" :value="pagamento.tapagar"></vue-numeric>
+                                    </v-flex>
+                                    <v-flex xs6>
+                                      <span class="green--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
+                                    </v-flex>
+                                  </v-layout>
+                                  </div>
                                   <input name="" v-model="pagamento.tapagar" type="hidden"/>
                                   <input name="" v-model="pagamento.tapagariva" type="hidden"/>
                                   <input name="" v-model="pagamento.tLiquido" type="hidden"/> 
@@ -361,14 +379,22 @@
                               <v-flex xs12 sm12 md12>
                                 <v-text-field box v-model="pagamento.valorentregado" label="Valor entregado" ></v-text-field>
                               </v-flex>-->
-                              
-                              <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
-                              <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
-                              <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
-                              <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
-                              <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadocheque != ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
-                              <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCOOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
-                
+                              <span v-if="idSearch !== ''">
+                                  <h4 v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - tt }}</h4>
+                                  <h4 v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
+                                  <h4 v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
+                                  <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                                  <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadocheque != ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
+                                  <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCOOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
+                              </span>
+                              <span v-else>
+                                <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
+                                <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
+                                <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
+                                <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                                <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadocheque != ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
+                                <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCOOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
+                              </span>
                               <v-flex xs12>
                                 <h4 class="primary--text text-md-center" style="font-size:2em;"> {{ $t('message.troco') }} </h4>
                                 <v-layout >
@@ -718,7 +744,7 @@
                     <v-flex xs12 sm2 md2>
                       <content>
                       <!--<v-text-field box readonly :value="produto.total" name="" type="number"></v-text-field>-->
-                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; width:80%; padding:15px 0px 12px 4px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>
+                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; width:80%; padding:15px 3px 12px 4px; margin-right:-3px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>
                       <v-btn style="margin-left:-4px; width:10%;" small icon left dark @click="removeNewProdutoUpdate(index)" class="red"><v-icon>remove</v-icon></v-btn>
                       </content>
                     </v-flex>
