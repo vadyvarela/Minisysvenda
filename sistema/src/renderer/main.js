@@ -32,6 +32,9 @@ import messagesCh from './i18n/messages/ch.js'
 import attributesCh from './i18n/attributes/ch.js'
 import VuetifyConfirm from 'vuetify-confirm'
 
+import VueOffline from 'vue-offline'
+Vue.use(VueOffline)
+
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 // import 'bootstrap/dist/css/bootstrap.css'
@@ -43,7 +46,6 @@ var toastrConfigs = {
   position: 'top right',
   timeOut: 5000
 }
-Vue.component('detectNetwork', require('v-offline'));
 Vue.use(require('vue-moment'));
 Vue.use(Vuex)
 Vue.use(VueCharts)

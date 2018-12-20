@@ -1,12 +1,9 @@
 <template>
     <panel title="Vendas">
+      <div v-if="isOnline">
       <v-content>
       <v-layout justify-end row wrap>
         <v-flex text-lg-left xs12>
-          <detect-network v-on:detected-condition="detected">
-            <div slot="online">Your Online Content!</div>
-            <div slot="offline">Your Offline Content!</div>
-          </detect-network>
         </v-flex>
       </v-layout>
 
@@ -346,13 +343,15 @@
                                       <v-text-field box readonly v-model.number="pagamento.dinheiro" type="text"></v-text-field>
                                     </v-flex>
                                       <v-flex xs5 sm5 md5>
-                                        <!--span hidden >{{ pagamento.valorentregado = pagamento.valor_venda_dinheiro }}</span>
+                                        <!-- span >{{ pagamento.valorentregado }}</span>
                                         <span hidden >{{ pagamento.valorentregadovint4 = '' }}</span>
                                         <span hidden >{{ pagamento.valorentregadocheque = '' }}</span -->
                                         <div v-if="idSearch !== ''">
                                           <div v-if=" tt >= 0">
-                                            <v-text-field box v-model.number="pagamento.valorentregadoU" v-on:input="update" v-if="dialog" autofocus type="number"></v-text-field>
-                                            <h2 hidden> {{ pagamento.valorentregado = pagamento.valorentregadoU + pagamento.valor_venda_dinheiro }} </h2>
+                                            <v-text-field box v-model.number="valorentregadoU" v-if="dialog" autofocus type="number"></v-text-field>
+                                            <h2 hidden v-if="valorentregadoU !== null"> TROC: {{ pagamento.valorentregado = valorentregadoU + pagamento.valor_venda_dinheiro }} </h2>
+                                            <h2 hidden v-else-if="valorentregadoU === null"> TROC: {{ pagamento.valorentregado = pagamento.valor_venda_dinheiro }} </h2>
+                                            
                                           </div>
                                           <div v-else>
                                             <v-text-field box v-model.number="pagamento.valorentregado" readonly type="number"></v-text-field>
@@ -370,7 +369,11 @@
                                     <v-flex xs5 sm5 md5>
                                       <div v-if="idSearch !== ''">
                                         <div v-if=" tt >= 0">
-                                          <v-text-field box v-model.number="pagamento.valorentregadovint4" type="number"></v-text-field>
+                                          <v-text-field box v-model.number="valorentregadovint4U" type="number"></v-text-field>
+                                          <!-- h2> {{ pagamento.valorentregadovint4 = pagamento.valorentregadovint4U + pagamento.valor_venda_vint4 }} </h2-->
+                                          <h2 hidden v-if="valorentregadovint4U !== null"> TROC: {{ pagamento.valorentregadovint4 = valorentregadovint4U + pagamento.valor_venda_vint4 }} </h2>
+                                          <h2 hidden v-else-if="valorentregadovint4U === null"> TROC: {{ pagamento.valorentregadovint4 = pagamento.valor_venda_vint4 }} </h2>
+                                            
                                         </div>
                                         <div v-else>
                                           <v-text-field box v-model.number="pagamento.valorentregadovint4" readonly type="number"></v-text-field>
@@ -388,7 +391,10 @@
                                     <v-flex xs5 sm5 md5>
                                       <div v-if="idSearch !== ''">
                                         <div v-if=" tt >= 0">
-                                          <v-text-field box v-model.number="pagamento.valorentregadocheque" type="number"></v-text-field>
+                                          <v-text-field box v-model.number="valorentregadochequeU" type="number"></v-text-field>
+                                          <h2 hidden v-if="valorentregadochequeU !== null"> TROC: {{ pagamento.valorentregadocheque = valorentregadochequeU + pagamento.valor_venda_cheque }} </h2>
+                                          <h2 hidden v-else-if="valorentregadochequeU === null"> TROC: {{ pagamento.valorentregadocheque = pagamento.valor_venda_cheque }} </h2>
+                                            
                                         </div>
                                         <div v-else>
                                           <v-text-field readonly box v-model.number="pagamento.valorentregadocheque" type="number"></v-text-field>
@@ -417,14 +423,14 @@
                               </v-flex>-->
                               <h4> dinheiro {{ pagamento.valorentregado }} </h4>
                               <h4> vint4 {{ pagamento.valorentregadovint4 }} </h4>
-                              <h4> {{ pagamento.valorentregadocheque }} </h4>
+                              <h4> cheque {{ pagamento.valorentregadocheque }} </h4>
                               <span v-if="idSearch !== ''">
-                                  <h4  v-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 == null && pagamento.valorentregadocheque == null ">TROCO: {{ pagamento.trocoU =  pagamento.valorentregadoU - tt }}</h4>
-                                  <h4  v-if="pagamento.valorentregadovint4 != null && pagamento.valorentregado == null && pagamento.valorentregadocheque == null ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - tt }}</h4>
-                                  <h4  v-if="pagamento.valorentregadocheque != null && pagamento.valorentregado == null && pagamento.valorentregadovint4 == null ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - tt }}</h4>
-                                  <h4  v-else-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 != null">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - tt }}</h4>
-                                  <h4  v-else-if="pagamento.valorentregado != null && pagamento.valorentregadocheque != null">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - tt }}</h4>
-                                  <h4  v-else-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 != null && pagamento.valorentregadocheque != null ">TROOCOOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - tt }}</h4>
+                                  <h4  v-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 == null && pagamento.valorentregadocheque == null ">TROCO: {{ trocoU = valorentregadoU - tt }}</h4>
+                                  <h4  v-if="pagamento.valorentregadovint4 != null && pagamento.valorentregado == null && pagamento.valorentregadocheque == null ">TROOCO: {{ trocoU = valorentregadovint4U - tt }}</h4>
+                                  <h4  v-if="pagamento.valorentregadocheque != null && pagamento.valorentregado == null && pagamento.valorentregadovint4 == null ">TROOCOO: {{ trocoU = valorentregadochequeU - tt }}</h4>
+                                  <h4  v-else-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 != null">TROOCOOO: {{ trocoU = valorentregadoU + valorentregadovint4U + valorentregadochequeU - tt }}</h4>
+                                  <h4  v-else-if="pagamento.valorentregado != null && pagamento.valorentregadocheque != null">TROOCOOOO: {{ trocoU = valorentregadoU + valorentregadochequeU - tt }}</h4>
+                                  <h4  v-else-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 != null && pagamento.valorentregadocheque != null ">TROOCOOOOO: {{ trocoU = valorentregadoU + valorentregadovint4U + valorentregadochequeU - tt }}</h4>
                               </span>
                               <span v-else>
                                 <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
@@ -436,24 +442,24 @@
                               </span>
                               <v-flex xs12>
                                 <h4 class="primary--text text-md-center" style="font-size:2em;"> {{ $t('message.troco') }} </h4>
-                                <v-layout >
+                                <v-layout wrap>
                                   <v-flex right xs6>
-                                    
                                     <span v-if="idSearch !== ''">
-                                      <h2 v-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 == null && pagamento.valorentregadocheque == null ">{{ pagamento.troco = pagamento.valorentregado - totalPrice  }} </h2>
-                                      <h2 v-if="pagamento.valorentregadovint4 != null && pagamento.valorentregado == null && pagamento.valorentregadocheque == null ">{{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice  }} </h2>
+                                      <h2 v-if="pagamento.valorentregadocheque == 0 && pagamento.valorentregado > 0 && pagamento.valorentregadovint4 == 0 ">DINHEIRO {{ pagamento.troco = pagamento.valorentregado - totalPrice  }} </h2>
+                                      <h2 v-if="pagamento.valorentregadocheque > 0 && pagamento.valorentregado != null && pagamento.valorentregadovint4 == 0 ">CHEQUE {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice  }} </h2>
+                                      <h2 v-if="pagamento.valorentregadovint4 > 0 && pagamento.valorentregado != null && pagamento.valorentregadocheque == 0 ">VINT4 {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice  }} </h2>
                                       
                                       <p v-if="pagamento.valorentregado || pagamento.valorentregadovint4 || pagamento.valorentregadocheque" >
-                                        <vue-numeric v-if="pagamento.trocoU < 0" readonly class="red--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.trocoU"></vue-numeric>
-                                        <vue-numeric v-else readonly class="green--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.trocoU"></vue-numeric>
-                                        <input name="produto_id" v-model="pagamento.troco" type="hidden"/>   
+                                        <vue-numeric v-if="trocoU < 0" readonly class="red--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="trocoU"></vue-numeric>
+                                        <vue-numeric v-else readonly class="green--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="trocoU"></vue-numeric>
+                                        INPUT <input name="produto_id" v-model="pagamento.troco" type="text"/>   
                                       </p>
                                     </span>
                                     <span v-else>
                                     <p v-if="pagamento.valorentregado || pagamento.valorentregadovint4 || pagamento.valorentregadocheque" >
                                       <vue-numeric v-if="pagamento.troco < 0" readonly class="red--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
                                       <vue-numeric v-else readonly class="green--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
-                                      <input name="produto_id" v-model="pagamento.troco" type="hidden"/>   
+                                    <input name="produto_id" v-model="pagamento.troco" type="hidden"/>   
                                     </p>
                                     </span>
                                     <!--p v-else class="red--text" style="text-align:center; font-size:1em;"> {{ $t('message.valorEntregado') }} </p-->
@@ -878,8 +884,18 @@
       </v-layout>
     </v-container>
     </v-bottom-nav>
-
+    </div>
+    <div v-if="isOffline">
+      <v-content>
+      <v-layout justify-end row wrap>
+        <v-flex text-lg-left xs12>
+          <h2 class="red--text"> <span style="text-align:center">Sem conexão com a internet!</span> <br> Verifique sua conexão com a internet</h2>
+        </v-flex>
+      </v-layout>
+      </v-content>
+    </div>
     </panel>
+
 </template>
 
 <script>
@@ -899,7 +915,9 @@ import moment from 'moment'
 export default {
   data() {
     return {
-      state: null,
+      valorentregadoU: null,
+      valorentregadovint4U: null,
+      valorentregadochequeU: null,
       drawer: false,
       left: false,
       drawer1: false,
@@ -987,8 +1005,6 @@ export default {
         valorentregado: '',
         valorentregadovint4: '',
         valorentregadocheque: '',
-        valorentregadoU: '',
-        trocoU: '',
         tLiquido: '',
         tapagar: '',
         tapagariva: '',
@@ -1015,9 +1031,6 @@ export default {
     }
   },
   methods: {
-    detected(e) {
-      this.state = e;
-    },
     async reset () {
       this.idSearch = '',
       this.produtos = [{
@@ -1630,6 +1643,7 @@ export default {
     }
   },
   async mounted() {
+    
     this.listaprodutos = (await ProdutosService.index()).data;
     console.log('Meus Produtos', this.listaprodutos)
     this.listaclientes = (await ClienteServices.index()).data;
@@ -1642,6 +1656,9 @@ export default {
     console.log("MEUS CAT:", this.categorias)
   },
   computed: {
+    networkStatus () {
+        return this.isOnline ? 'My network is fine' : 'I am offline'
+    },
     ...mapState([
       'isUserLoggedIn',
       'user'

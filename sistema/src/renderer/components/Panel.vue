@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-app :dark="dark" v-if="isUserLoggedIn" id="inspire">
+  <v-app :dark="dark" v-if="isUserLoggedIn, isOnline" id="inspire">
     <div v-if="user.nivel == 1">
       <admin/>
     </div>
@@ -20,9 +20,11 @@
     </v-footer>
   </v-app>
 
-  <v-app v-if="!isUserLoggedIn" id="inspire">
-    <div class="pl-4 pr-4 pt-2 pb-2">
-    <v-btn xs6 class="primary" @click="logout">SAIR</v-btn>
+  <v-app v-if="!isUserLoggedIn, isOffline" id="inspire">
+    <div  class="pl-4 pr-4 pt-2 pb-2">
+    <h2 style="text-align:center" class="red--text"> <span>Sem conexão com a internet!</span> <br> Verifique sua conexão com a internet</h2>
+        
+    <!--v-btn xs6 class="primary" @click="logout">SAIR</v-btn-->
     </div>
   </v-app>
 
@@ -46,6 +48,9 @@ export default {
   methods: {
   },
   computed: {
+    networkStatus () {
+        return this.isOnline ? 'My network is fine' : 'I am offline'
+    },
     ...mapState([
       'isUserLoggedIn',
       'user'
