@@ -43,6 +43,7 @@ var toastrConfigs = {
   position: 'top right',
   timeOut: 5000
 }
+Vue.component('detectNetwork', require('v-offline'));
 Vue.use(require('vue-moment'));
 Vue.use(Vuex)
 Vue.use(VueCharts)

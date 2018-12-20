@@ -3,6 +3,10 @@
       <v-content>
       <v-layout justify-end row wrap>
         <v-flex text-lg-left xs12>
+          <detect-network v-on:detected-condition="detected">
+            <div slot="online">Your Online Content!</div>
+            <div slot="offline">Your Offline Content!</div>
+          </detect-network>
         </v-flex>
       </v-layout>
 
@@ -284,23 +288,25 @@
                                 <div v-if="idSearch !== ''">
                                   
                                   <h4 hidden> {{ tt = totalPrice - (pagamento.valor_venda_dinheiro - pagamento.valor_troco) }}</h4>
-                                  <v-layout v-if=" tt >= 0">
-                                    <h4 class="primary--text text-md-center" style="font-size:1.6em;"> A PAGAR </h4>
-                                    <v-flex right xs6>
+                                  <v-layout wrap v-if=" tt >= 0">
+                                    <v-flex md12 sm12 xs12>
+                                      <h4 class="primary--text text-md-center" style="font-size:1.6em;"> A PAGAR </h4>
+                                    </v-flex>
+                                    <v-flex right md6 sm6 xs6>
                                       <vue-numeric readonly class="green--text" style="text-align:right; font-weight:bold; font-size:2em; width:100%" :value="tt"></vue-numeric>
                                     </v-flex>
-                                    <v-flex xs6>
+                                    <v-flex md6 sm6 xs6>
                                       <span class="green--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
                                     </v-flex>
                                   </v-layout>
-                                  <v-layout v-else>
+                                  <v-layout wrap v-else>
                                     <v-flex md12 sm12 xs12>
                                       <h4 class="primary--text text-md-center" style="font-size:1.6em;"> A DEVOLVER </h4>
                                     </v-flex>
-                                    <v-flex right xs6>
+                                    <v-flex right md6 sm6 xs6>
                                       <vue-numeric readonly class="red--text" style="text-align:right; font-weight:bold; font-size:2em; width:100%" :value="tt"></vue-numeric>
                                     </v-flex>
-                                    <v-flex xs6>
+                                    <v-flex md6 sm6 xs6>
                                       <span class="red--text" style="text-align:left; font-weight:bold; font-size:2em; width:100%"> CVE</span>
                                     </v-flex>
                                   </v-layout>
@@ -308,7 +314,6 @@
                                 <div>
                                   <div v-if="idSearch === ''">
                                     <h4 class="primary--text text-md-center" style="font-size:1.6em;"> {{ $t('message.totalaPagar') }} </h4>
-                                
                                   <v-layout >
                                     <v-flex right xs6>
                                       <vue-numeric readonly class="green--text" style="text-align:right; font-weight:bold; font-size:2em; width:100%" :value="pagamento.tapagar"></vue-numeric>
@@ -344,7 +349,18 @@
                                         <!--span hidden >{{ pagamento.valorentregado = pagamento.valor_venda_dinheiro }}</span>
                                         <span hidden >{{ pagamento.valorentregadovint4 = '' }}</span>
                                         <span hidden >{{ pagamento.valorentregadocheque = '' }}</span -->
-                                        <v-text-field box v-model.number="pagamento.valorentregado" v-on:input="update" v-if="dialog" autofocus type="number"></v-text-field>
+                                        <div v-if="idSearch !== ''">
+                                          <div v-if=" tt >= 0">
+                                            <v-text-field box v-model.number="pagamento.valorentregadoU" v-on:input="update" v-if="dialog" autofocus type="number"></v-text-field>
+                                            <h2 hidden> {{ pagamento.valorentregado = pagamento.valorentregadoU + pagamento.valor_venda_dinheiro }} </h2>
+                                          </div>
+                                          <div v-else>
+                                            <v-text-field box v-model.number="pagamento.valorentregado" readonly type="number"></v-text-field>
+                                          </div>
+                                        </div>
+                                        <div v-else>
+                                          <v-text-field box v-model.number="pagamento.valorentregado" v-on:input="update" v-if="dialog" autofocus type="number"></v-text-field>
+                                        </div>
                                       </v-flex>
                                   </v-layout>
                                   <v-layout style="margin-bottom: -35px;">
@@ -352,15 +368,35 @@
                                       <v-text-field readonly box :value="pagamento.vint4" type="text"></v-text-field>
                                     </v-flex>
                                     <v-flex xs5 sm5 md5>
-                                      <v-text-field box v-model.number="pagamento.valorentregadovint4" type="number"></v-text-field>
+                                      <div v-if="idSearch !== ''">
+                                        <div v-if=" tt >= 0">
+                                          <v-text-field box v-model.number="pagamento.valorentregadovint4" type="number"></v-text-field>
+                                        </div>
+                                        <div v-else>
+                                          <v-text-field box v-model.number="pagamento.valorentregadovint4" readonly type="number"></v-text-field>
+                                        </div>
+                                      </div>
+                                      <div v-else>
+                                        <v-text-field box v-model.number="pagamento.valorentregadovint4" type="number"></v-text-field>
+                                      </div>
                                     </v-flex>
                                   </v-layout>
                                   <v-layout style="margin-bottom: -35px;">
                                     <v-flex xs7 sm7 md7>
-                                      <v-text-field box readonly :value="pagamento.cheque" type="text"></v-text-field>
+                                      <v-text-field box :value="pagamento.cheque" type="text"></v-text-field>
                                     </v-flex>
                                     <v-flex xs5 sm5 md5>
-                                      <v-text-field box v-model.number="pagamento.valorentregadocheque" type="number"></v-text-field>
+                                      <div v-if="idSearch !== ''">
+                                        <div v-if=" tt >= 0">
+                                          <v-text-field box v-model.number="pagamento.valorentregadocheque" type="number"></v-text-field>
+                                        </div>
+                                        <div v-else>
+                                          <v-text-field readonly box v-model.number="pagamento.valorentregadocheque" type="number"></v-text-field>
+                                        </div>
+                                      </div>
+                                      <div v-else>
+                                        <v-text-field box v-model.number="pagamento.valorentregadocheque" type="number"></v-text-field>
+                                      </div>
                                     </v-flex>
                                   </v-layout>
                                 </div>
@@ -379,13 +415,16 @@
                               <v-flex xs12 sm12 md12>
                                 <v-text-field box v-model="pagamento.valorentregado" label="Valor entregado" ></v-text-field>
                               </v-flex>-->
+                              <h4> dinheiro {{ pagamento.valorentregado }} </h4>
+                              <h4> vint4 {{ pagamento.valorentregadovint4 }} </h4>
+                              <h4> {{ pagamento.valorentregadocheque }} </h4>
                               <span v-if="idSearch !== ''">
-                                  <h4 v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - tt }}</h4>
-                                  <h4 v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
-                                  <h4 v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
-                                  <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
-                                  <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadocheque != ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
-                                  <h4 v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCOOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
+                                  <h4  v-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 == null && pagamento.valorentregadocheque == null ">TROCO: {{ pagamento.trocoU =  pagamento.valorentregadoU - tt }}</h4>
+                                  <h4  v-if="pagamento.valorentregadovint4 != null && pagamento.valorentregado == null && pagamento.valorentregadocheque == null ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - tt }}</h4>
+                                  <h4  v-if="pagamento.valorentregadocheque != null && pagamento.valorentregado == null && pagamento.valorentregadovint4 == null ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - tt }}</h4>
+                                  <h4  v-else-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 != null">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - tt }}</h4>
+                                  <h4  v-else-if="pagamento.valorentregado != null && pagamento.valorentregadocheque != null">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - tt }}</h4>
+                                  <h4  v-else-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 != null && pagamento.valorentregadocheque != null ">TROOCOOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - tt }}</h4>
                               </span>
                               <span v-else>
                                 <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
@@ -399,11 +438,24 @@
                                 <h4 class="primary--text text-md-center" style="font-size:2em;"> {{ $t('message.troco') }} </h4>
                                 <v-layout >
                                   <v-flex right xs6>
+                                    
+                                    <span v-if="idSearch !== ''">
+                                      <h2 v-if="pagamento.valorentregado != null && pagamento.valorentregadovint4 == null && pagamento.valorentregadocheque == null ">{{ pagamento.troco = pagamento.valorentregado - totalPrice  }} </h2>
+                                      <h2 v-if="pagamento.valorentregadovint4 != null && pagamento.valorentregado == null && pagamento.valorentregadocheque == null ">{{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice  }} </h2>
+                                      
+                                      <p v-if="pagamento.valorentregado || pagamento.valorentregadovint4 || pagamento.valorentregadocheque" >
+                                        <vue-numeric v-if="pagamento.trocoU < 0" readonly class="red--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.trocoU"></vue-numeric>
+                                        <vue-numeric v-else readonly class="green--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.trocoU"></vue-numeric>
+                                        <input name="produto_id" v-model="pagamento.troco" type="hidden"/>   
+                                      </p>
+                                    </span>
+                                    <span v-else>
                                     <p v-if="pagamento.valorentregado || pagamento.valorentregadovint4 || pagamento.valorentregadocheque" >
                                       <vue-numeric v-if="pagamento.troco < 0" readonly class="red--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
                                       <vue-numeric v-else readonly class="green--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="pagamento.troco"></vue-numeric>
                                       <input name="produto_id" v-model="pagamento.troco" type="hidden"/>   
                                     </p>
+                                    </span>
                                     <!--p v-else class="red--text" style="text-align:center; font-size:1em;"> {{ $t('message.valorEntregado') }} </p-->
                                   </v-flex>
                                   <v-flex xs6>
@@ -424,7 +476,7 @@
                             <v-btn large color="success darken-1" :disabled="!stockIsValid" @click="createVendaProd(index)"> {{ $t('message.fcompraimprimir') }} </v-btn>
                           </div>
                           <div v-if="idSearch !== '' && pagamento.troco >= 0">
-                            <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="updateVendaPrinter(index)"> Atualizar Venda </v-btn>
+                            <v-btn large right color="primary darken-1" :disabled="!stockIsValid" @click.native="updateVendaNoPrinter(index)"> Atualizar Venda </v-btn>
                             <v-btn large color="success darken-1" :disabled="!stockIsValid" @click.native="updateVenda(index)"> Atualizar & Imprimir Venda </v-btn>
                           </div>
                         </v-card-actions>
@@ -847,6 +899,7 @@ import moment from 'moment'
 export default {
   data() {
     return {
+      state: null,
       drawer: false,
       left: false,
       drawer1: false,
@@ -934,6 +987,8 @@ export default {
         valorentregado: '',
         valorentregadovint4: '',
         valorentregadocheque: '',
+        valorentregadoU: '',
+        trocoU: '',
         tLiquido: '',
         tapagar: '',
         tapagariva: '',
@@ -960,6 +1015,9 @@ export default {
     }
   },
   methods: {
+    detected(e) {
+      this.state = e;
+    },
     async reset () {
       this.idSearch = '',
       this.produtos = [{
@@ -1104,6 +1162,45 @@ export default {
           })
         }
       }
+    },
+    async updateVendaNoPrinter(index) {
+      console.log("TESTE:- ", this.pagamento)
+      listaVendaServices.postnewprod(this.produtos)
+      VendaServices.putidpagamento(this.pagamento)
+      
+      this.idSearch = ''
+      this.dialog = false
+      this.produtos = [{
+        total: '',
+        totalIva: '',
+        totalLiquido: '',
+        preco_venda: '',
+        VendaId: '',
+        ProdutoId: '',
+        idProduto: '',
+        quantidade: '1',
+        search: '',
+        stock_id: ''
+      }],
+      this.pagamento = {
+        ClienteId: '',
+        VendaId: '',
+        dinheiro: '',
+        vint4: '',
+        cheque: '',
+        valorentregado: '',
+        valorentregadovint4: '',
+        valorentregadocheque: '',
+        tLiquido: '',
+        tapagar: '',
+        tapagariva: '',
+        troco: ''
+      },
+      this.$refs.search[index].focus()
+      this.$toast.success({
+        title: "Sucesso",
+        message: "Venda atualizada com sucesso no sistema!"
+      })
     },
     async updateVenda(index) {
       console.log("TESTE:- ", this.pagamento)
