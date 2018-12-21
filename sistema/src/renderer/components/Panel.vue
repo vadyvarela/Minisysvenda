@@ -21,11 +21,7 @@
   </v-app>
 
   <v-app v-if="!isUserLoggedIn, isOffline" id="inspire">
-    <div  class="pl-4 pr-4 pt-2 pb-2">
-    <h2 style="text-align:center" class="red--text"> <span>Sem conexão com a internet!</span> <br> Verifique sua conexão com a internet</h2>
-        
-    <!--v-btn xs6 class="primary" @click="logout">SAIR</v-btn-->
-    </div>
+    <conexao/>
   </v-app>
 
 </div>
@@ -34,11 +30,13 @@
 <script>
 import Vendedor from "@/components/componentes/Vendedor";
 import Admin from "@/components/componentes/Admin";
+import Conexao from "@/components/componentes/Conexao";
 import { mapState } from 'vuex'
 export default {
   components: {
     Vendedor,
-    Admin
+    Admin,
+    Conexao
   },
   data: () => ({
     dark: false,
@@ -46,6 +44,29 @@ export default {
     drawer: null,
   }),
   methods: {
+    switchLocale () {
+      if (this.$i18n.locale === 'pt') {
+        this.$i18n.locale = 'en'
+      } else if (this.$i18n.locale === 'en') {
+        this.$i18n.locale = 'ch'
+      } else {
+        this.$i18n.locale = 'pt'
+      }
+    },
+    switchLocalePt () {
+      this.$i18n.locale = 'pt'
+    },
+    switchLocaleCh () {
+      this.$i18n.locale = 'ch'
+    },
+    logout () {
+      this.$store.dispatch('setToken', null)
+      this.$store.dispatch('setUser', null)
+      //TODO: redirect to login page
+      this.$router.push({
+        name: 'login'
+      })
+    }
   },
   computed: {
     networkStatus () {
@@ -55,6 +76,15 @@ export default {
       'isUserLoggedIn',
       'user'
     ]),
+    displayLocale () {
+      let other = 'Portugues'
+      if (this.$i18n.locale === 'pt') {
+        other = 'Ingles'
+      } else if (this.$i18n.locale === 'en') {
+        other = 'Chines'
+      }
+      return other
+    }
   },
   props: [
     'title'

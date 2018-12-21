@@ -1,5 +1,6 @@
 <template>
-  <v-app id="login" class="primary">
+<div>
+  <v-app id="login" v-if="isOnline" class="primary">
     <v-content>
       <div>
           <v-toolbar color="primary" dark fixed app>
@@ -78,9 +79,14 @@
       </v-container>
     </v-content>
   </v-app>
+  <v-app v-if="isOffline" id="inspire">
+    <conexao/>
+  </v-app>
+</div>
 </template>
 <script>
 import AuthenticationService from "@/services/AuthenticationService";
+import Conexao from "@/components/componentes/Conexao";
 // import Loader from "./componentes/loader.vue"
 
 export default {
@@ -92,6 +98,9 @@ export default {
       alert: false,
       show1: false
     };
+  },
+  components: {
+    Conexao
   },
   methods: {
     async login() {

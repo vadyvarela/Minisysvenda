@@ -354,7 +354,11 @@
                                             
                                           </div>
                                           <div v-else>
-                                            <v-text-field box v-model.number="pagamento.valorentregado" readonly type="number"></v-text-field>
+                                            <v-text-field box readonly type="number"></v-text-field>
+                                            {{ pagamento.troco = pagamento.valor_venda_dinheiro - totalPrice }}
+                                            <input name="produto_id" v-model="pagamento.troco" type="text"/>
+                                            <h2 hidden> {{ pagamento.valorentregado = pagamento.valor_venda_dinheiro + (tt) }} </h2>
+                                            
                                           </div>
                                         </div>
                                         <div v-else>
@@ -394,7 +398,6 @@
                                           <v-text-field box v-model.number="valorentregadochequeU" type="number"></v-text-field>
                                           <h2 hidden v-if="valorentregadochequeU !== null"> TROC: {{ pagamento.valorentregadocheque = valorentregadochequeU + pagamento.valor_venda_cheque }} </h2>
                                           <h2 hidden v-else-if="valorentregadochequeU === null"> TROC: {{ pagamento.valorentregadocheque = pagamento.valor_venda_cheque }} </h2>
-                                            
                                         </div>
                                         <div v-else>
                                           <v-text-field readonly box v-model.number="pagamento.valorentregadocheque" type="number"></v-text-field>
@@ -555,7 +558,7 @@
                         </v-card-text>
                       </v-card>
                     </v-dialog>
-                    <v-navigation-drawer width="900" temporary fixed :clipped="clipped" v-model="left" enable-resize-watcher app right >
+                    <v-navigation-drawer width="700" temporary fixed :clipped="clipped" v-model="left" enable-resize-watcher app right >
                       <v-divider></v-divider>
                       <h4 class="primary--text text-md-center" style="font-size:2em; margin-top:4px">SELECIONE A CATEGORIA DO PRODUTO </h4>
                       <v-divider></v-divider>

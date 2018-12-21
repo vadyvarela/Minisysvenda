@@ -14,6 +14,11 @@ export default {
     lastid () {
         return Api().get('venda')
     },
+    DadosGeral (params) {
+        return Api().get('vendT', { 
+            params: params 
+        })
+    },
     indexTotal (params) {
         return Api().get('vend', { 
             params: params 
@@ -32,5 +37,18 @@ export default {
     },
     putidpagamento ( venda ) {
         return Api().put('venda', venda)
-    }
+    },
+    // Fitro por datas
+    semanal () {
+        return Api().get('vendasemanal')
+    },
+    diario () {
+        return Api().get('vendadiario')
+    },
+    mensal () {
+        return Api().get('vendamensal')
+    },
+    trimestral () {
+        return Api().get('vendatrimestral')
+    },
 }

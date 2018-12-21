@@ -291,6 +291,8 @@ module.exports = (app) => {
     vendaController.hoje)
   app.get('/vend',
     vendaController.indexTotal)
+  app.get('/vendT',
+    vendaController.DadosGeral)
   app.get('/ven',
     vendaController.byIdVenda)
   app.get('/venda',
@@ -301,6 +303,15 @@ module.exports = (app) => {
     vendaController.put)
   app.put('/venda',
     vendaController.putidpagamento)
+  // Dados relatorios
+  app.get('/vendasemanal',
+    vendaController.semanal)
+  app.get('/vendadiario',
+    vendaController.diario)
+  app.get('/vendamensal',
+    vendaController.mensal)
+  app.get('/vendatrimestral',
+    vendaController.trimestral)
 
   // Rotas Lista Vendas
   app.get('/listavendas',

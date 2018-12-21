@@ -1,3 +1,4 @@
+const moment = require('moment')
 const { Venda, ListaVenda, User, Produtos, Iva, PVenda, Cliente } = require('../models')
 
 module.exports = {
@@ -75,6 +76,33 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'Ocoreu um erro ao tentar pegar dados de venda PESQUISA BY ID'
+      })
+    }
+  },
+  async DadosGeral (req, res) {
+    try {
+      const { dataIni, dataFim } = req.query
+      console.log('DATAS: ', dataIni, dataFim)
+      const venda = await Venda.findAll({
+        include: [
+          { model: User },
+          { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva } ] } ] }
+        ],
+        where: {
+          status: 'vendido',
+          data_venda: {
+            $between: [dataIni, dataFim]
+          },
+          meio_pagamento_dinheiro: {
+            $ne: null
+          }
+        },
+        order: [ ['data_venda', 'DESC'] ]
+      })
+      res.send(venda)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar dados de venda total'
       })
     }
   },
@@ -161,6 +189,107 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'Um erro ocoreu ao tentar cadastrar venda'
+      })
+    }
+  },
+  // Dados relatorio
+  async semanal (req, res) {
+    try {
+      const venda = await Venda.findAll({
+        include: [
+          { model: User },
+          { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva } ] } ] }
+        ],
+        where: {
+          status: 'vendido',
+          data_venda: {
+            $gte: moment().subtract(7, 'days').toDate()
+          },
+          meio_pagamento_dinheiro: {
+            $ne: null
+          }
+        },
+        order: [ ['data_venda', 'DESC'] ]
+      })
+      res.send(venda)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar vendad dos ultimos 7 dias', err
+      })
+    }
+  },
+  async diario (req, res) {
+    try {
+      const venda = await Venda.findAll({
+        include: [
+          { model: User },
+          { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva } ] } ] }
+        ],
+        where: {
+          status: 'vendido',
+          data_venda: {
+            $gte: moment().subtract(0, 'days').toDate()
+          },
+          meio_pagamento_dinheiro: {
+            $ne: null
+          }
+        },
+        order: [ ['data_venda', 'DESC'] ]
+      })
+      res.send(venda)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar vendad dos ultimos 1 dias', err
+      })
+    }
+  },
+  async mensal (req, res) {
+    try {
+      const venda = await Venda.findAll({
+        include: [
+          { model: User },
+          { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva } ] } ] }
+        ],
+        where: {
+          status: 'vendido',
+          data_venda: {
+            $gte: moment().subtract(30, 'days').toDate()
+          },
+          meio_pagamento_dinheiro: {
+            $ne: null
+          }
+        },
+        order: [ ['data_venda', 'DESC'] ]
+      })
+      res.send(venda)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar vendad dos ultimos 30 dias', err
+      })
+    }
+  },
+  async trimestral (req, res) {
+    try {
+      const venda = await Venda.findAll({
+        include: [
+          { model: User },
+          { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva } ] } ] }
+        ],
+        where: {
+          status: 'vendido',
+          data_venda: {
+            $gte: moment().subtract(90, 'days').toDate()
+          },
+          meio_pagamento_dinheiro: {
+            $ne: null
+          }
+        },
+        order: [ ['data_venda', 'DESC'] ]
+      })
+      res.send(venda)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar vendad dos ultimos 90 dias', err
       })
     }
   }

@@ -220,7 +220,7 @@ export default {
   data: () => ({
     dark: false,
     isDark: false,
-    drawer: null,
+    drawer: false,
   }),
   methods: {
     switchLocale () {

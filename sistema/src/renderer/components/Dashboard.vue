@@ -1,8 +1,7 @@
 <template>
     <panel title="Dashboard">
     <v-content>
-    <v-container>Dados estatisticos</v-container> 
-    <v-container grid-list-md>
+    <h4>Dados estatisticos</h4> 
     <v-layout wrap align-center justify-center>
         <v-flex md3 sm3 xs6>
           <v-card>
@@ -52,9 +51,18 @@
                 <v-layout row wrap>
                 <v-flex class="elevation-0" xs12 sm12 md12>
                 <v-spacer></v-spacer>
+
+                <v-layout v-if="total > 0 " justify-end row>
+                  <v-flex text-lg-center xs12>
+                    <v-badge class='mt-3 mr-4' right>              
+                      <span style="font-size:2em" class="green--text title"> {{ $t('message.TotalVendasFeitas') }} </span>
+                      <span class="TVenda"> {{ total }} </span>
+                    </v-badge>
+                  </v-flex>
+                </v-layout>
                 
                 <v-card-title>
-                  <v-flex xs12 sm6 md4>
+                  <v-flex xs4 sm3 md2>
                     <v-menu
                       ref="menu2"
                       :close-on-content-click="false"
@@ -77,7 +85,7 @@
                       <v-date-picker v-model="data_ini" @input="$refs.menu2.save(data_ini)"></v-date-picker>
                     </v-menu>
                   </v-flex>
-                  <v-flex xs12 sm6 md4>
+                  <v-flex xs4 sm3 md2>
                     <v-menu
                       ref="menu1"
                       :close-on-content-click="false"
@@ -104,8 +112,18 @@
                     <v-text-field box v-model="data_fim" type="date"></v-text-field>
                   </v-flex>-->
                   
-                  <v-flex xs12 sm4 md4>
-                    <v-btn dark class="primary" v-shortkey="['ctrl','p']" @shortkey="pesquisar" @click="pesquisar"><v-icon>search</v-icon> Pesquisar</v-btn>
+                  <v-flex xs12 sm3 md3>
+                    <v-btn dark class="primary" v-shortkey="['ctrl','p']" @shortkey="pesquisar" @click="pesquisar"><v-icon>search</v-icon></v-btn>
+                    <v-btn dark class="error" v-shortkey="['ctrl','r']" @shortkey="reload" @click="reload"><v-icon>loop</v-icon></v-btn>
+                  </v-flex>
+                  <v-flex xs12 sm5 d-flex>
+                    <v-select
+                      v-model="filtro"
+                      @input="pesByFiltro()"
+                      :items="items"
+                      standard
+                      label="FILTRO"
+                    ></v-select>
                   </v-flex>
                 </v-card-title>
 
@@ -171,7 +189,6 @@
         </v-flex>-->
 
     </v-layout>
-    </v-container>
 
     </v-content>
     </panel>
@@ -189,10 +206,13 @@ import listaVendaServices from "@/services/listaVendaServices";
 export default {
   data () {
     return {
+      items: ['Diário', 'Semanal', 'Mensal', 'Trimestral'],
       menu1: false,
       menu2: false,
       data_ini: null,
       data_fim: null,
+      total: null,
+      filtro: null,
       totalProdutos: '',
       totalStock: '',
       headers: [
@@ -210,6 +230,27 @@ export default {
     ChartDoughnut
   },
   methods: {
+    async pesByFiltro(){
+      if (this.filtro == 'Semanal') {
+        this.desserts = (await VendaServices.semanal()).data;
+        this.total = this.desserts.length
+      } else if (this.filtro == 'Diário') {
+        this.desserts = (await VendaServices.diario()).data;
+        this.total = this.desserts.length
+      } else if (this.filtro == 'Mensal') {
+        this.desserts = (await VendaServices.mensal()).data;
+        this.total = this.desserts.length
+      } else if (this.filtro == 'Trimestral') {
+        this.desserts = (await VendaServices.trimestral()).data;
+        this.total = this.desserts.length
+      }
+    },
+    async reload() {
+      this.desserts = []
+      this.data_ini = null,
+      this.data_fim = null,
+      this.total = this.desserts.length
+    },
     async AnularVenda (item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.produtos = item;
@@ -235,10 +276,12 @@ export default {
     },
     async pesquisar() {
       //Lista venda
-      this.desserts = (await VendaServices.indexTotal({
+      this.desserts = (await VendaServices.DadosGeral({
         dataIni: this.data_ini,
         dataFim: this.data_fim
       })).data;
+      this.total = this.desserts.length
+      console.log("Pesquisa: ", this.desserts)
     }
   },
   async mounted() {
@@ -265,6 +308,13 @@ export default {
   text-align: center;
   font-size: 3em;
   color: green;
-
+}
+.TVenda{
+  padding:5px 10px 5px 10px; 
+  background-color:#1976d2;
+  color:#fff;
+  font-weight:400;
+  font-size: 1.2em;
+  border-radius:5px;
 }
 </style>

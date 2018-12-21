@@ -1,8 +1,6 @@
 <template>
     <panel title="Inventário de produto">
       <v-content>
-      <v-container grid-list-md>
-
         <v-snackbar
         v-model="snackbar"
         :color="color"
@@ -78,7 +76,6 @@
               </v-card-text>
             </v-card>
           
-      </v-container>
       <v-divider></v-divider>
     </v-content>
     </panel>
@@ -111,6 +108,9 @@ export default {
       CategoriaId: []
     };
   },
+  props: [
+    'title'
+  ],
   methods: {
     async reload() {
       this.resultado = (await ProdutosService.index()).data;
