@@ -1,7 +1,7 @@
 <template>
 <div>
     <v-toolbar color="primary" dark fixed app>
-    <v-toolbar-title> {{ $t('message.bemvindo') }} {{ user.nome }}</v-toolbar-title>
+    <v-toolbar-title> Minisysvenda</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-menu offset-y>
       <v-btn

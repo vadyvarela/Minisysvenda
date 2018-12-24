@@ -10,6 +10,12 @@ export default {
     put ( user ) {
         return Api().put(`usuarios/${user.id}`, user)
     },
+    ativar ( user ) {
+        return Api().put(`auser/${user.id}`, user)
+    },
+    inativar ( user ) {
+        return Api().put(`inauser/${user.id}`, user)
+    },
     putsenha ( credentials ) {
         return Api().put(`usuario`, credentials)
     }

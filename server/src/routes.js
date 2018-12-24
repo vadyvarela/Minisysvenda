@@ -71,7 +71,9 @@ module.exports = (app) => {
   app.put('/usuario',
     AuthenticationControllerPolicy.register,
     AuthenticationController.putsenha)
-  app.put('/usuario/:userId',
+  app.put('/auser/:userId',
+    AuthenticationController.ativar)
+  app.put('/inauser/:userId',
     AuthenticationController.inativar)
   app.delete('/usuarios/:userId',
     UsuariosController.delete)
@@ -267,6 +269,8 @@ module.exports = (app) => {
     filterController.bycategory)
 
   // Rotas Compras
+  app.get('/compraTotal',
+    compraController.index)
   app.get('/compras',
     compraController.lastid)
   app.post('/compras',
@@ -285,6 +289,8 @@ module.exports = (app) => {
     metodoPagamentoController.post)
 
   // Rotas Vendas
+  app.get('/vendasTotal',
+    vendaController.total)
   app.get('/vendas',
     vendaController.index)
   app.get('/vendashoje',

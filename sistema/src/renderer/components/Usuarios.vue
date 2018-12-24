@@ -68,7 +68,6 @@
               </v-flex>
               <v-flex text-lg-right xs6>
                 <v-btn router-link to="register" text-lg-right class="primary"><v-icon>perm_identity</v-icon> Novo usuario</v-btn>
-                <v-btn router-link to="inativeuser" text-lg-right dark class="red"><v-icon>block</v-icon> Usuarios Bloqueados</v-btn>
               </v-flex>
           </v-layout>
 
@@ -94,7 +93,8 @@
               <template slot="items" slot-scope="props">
               <td>{{ props.item.nome }}</td>
               <td>{{ props.item.usuario }}</td>
-              <td class="text-xs-center ">{{ props.item.nivel }}</td>
+              <td v-if=" props.item.nivel == 1 " class="text-xs-center "> <span class="green--text">Administrador</span>  </td>
+              <td v-if=" props.item.nivel == 2 " class="text-xs-center "> <span class="primary--text">Vendedor</span> </td>
               <td class="justify-center layout px-0 dark">
                 <v-tooltip left>
                   <v-btn slot="activator" flat icon color="green" @click="editUser(props.item)"> <v-icon>edit</v-icon> </v-btn>
@@ -105,8 +105,10 @@
                   <span>Mudar senha</span>
                 </v-tooltip>
                 <v-tooltip left>
-                  <v-btn slot="activator" flat icon color="red" @click="deleteUser(props.item)"> <v-icon>block</v-icon> </v-btn>
-                  <span>Inativar usuario</span>
+                  <v-btn slot="activator" v-if="props.item.status == 1" flat icon color="red" @click="inativarUser(props.item)"> <v-icon>block</v-icon> </v-btn>
+                  <v-btn slot="activator" v-if="props.item.status == 2" flat icon color="green" @click="ativarUser(props.item)"> <v-icon>block</v-icon> </v-btn>
+                  <span v-if="props.item.status == 1">Inativar usuario no sistema</span>
+                  <span v-if="props.item.status == 2">Ativar usuario no sistema</span>
                 </v-tooltip>
               </td>
               </template>
@@ -156,15 +158,15 @@ export default {
     this.desserts = (await UsuariosServices.index()).data;
   },
   methods: {
-    async deleteUser (item) {
+    async inativarUser (item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.user = Object.assign({}, item);
-      const res = await this.$confirm('Deseja mesmo inativar usuario?', {
+      const res = await this.$confirm('Deseja mesmo inativar usuario ' + this.user.nome + '?', {
       });
       
       if (res) {
         try {
-          await UsuariosServices.inativar(this.user);
+          await AuthenticationService.inativar(this.user);
           this.$toast.success({
           title: "Aviso",
           message: "Usuario inativado com sucesso no sistema!"
@@ -172,7 +174,29 @@ export default {
           this.$router.push({
             name: "usuarios"
           });
-          this.desserts.splice(this.editedIndex, 1)
+          Object.assign(this.desserts[this.editedIndex], this.user);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    },
+    async ativarUser (item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.user = Object.assign({}, item);
+      const res = await this.$confirm('Deseja mesmo ativar usuario ' + this.user.nome + '?', {
+      });
+      
+      if (res) {
+        try {
+          await AuthenticationService.ativar(this.user);
+          this.$toast.success({
+          title: "Aviso",
+          message: "Usuario foi ativado com sucesso no sistema!"
+          })
+          this.$router.push({
+            name: "usuarios"
+          });
+         Object.assign(this.desserts[this.editedIndex], this.user);
         } catch (err) {
           console.log(err);
         }

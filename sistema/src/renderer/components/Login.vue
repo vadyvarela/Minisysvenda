@@ -6,7 +6,7 @@
           <v-toolbar color="primary" dark fixed app>
           <v-toolbar-title> {{ $t('message.bemvindominivenda') }} </v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn :to="{name: 'registrarLoja'}" outline>Fazer cadastro</v-btn>
+          <v-btn :to="{name: 'registrarLoja'}" outline> <v-icon> account_circle </v-icon> &nbsp; Fazer cadastro</v-btn>
           <v-menu offset-y>
             <v-btn
               fab
@@ -50,7 +50,7 @@
                 </div>  
                         
                   <v-text-field
-                  id="keyboard" 
+                  id="keyboard"
                     prepend-icon="person" 
                     name="usuario" 
                     v-model="usuario" 
@@ -69,7 +69,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn v-shortkey="['enter']" @shortkey="login" class="primary" @click="login"> {{ $t('message.btnEfetuarLogn') }} </v-btn>
+                <v-btn large v-shortkey="['enter']" @shortkey="login" class="primary" @click="login"> <v-icon>arrow_forward</v-icon> &nbsp; {{ $t('message.btnEfetuarLogn') }} </v-btn>
               </v-card-actions>
 
             </v-card>

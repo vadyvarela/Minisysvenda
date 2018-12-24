@@ -2,6 +2,23 @@ const moment = require('moment')
 const { Venda, ListaVenda, User, Produtos, Iva, PVenda, Cliente } = require('../models')
 
 module.exports = {
+  async total (req, res) {
+    try {
+      const venda = await Venda.findAll({
+        where: {
+          status: 'vendido',
+          meio_pagamento_dinheiro: {
+            $ne: null
+          }
+        }
+      })
+      res.send(venda)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar todas as venda'
+      })
+    }
+  },
   async index (req, res) {
     try {
       const { userId } = req.query

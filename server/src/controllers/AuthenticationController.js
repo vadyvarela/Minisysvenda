@@ -66,7 +66,21 @@ module.exports = {
       res.send(req.body)
     } catch (err) {
       res.status(500).send({
-        error: 'Um erro ocoreu ao tentar atualizar dados do usuario'
+        error: 'Um erro ocoreu ao tentar inativar usuario'
+      })
+    }
+  },
+  async ativar (req, res) {
+    const dados = req.body
+    console.log('================================:::::::::::::::::::::::::::: ============================================', dados)
+    try {
+      User.update({
+        status: 1
+      }, { where: { id: req.params.userId } })
+      res.send(req.body)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Um erro ocoreu ao tentar ativar usuario'
       })
     }
   },

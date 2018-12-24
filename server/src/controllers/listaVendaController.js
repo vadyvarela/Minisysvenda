@@ -26,7 +26,9 @@ module.exports = {
         attributes: [
           [Sequelize.literal('COUNT(ProdutoId)'), 'quantidade']
         ],
-        group: 'produto_nome'
+        group: 'produto_nome',
+        order: [ ['quantidade', 'ASC'] ],
+        limit: 5
       })
       res.send(listavenda)
     } catch (err) {

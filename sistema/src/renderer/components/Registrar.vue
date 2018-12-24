@@ -2,7 +2,6 @@
     <panel title="Cadastar novo usuario">
       <v-content>
       <v-container fluid >
-        
         <v-layout justify-end row wrap>
               <v-flex text-lg-right xs6>
                 <v-btn router-link to="usuarios" text-lg-right class="primary"><v-icon>perm_identity</v-icon> Mostrar usuarios </v-btn>
@@ -10,6 +9,7 @@
         </v-layout>
 
         <v-divider></v-divider>
+        <h2>TESDT {{ user }}</h2>
         <br>
 
         <v-layout align-center justify-center>
@@ -25,13 +25,20 @@
               
               <v-card-text>
                 <v-form name="cadastar" autocomplete="off">
-                  <v-text-field name="usuario" v-model="user.nome" label="Nome completo" type="text"></v-text-field>
-                  <v-text-field name="usuario" v-model="user.usuario" label="usuario" type="text"></v-text-field>
-                  <v-text-field name="password" v-model="user.password" label="Palavra passe" id="password" type="password"></v-text-field>
+                  <h2 >{{ usuario.LojaId = user.LojaId }}</h2>
+                  <input name="" v-model="usuario.LojaId" type="hidden"/>
+                  <v-text-field name="usuario" append-icon="people" box v-model="usuario.nome" label="Nome completo" type="text"></v-text-field>
+                  <v-text-field box append-icon="account_circle" name="usuario" v-model="usuario.usuario" :label="$t('message.nomeUser')" type="text"></v-text-field>
+                  <v-text-field box
+                    :append-icon="show1 ? 'visibility_off' : 'visibility'"
+                    :type="show1 ? 'text' : 'password'"
+                    @click:append="show1 = !show1"
+                    name="password" v-model="usuario.password" :label="$t('message.passUser')" id="password" ></v-text-field>
                   <v-select
+                    box
                     name="nivel"
-                    v-model="user.nivel"
-                    :items="user.nivel"
+                    v-model="usuario.nivel"
+                    :items="nivel"
                     label="Nivel do usuario"
                     required
                     item-text="nome"
@@ -41,7 +48,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn class="primary" @click="register">Cadastrar</v-btn>
+                <v-btn class="primary" large @click="register"> <v-icon>arrow_forward </v-icon> &nbsp; Cadastrar</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -52,32 +59,42 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Panel from "@/components/Panel";
 import AuthenticationService from "@/services/AuthenticationService";
 
 export default {
   data () {
     return {
-      user: {
-        nivel: [ { id: "1", nome: "Administrador" }, { id: "2", nome: "Vendedor"} ],
+      nivel: [ { id: "1", nome: "Administrador" }, { id: "2", nome: "Vendedor"} ],
+      usuario: {
         nome: "",
+        LojaId: '',
+        nivel: '',
         status: '1',
         usuario: "",
         password: ""
       },
+      show1: false,
       error: null,
       alert: false
     };
+  },
+  computed: {
+    ...mapState([
+      'isUserLoggedIn',
+      'user'
+    ]),
   },
   methods: {
     async register() {
       try {
         const response = await AuthenticationService.register({
-          nome: this.user.nome,
-          usuario: this.user.usuario,
-          password: this.user.password,
-          nivel: this.user.nivel,
-          status: this.user.status
+          nome: this.usuario.nome,
+          usuario: this.usuario.usuario,
+          password: this.usuario.password,
+          nivel: this.usuario.nivel,
+          status: this.usuario.status
         });
         this.$toast.success({
           title: "Succeso",

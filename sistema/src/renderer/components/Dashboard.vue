@@ -8,7 +8,7 @@
             <div class="divTotal">
               <h3 class="h3Total">Total de produtos</h3>
               <v-divider></v-divider>
-              <p class="text-md-center spanTotal">{{totalProdutos}}</p>
+              <p class="text-md-center spanTotal">{{ totalProdutos }}</p>
             </div>
           </v-card>
         </v-flex>
@@ -18,7 +18,7 @@
             <div class="divTotal">
               <h3 class="h3Total light-blue--text">Total de Stock</h3>
               <v-divider></v-divider>
-              <p class="text-md-center spanTotal">{{totalStock}}</p>
+              <p class="text-md-center spanTotal">{{ totalStock }}</p>
             </div>
           </v-card>
         </v-flex>
@@ -28,7 +28,7 @@
             <div class="divTotal">
               <h3 class="h3Total">Total de Vendas</h3>
               <v-divider></v-divider>
-              <p class="text-md-center spanTotal">28</p>
+              <p class="text-md-center spanTotal"> {{ totalVendas }} </p>
             </div>
           </v-card>
         </v-flex>
@@ -38,7 +38,7 @@
             <div class="divTotal">
               <h3 class="h3Total">Total de Compras</h3>
               <v-divider></v-divider>
-              <p class="text-md-center spanTotal">28</p>
+              <p class="text-md-center spanTotal">{{ totalCompras }}</p>
             </div>
           </v-card>
         </v-flex>
@@ -201,6 +201,7 @@ import ChartDoughnut from "@/components/grafico/chart-doughnut";
 import ProdutosService from "@/services/ProdutosService";
 import StockServices from "@/services/StockServices";
 import VendaServices from "@/services/VendaServices";
+import CompraServices from "@/services/CompraServices";
 import listaVendaServices from "@/services/listaVendaServices";
 
 export default {
@@ -215,6 +216,8 @@ export default {
       filtro: null,
       totalProdutos: '',
       totalStock: '',
+      totalVendas: '',
+      totalCompras: '',
       headers: [
         { text: "Data", align: "left", sortable: false },
         { text: "Hora", align: "left", sortable: false },
@@ -285,10 +288,15 @@ export default {
     }
   },
   async mounted() {
+    this.VendasT = (await VendaServices.total()).data;
+    this.totalVendas = this.VendasT.length
     this.Produtos = (await ProdutosService.index()).data;
     this.totalProdutos = this.Produtos.length
     this.Stock = (await StockServices.index()).data;
     this.totalStock = this.Stock.length
+    this.Compras = (await CompraServices.index()).data;
+    this.totalCompras = this.Compras.length
+    console.log("COMPRAS,", this.Compras)
   },
 }
 </script>

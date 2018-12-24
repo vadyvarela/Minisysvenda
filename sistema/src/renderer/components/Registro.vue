@@ -3,9 +3,9 @@
     <v-content>
       <div>
           <v-toolbar color="primary" dark fixed app>
-          <v-toolbar-title> Faça cadastro da sua loja </v-toolbar-title>
+          <v-toolbar-title> Faça cadastro </v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn :to="{name: 'login'}" outline>Fazer Login</v-btn>
+          <v-btn :to="{name: 'login'}" outline> <v-icon> account_circle </v-icon> &nbsp; Fazer Login</v-btn>
           <v-menu offset-y>
             <v-btn
               fab
@@ -30,10 +30,13 @@
             </v-list>
           </v-menu>
           </v-toolbar>
+          
       </div> 
+      
       <v-container fluid fill-height>
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md6 lg6>
+            <h2 align-center style="text-align:center; margin-bottom:30px; color: #fff; font-size:2.6em;">Digite os seus dados para começar <br> a usar o sistema</h2>
             <v-alert
               v-html="error"
               :value="alert"
@@ -54,22 +57,32 @@
                 <v-stepper-items>
                 <v-stepper-content step="1">
                   <v-text-field
+                    box
+                    append-icon="home"
                     name="loja_nome" 
                     v-model="loja.loja_nome" 
                     label="Nome da loja">
                   </v-text-field>
                   <v-text-field
+                    box
+                    append-icon="format_list_numbered"
                     type="number"
-                    name="loja_nif" 
+                    name="loja_nif"
+                    :rules="rules"
+                    :counter="9"
                     v-model="loja.loja_nif" 
                     label="Loja Nif">
                   </v-text-field>
                   <v-text-field
+                    box
+                    append-icon="phone"
                     name="loja_telefone" 
                     v-model="loja.loja_telefone" 
                     label="Numero de telefone">
                   </v-text-field>
                   <v-text-field
+                    box
+                    append-icon="place"
                     name="loja_endereco" 
                     v-model="loja.loja_endereco" 
                     label="Endereço da loja">
@@ -77,20 +90,30 @@
 
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" :disabled="!formIsValid" @click="create(), e1 = 2"> Continuar  </v-btn>
+                    <v-btn color="primary" large :disabled="!formIsValid" @click="create(), e1 = 2"> <v-icon>arrow_forward</v-icon> &nbsp; Continuar  </v-btn>
                   </v-card-actions>
                 </v-stepper-content>
                 <v-stepper-content step="2">
                     <h2 hidden>{{ user.LojaId = idLoja }}</h2>
-                    <input name="" v-model="user.LojaId" type="text"/>
-                    <input name="" v-model="user.nivel" type="text"/>
-                    <v-text-field name="usuario" v-model="user.nome" label="Nome completo" type="text"></v-text-field>
+                    <input name="" v-model="user.LojaId" type="hidden"/>
+                    <input name="" v-model="user.nivel" type="hidden"/>
+                    <v-text-field 
+                      box
+                      append-icon="people"
+                      name="usuario" 
+                      v-model="user.nome" 
+                      label="Nome completo" 
+                      type="text">
+                    </v-text-field>
                     <v-text-field
+                        box
+                        append-icon="account_circle"
                         name="usuario" 
                         v-model="user.usuario" 
                         :label="$t('message.nomeUser')">
                     </v-text-field>
                     <v-text-field
+                        box
                         :append-icon="show1 ? 'visibility_off' : 'visibility'"
                         :type="show1 ? 'text' : 'password'"
                         @click:append="show1 = !show1"
@@ -102,7 +125,7 @@
 
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn v-shortkey="['enter']" @shortkey="register" class="primary" @click="register"> FINALIZAR </v-btn>
+                        <v-btn large v-shortkey="['enter']" @shortkey="register" class="primary" @click="register"> <v-icon>arrow_forward </v-icon> &nbsp; FINALIZAR </v-btn>
                     </v-card-actions>
                 </v-stepper-content>
                 </v-stepper-items>
@@ -127,9 +150,10 @@ export default {
   data() {
     return {
       e1: "",
+      rules: [v => v.length <= 9 || 'Caracter maximo 9'],
       user: {
         LojaId: "",
-        status: 1,
+        status: '1',
         nome: "",
         usuario: "",
         password: "",
@@ -170,7 +194,7 @@ export default {
         console.log("MEUS DADOS ---- ", response)
         this.$toast.success({
           title: "Succeso",
-          message: "Usuario cadastrado com sucesso no sistema!"
+          message: "Registro efetuado com succeso!"
         })
         this.$store.dispatch("setToken", response.data.token);
         this.$store.dispatch("setUser", response.data.user);

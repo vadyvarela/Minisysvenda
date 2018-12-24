@@ -1,8 +1,19 @@
 <template>
+
+<div>
+    <!--tr class="nobordertr" v-bind:key="index" v-for="(prod,index) in ProdMaisVendido">
+        <td>{{produto.Produto.produto_nome}}</td>
+        <td> / </td>
+        <td>{{quantidade}}</td>
+    </tr -->
+
     <chartjs-doughnut v-bind:labels="labels"
     v-bind:datasets="datasets"
     v-bind:option="option"
     v-bind:bind="true"/>
+</div>
+
+
 </template>
 
 <script>
@@ -10,6 +21,7 @@ import listaVendaServices from "@/services/listaVendaServices";
 export default {
     data() {
     return {
+        ProdMaisVendido: [],
         labels: ["Foo", "Bar", "Baz"],
         datasets: [
             {
