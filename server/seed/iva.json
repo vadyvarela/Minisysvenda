@@ -1,6 +1,10 @@
 [
   {
     "iva_valor": 15,
-    "iva_desc": "Valores cobrado sobre o produto"
+    "iva_desc": "15% cobrado sobre o produto"
+  },
+  {
+    "iva_valor": 0,
+    "iva_desc": "0% cobrado sobre o produto"
   }
 ]

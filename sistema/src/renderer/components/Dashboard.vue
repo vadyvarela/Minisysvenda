@@ -1,11 +1,11 @@
 <template>
     <panel title="Dashboard">
     <v-content>
-    <h4>Dados estatisticos</h4> 
     <v-layout wrap align-center justify-center>
+    
         <v-flex md3 sm3 xs6>
-          <v-card>
-            <div class="divTotal">
+          <v-card class="" >
+            <div class="">
               <h3 class="h3Total">Total de produtos</h3>
               <v-divider></v-divider>
               <p class="text-md-center spanTotal">{{ totalProdutos }}</p>
@@ -14,8 +14,8 @@
         </v-flex>
 
         <v-flex md3 sm3 xs6>
-          <v-card>
-            <div class="divTotal">
+          <v-card class="" >
+            <div class="">
               <h3 class="h3Total light-blue--text">Total de Stock</h3>
               <v-divider></v-divider>
               <p class="text-md-center spanTotal">{{ totalStock }}</p>
@@ -24,8 +24,8 @@
         </v-flex>
 
         <v-flex md3 sm3 xs6>
-          <v-card>
-            <div class="divTotal">
+          <v-card class="" >
+            <div class="">
               <h3 class="h3Total">Total de Vendas</h3>
               <v-divider></v-divider>
               <p class="text-md-center spanTotal"> {{ totalVendas }} </p>
@@ -33,9 +33,9 @@
           </v-card>
         </v-flex>
 
-        <v-flex md3 sm3 xs6>
-          <v-card>
-            <div class="divTotal">
+        <v-flex class="elevation-3" md3 sm3 xs6>
+          <v-card class="" >
+            <div class="">
               <h3 class="h3Total">Total de Compras</h3>
               <v-divider></v-divider>
               <p class="text-md-center spanTotal">{{ totalCompras }}</p>
@@ -49,7 +49,7 @@
               <v-divider></v-divider>
               <v-card-text>
                 <v-layout row wrap>
-                <v-flex class="elevation-0" xs12 sm12 md12>
+                <v-flex class="elevation-3" xs12 sm12 md12>
                 <v-spacer></v-spacer>
 
                 <v-layout v-if="total > 0 " justify-end row>
@@ -324,5 +324,8 @@ export default {
   font-weight:400;
   font-size: 1.2em;
   border-radius:5px;
+}
+.mybackground{
+  background-color: #ded8d8 !important;
 }
 </style>

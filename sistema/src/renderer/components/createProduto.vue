@@ -317,10 +317,10 @@ export default {
         await ProdutosService.post(formData)
         this.idProduto = (await filterServices.lastid()).data[0].id;
         this.alert = false;
-        this.$toast.success({
+        /* this.$toast.success({
           title: "Sucesso",
           message: "Produto cadastrado com sucesso"
-        })
+        }) */
       } catch (error) {
         this.error = error.response.data.error;
         this.alert = true;

@@ -480,7 +480,7 @@
                                         <span hidden> {{ meuVint4 = pagamento.valor_venda_vint4 + valorentregadovint4U }} </span>
                                         <span hidden> {{ meuCheque = pagamento.valor_venda_cheque + valorentregadochequeU }} </span>
                                         <span hidden> {{ todoSoma = parseInt(meuDinheiro) + parseInt(meuVint4) + parseInt(meuCheque) }} </span>
-                                        <h4>TROCO: {{ pagamento.troco = todoSoma - totalPrice }}</h4>
+                                        <h4 hidden>TROCO: {{ pagamento.troco = todoSoma - totalPrice }}</h4>
                                         <p v-if="valorentregadoU || valorentregadovint4U || valorentregadochequeU" >
                                           <vue-numeric v-if="trocoU < 0" readonly class="red--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="trocoU"></vue-numeric>
                                           <vue-numeric v-else readonly class="green--text" style="text-align:right; font-size:2em; font-weight:700; width:100%" :value="trocoU"></vue-numeric>
@@ -528,8 +528,8 @@
                             >
                               <v-card style="padding:12px" flat tile class="d-flex">
                                 <v-img
-                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
-                                  :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
+                                  :src="'uploads/' + categoria.filename"
+                                  :lazy-src="'uploads/' + categoria.filename"
                                   aspect-ratio="1"
                                   class="grey lighten-2"
                                 >
@@ -569,9 +569,8 @@
                               
                               <v-card style="padding:12px" flat tile class="d-flex">
                                 <v-img
-                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + prod.filename"
-                                  :lazy-src="'http://minisysvenda.innovatmedialab.com/server/src/uploads/' + prod.filename"
-                                  aspect-ratio="1"
+                                  :src="'uploads/' + prod.filename"
+                                  :lazy-src="'uploads/' + prod.filename"aspect-ratio="1"
                                   class="grey lighten-2"
                                   @click.native="dialogProdCategorias = false; pesquisarbyCat(index, nome)"
                                 >

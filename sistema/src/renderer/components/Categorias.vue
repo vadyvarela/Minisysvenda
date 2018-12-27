@@ -10,8 +10,8 @@
               <v-card-text>
                 <v-container grid-list-md>
                   <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                    <v-text-field required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de catgoria" type="text"></v-text-field>
-                    <v-text-field required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrisção de categoria" type="text"></v-text-field>
+                    <v-text-field required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de categoria" type="text"></v-text-field>
+                    <v-text-field required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrição de categoria" type="text"></v-text-field>
                   </v-form>
                 </v-container>
               </v-card-text>
