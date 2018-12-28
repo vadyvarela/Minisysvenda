@@ -77,6 +77,7 @@ module.exports = {
       console.log('MEU ID: ', idSearch)
       const venda = await Venda.findAll({
         include: [
+          { model: Cliente },
           { model: User },
           { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva }, { model: PVenda } ] } ] }
         ],
@@ -110,6 +111,30 @@ module.exports = {
           data_venda: {
             $between: [dataIni, dataFim]
           },
+          meio_pagamento_dinheiro: {
+            $ne: null
+          }
+        },
+        order: [ ['data_venda', 'DESC'] ]
+      })
+      res.send(venda)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar dados de venda total'
+      })
+    }
+  },
+  async byVendedor (req, res) {
+    try {
+      const { idVendedor } = req.query
+      const venda = await Venda.findAll({
+        include: [
+          { model: User },
+          { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva } ] } ] }
+        ],
+        where: {
+          status: 'vendido',
+          UserId: idVendedor,
           meio_pagamento_dinheiro: {
             $ne: null
           }

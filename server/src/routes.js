@@ -297,6 +297,8 @@ module.exports = (app) => {
     vendaController.hoje)
   app.get('/vend',
     vendaController.indexTotal)
+  app.get('/vendPorVendedor',
+    vendaController.byVendedor)
   app.get('/vendT',
     vendaController.DadosGeral)
   app.get('/ven',

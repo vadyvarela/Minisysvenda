@@ -392,26 +392,49 @@ export default {
     },
     async PrintVenda(item) {
         this.editedIndex = this.desserts.indexOf(item);
-        this.produtos = item
+        this.cliente = item.Cliente
+
+        const nomeCliente = this.cliente.cliente_nome
+        const moradaCliente = this.cliente.cliente_morada
+        const nifCliente = this.cliente.cliente_nif
+        const telefoneCliente = this.cliente.cliente_telefone
+
         const recibo = item.ListaVendas
+        const dadsss = item
+        console.log("Dados------- ", dadsss)
         const pagamento = item.valor_total
         const tapagar = item.valor_total
         const tapagariva = item.valor_iva
         const troco = item.valor_troco
         const horaVenda = moment().format('LT')
         const dataVenda = moment().format('l')
-        const vendedor = this.user.usuario
+        const vendedor = this.user.nome
         let dinheiro =  item.valor_venda_dinheiro
-        let vint4 = item.valor_venda_vint4
-        let cheque = item.valor_venda_cheque
+        let vint4 = item.valor_venda_vint4 + ' CVE'
+        let cheque = item.valor_venda_cheque + ' CVE'
+        const idvenda = item.id
         let prod = ''
+        let pVenda = ''
 
-        if (dinheiro !== '') {
-          dinheiro = dinheiro
-        } else if (vint4 !== '') {
-          vint4 = vint4
-        } else {
-          cheque = cheque
+        if (dinheiro !== null) {
+          dinheiro = dinheiro + ' CVE'
+        } else if (vint4 !== null) {
+          vint4 = vint4 + ' CVE'
+        }else if (cheque !== null) {
+          cheque = cheque + ' CVE'
+        }else if (vint4 !== null && dinheiro !== null) {
+          dinheiro = dinheiro + ' CVE'
+          vint4 = vint4 + ' CVE'
+        }else if (cheque !== null && dinheiro !== null) {
+          dinheiro = dinheiro + ' CVE'
+          cheque = cheque + ' CVE'
+        }else if (cheque !== null && vint4 !== null) {
+          vint4 = vint4 + ' CVE'
+          cheque = cheque + ' CVE'
+        }else if(dinheiro !== null && cheque !== null && vint4 !== null) {
+          dinheiro = dinheiro + ' CVE'
+          vint4 = vint4 + ' CVE'
+          cheque = cheque + ' CVE'
         }
       
         const path = require('path');
@@ -430,66 +453,84 @@ export default {
             .text('Praia - Fazenda')
             .text('NIF: 278272509')
             .text('TEL/FAX: +238 3560200')
-            .text('--------------------------------')
+            .text('------------------------------------------------')
+            .text('\n')
+            .text('VENDA NUMERO: ' + idvenda )
             .text('Data do Doc: ' + dataVenda + '  ' + horaVenda)
             .text('VENDEDOR: ' + vendedor)
             .text('\n')
+            .text('CLIENTE: ' + nomeCliente)
+            .text('MORADA: ' + moradaCliente)
+            .text('NIF: ' + nifCliente)
+            .text('TELEFONE: ' + telefoneCliente)
+            .text('\n')
             // ----------------------------------------------------
-            .text('Produto                     IVA')
-            .text('  ' + 'Valor')
-            .text('-------------------------------')
+            .text('QT PRODUTO                  P. UNIT  IVA  TOTAL')
+            .text('------------------------------------------------')
             for (var key in recibo) {
               if (recibo.hasOwnProperty(key)) {
                 const value = recibo[key]
-                console.log("MEUS PROD", value)
-                console.log("TAMANHO ", value.Produto.produto_nome.length)
-                if (value.Produto.produto_nome.length >= 23) {
-                    prod = value.Produto.produto_nome + ' '
-                }else if (value.Produto.produto_nome.length > 20 && value.Produto.produto_nome.length < 23) {
-                    prod = value.Produto.produto_nome + '      '
-                }else if (value.Produto.produto_nome.length > 18 && value.Produto.produto_nome.length <= 20) {
-                    prod = value.Produto.produto_nome + '         '
-                }else if (value.Produto.produto_nome.length >= 15 && value.Produto.produto_nome.length <= 18) {
-                    prod = value.Produto.produto_nome + '           '
-                }else if (value.Produto.produto_nome.length < 15 && value.Produto.produto_nome.length >= 10) {
-                    prod = value.Produto.produto_nome + '               '
-                }else if (value.Produto.produto_nome.length < 10 && value.Produto.produto_nome.length > 5) {
-                    prod = value.Produto.produto_nome + '                  '
+                const quantidade = value.quantidade
+                const pTotal = value.preco_venda * value.quantidade
+                console.log("TAMANHO ", value.Produto.produto_nome_rec.length)
+                if (value.Produto.produto_nome_rec.length >= 23) {
+                    prod = value.Produto.produto_nome_rec + '    '
+                }else if (value.Produto.produto_nome_rec.length > 20 && value.Produto.produto_nome_rec.length < 23) {
+                    prod = value.Produto.produto_nome_rec + '      '
+                }else if (value.Produto.produto_nome_rec.length > 18 && value.Produto.produto_nome_rec.length <= 20) {
+                    prod = value.Produto.produto_nome_rec + '         '
+                }else if (value.Produto.produto_nome_rec.length >= 15 && value.Produto.produto_nome_rec.length <= 18) {
+                    prod = value.Produto.produto_nome_rec + '           '
+                }else if (value.Produto.produto_nome_rec.length < 15 && value.Produto.produto_nome_rec.length >= 10) {
+                    prod = value.Produto.produto_nome_rec + '               '
+                }else if (value.Produto.produto_nome_rec.length < 10 && value.Produto.produto_nome_rec.length > 5) {
+                    prod = value.Produto.produto_nome_rec + '                    '
                 }else {
-                    prod = value.Produto.produto_nome + '                    '
+                    prod = value.Produto.produto_nome_rec + '                       '
+                }
+
+                if(value.preco_venda.length == 4){
+                  pVenda = value.preco_venda + '   '
+                }else if(value.preco_venda.length == 3){
+                  pVenda = value.preco_venda + '    '
+                }else if(value.preco_venda.length == 2){
+                  pVenda = value.preco_venda + '     '
+                }else if(value.preco_venda.length == 1){
+                  pVenda = value.preco_venda + '       '
                 }
                   printer
                   .font('b')
                   .align('lt')
                   .size(1, 1)
-                  
-                  .text(prod + value.Produto.Iva.iva_valor + '%')
-                  .text('  ' + value.Produto.produto_preco)
+                  .text( quantidade + '  ' + prod + pVenda + value.Produto.Iva.iva_valor + '%  ' + pTotal)
               }
             }
             // ----------------------------------------------------
             printer
-            .text('--------------------------------')
-            .text('Dinheiro                   ' + dinheiro)
-            .text('VINT4                      ' + vint4)
-            .text('Cheque                     ' + cheque)
-            .text('--------------------------------')
+            .text('\n')
+            .text('------------------------------------------------')
+            .text('Dinheiro                              ' + dinheiro)
+            .text('VINT4                                 ' + vint4)
+            .text('Cheque                                ' + cheque)
+            .text('\n')
             .font('b')
             .align('lt')
             .size(1, 1)
-            .text('================================')
-            .text('Total Liquido:          ' + pagamento + ' CVE')
-            .text('Total Iva:            ' + tapagariva + ' CVE')
-            .text('A pagar:                ' + tapagar + ' CVE')
-            .text('Troco:                  ' + troco + ' CVE')
-            .text('================================')
-            .cut()
+            .text('================================================')
+            .text('Total Liquido:                       ' + pagamento + ' CVE')
+            .text('Total Iva:                           ' + tapagariva + ' CVE')
+            .text('A pagar:                             ' + tapagar + ' CVE')
+            .text('Troco:                               ' + troco + ' CVE')
+            .text('================================================')
+            //.cut()
             printer
-            .font('b')
+            .font('a')
             .align('ct')
             .size(1, 1)
+            .text('\n')
             .text('Obrigado e volte sempre')
-            .cut(null, 5)
+            .text('\n')
+            .cut()
             .close()
           })
     },

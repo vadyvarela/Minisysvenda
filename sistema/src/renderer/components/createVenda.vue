@@ -457,7 +457,7 @@
                                       <v-flex xs5 sm5 md5>
                                         <div >
                                           <v-text-field box v-model.number="valorentregadochequeU" v-if="tt > 0" type="number"></v-text-field>
-                                          <v-text-field box v-model.number="valorentregadochequeU" v-if="tt < 0" type="number"></v-text-field>
+                                          <v-text-field box readonly v-model.number="valorentregadochequeU" v-if="tt < 0" type="number"></v-text-field>
                                           <span hidden> {{ pagamento.valorentregadocheque = valorentregadochequeU + pagamento.valor_venda_cheque }} </span>
                                         </div>
                                       </v-flex>
@@ -500,13 +500,12 @@
 
                                 </div>
                               </v-flex>
-
                           </v-container>
                         </v-card-text>
 
                         <v-card-actions>
                           <v-spacer></v-spacer>
-                          <div v-if="pagamento.troco >= 0">
+                          <div v-if="trocoU >= 0 && tt < 0 || tt > 0">
                             <v-btn large right color="primary darken-1" @click.native="updateVendaNoPrinter(index)"> Atualizar Venda </v-btn>
                             <v-btn large color="success darken-1" @click.native="updateVenda(index)"> Atualizar & Imprimir Venda </v-btn>
                           </div>
@@ -551,9 +550,14 @@
                     </v-navigation-drawer>
                     <v-navigation-drawer width="700" temporary fixed right :clipped="clipped" v-model="drawer1" enable-resize-watcher app >
                       <v-divider></v-divider>
-                      <v-btn small fab outline color="red" dark @click="backToCat"> <v-icon>keyboard_backspace</v-icon> </v-btn>
-                      
-                      <h4 class="primary--text text-md-center" style="font-size:2em;">SELECIONE O PRODUTO </h4>
+                      <v-layout>
+                        <v-flex xs6 sm2 md2>
+                        <v-btn flat icon color="primary" dark @click="backToCat"> <v-icon>keyboard_backspace</v-icon> </v-btn>
+                        </v-flex>
+                        <v-flex xs6 sm8 md8>
+                        <h4 class="primary--text text-md-center" style="font-size:2em;">SELECIONE O PRODUTO </h4>
+                        </v-flex>
+                      </v-layout>
                       <v-divider></v-divider>
                         <v-card-text>
                         <v-container grid-list-sm fluid>
@@ -1127,7 +1131,7 @@ export default {
         if(this.res.length !== 0 ) {
           this.pagamento = this.res[0]
           this.produtos = this.res[0].ListaVendas
-          console.log("Produto restornados »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»", this.pagamento)
+          console.log("Produto restornados »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»", this.produtos)
         }else{
           this.$toast.error({
             title: "Aviso",
@@ -1137,7 +1141,6 @@ export default {
       }
     },
     async updateVendaNoPrinter(index) {
-      console.log("TESTE:- ", this.pagamento)
       listaVendaServices.postnewprod(this.produtos)
       VendaServices.putidpagamento(this.pagamento)
       
@@ -1156,66 +1159,20 @@ export default {
         stock_id: ''
       }],
       this.pagamento = {
-        ClienteId: '',
-        VendaId: '',
-        dinheiro: '',
-        vint4: '',
-        cheque: '',
         valorentregado: '',
         valorentregadovint4: '',
-        valorentregadocheque: '',
-        tLiquido: '',
-        tapagar: '',
-        tapagariva: '',
-        troco: ''
+        valorentregadocheque: ''
       },
+      this.valorentregadoU = '',
+      this.valorentregadovint4U = '',
+      this.valorentregadochequeU = ''
       this.$refs.search[index].focus()
       this.$toast.success({
         title: "Sucesso",
         message: "Venda atualizada com sucesso no sistema!"
       })
     },
-    async updateVenda(index) {
-      console.log("TESTE:- ", this.pagamento)
-      listaVendaServices.postnewprod(this.produtos)
-      VendaServices.putidpagamento(this.pagamento)
-
-      this.PrintVenda()
-      
-      this.idSearch = ''
-      this.dialog = false
-      this.produtos = [{
-        total: '',
-        totalIva: '',
-        totalLiquido: '',
-        preco_venda: '',
-        VendaId: '',
-        ProdutoId: '',
-        idProduto: '',
-        quantidade: '1',
-        search: '',
-        stock_id: ''
-      }],
-      this.pagamento = {
-        ClienteId: '',
-        VendaId: '',
-        dinheiro: '',
-        vint4: '',
-        cheque: '',
-        valorentregado: '',
-        valorentregadovint4: '',
-        valorentregadocheque: '',
-        tLiquido: '',
-        tapagar: '',
-        tapagariva: '',
-        troco: ''
-      },
-      this.$refs.search[index].focus()
-      this.$toast.success({
-        title: "Sucesso",
-        message: "Venda atualizada com sucesso no sistema!"
-      })
-    },
+    
     async pesquisarBolsa(banana) {
       try {
         this.search = 'Bolsa'
@@ -1347,12 +1304,28 @@ export default {
         /*this.recibo = (await VendaServices.index({
           userId: this.user.id
         })).data[0].ListaVendas;*/
-        this.cliente = (await VendaServices.index({ userId: this.user.id })).data[0].Cliente
-        this.valorVenda = (await VendaServices.index({
-          userId: this.user.id
-        })).data[0];
-        console.log("Meus Valores: ----- ", this.valorVenda)
+        const idpesquisa = this.idSearch
 
+        if(idpesquisa !== '') {
+          this.cliente = (await VendaServices.byIdVenda({ 
+            userId: this.user.id,
+            idSearch: idpesquisa
+          })).data[0].Cliente
+          this.valorVenda = (await VendaServices.byIdVenda({
+            userId: this.user.id,
+            idSearch: idpesquisa
+          })).data[0];
+        } else {
+          this.cliente = (await VendaServices.index({ userId: this.user.id })).data[0].Cliente
+          this.valorVenda = (await VendaServices.index({
+            userId: this.user.id
+          })).data[0];
+        }
+
+        const recibo = this.valorVenda.ListaVendas
+        const idvenda = this.valorVenda.id
+        console.log("MEU PRODUTO UPDATE -----", recibo)
+        console.log("ID VENDA TESTE", idvenda)
         /* if(this.valorVenda.valor_venda_dinheiro != '' && this.valorVenda.valor_venda_cheque == '' && this.valorVenda.valor_venda_vint4){
           const pagamento = this.valorVenda.valor_venda_dinheiro
         }else if(this.valorVenda.valor_venda_cheque != '' && this.valorVenda.valor_venda_dinheiro == '' && this.valorVenda.valor_venda_vint4){
@@ -1372,47 +1345,54 @@ export default {
         const moradaCliente = this.cliente.cliente_morada
         const nifCliente = this.cliente.cliente_nif
         const telefoneCliente = this.cliente.cliente_telefone
-
-        const recibo = this.valorVenda.ListaVendas
-        console.log("MEU PROD -----", recibo)
-
         const pagamento = this.valorVenda.valor_total - this.valorVenda.valor_iva
         const tapagar = this.valorVenda.valor_total
         const tapagariva = this.valorVenda.valor_iva
         const troco = this.valorVenda.valor_troco
         const horaVenda = moment().format('LT')
         const dataVenda = moment().format('l')
-        const vendedor = this.user.usuario
-        const idvenda = this.pagamento.VendaId - 1
-        let dinheiro = this.pagamento.valorentregado
-        let vint4 = this.pagamento.valorentregadovint4
-        let cheque = this.pagamento.valorentregadocheque
+        const vendedor = this.user.nome
+        
+        let dinheiro = this.valorVenda.valor_venda_dinheiro
+        let vint4 = this.valorVenda.valor_venda_vint4 + ' CVE'
+        let cheque = this.valorVenda.valor_venda_cheque + ' CVE'
+        
         let prod = ''
         let pVenda = ''
+        
         // let entregado = ''
-
+        
         //const dataVenda = this.venda.data_venda
-        if (dinheiro !== '') {
+        if (dinheiro !== null) {
           dinheiro = dinheiro + ' CVE'
-        } else if (vint4 !== '') {
+        } else if (vint4 !== null) {
           vint4 = vint4 + ' CVE'
-        }else if (cheque !== '') {
+        }else if (cheque !== null) {
           cheque = cheque + ' CVE'
-        }else if (vint4 !== '' && dinheiro !== '') {
+        }else if (vint4 !== null && dinheiro !== null) {
           dinheiro = dinheiro + ' CVE'
           vint4 = vint4 + ' CVE'
-        }else if (cheque !== '' && dinheiro !== '') {
+        }else if (cheque !== null && dinheiro !== null) {
           dinheiro = dinheiro + ' CVE'
           cheque = cheque + ' CVE'
-        }else if (cheque !== '' && vint4 !== '') {
+        }else if (cheque !== null && vint4 !== null) {
           vint4 = vint4 + ' CVE'
           cheque = cheque + ' CVE'
-        }else if(dinheiro !== '' && cheque !== '' && vint4 !== '') {
+        }else if(dinheiro !== null && cheque !== null && vint4 !== null) {
           dinheiro = dinheiro + ' CVE'
           vint4 = vint4 + ' CVE'
           cheque = cheque + ' CVE'
         }
 
+        /*if ( dinheiro === 0) {
+          dinheiro = ''
+        } else if (vint4 === 0) {
+          vint4 = ''
+        } else if (cheque === 0) {
+          cheque = ''
+        }*/
+
+        console.log("TESTANDO  -----", dinheiro + ' __ ' + vint4 + ' __ ' + cheque)
         const escpos = require('escpos')
         const device = new escpos.USB()
         const options = { encoding: 'CP860' }
@@ -1459,7 +1439,7 @@ export default {
                 }else if (value.Produto.produto_nome_rec.length < 15 && value.Produto.produto_nome_rec.length >= 10) {
                     prod = value.Produto.produto_nome_rec + '               '
                 }else if (value.Produto.produto_nome_rec.length < 10 && value.Produto.produto_nome_rec.length > 5) {
-                    prod = value.Produto.produto_nome_rec + '                   '
+                    prod = value.Produto.produto_nome_rec + '                    '
                 }else {
                     prod = value.Produto.produto_nome_rec + '                       '
                 }
@@ -1542,19 +1522,10 @@ export default {
         stock_id: ''
       }],
       this.pagamento = {
-        ClienteId: '',
-        VendaId: '',
-        dinheiro: '',
-        vint4: '',
-        cheque: '',
         valorentregado: '',
         valorentregadovint4: '',
-        valorentregadocheque: '',
-        tLiquido: '',
-        tapagar: '',
-        tapagariva: '',
-        troco: ''
-      },
+        valorentregadocheque: ''
+      }
       this.$refs.search[index].focus()
       this.$toast.success({
         title: "Sucesso",
@@ -1594,16 +1565,54 @@ export default {
         quantidade: '1',
         search: '',
         stock_id: ''
-      }]
+      }],
+      this.pagamento = {
+        valorentregado: '',
+        valorentregadovint4: '',
+        valorentregadocheque: ''
+      }
       this.$refs.search[index].focus()
       this.$toast.success({
         title: "Sucesso",
         message: "Venda adicionada com sucesso no sistema"
       })
+    },
+    async updateVenda(index) {
+      listaVendaServices.postnewprod(this.produtos)
+      VendaServices.putidpagamento(this.pagamento)
+      this.PrintVenda()
+      
+      this.dialog = false
+      this.produtos = [{
+        total: '',
+        totalIva: '',
+        totalLiquido: '',
+        preco_venda: '',
+        VendaId: '',
+        ProdutoId: '',
+        idProduto: '',
+        quantidade: '1',
+        search: '',
+        stock_id: ''
+      }],
+      this.pagamento = {
+        valorentregado: '',
+        valorentregadovint4: '',
+        valorentregadocheque: ''
+      },
+      this.idSearch = ''
+      this.valorentregadoU = '',
+      this.valorentregadovint4U = '',
+      this.valorentregadochequeU = ''
+      this.$refs.search[index].focus()
+      this.$toast.success({
+        title: "Sucesso",
+        message: "Venda atualizada com sucesso no sistema!"
+      })
     }
   },
+  
   async mounted() {
-    
     this.listaprodutos = (await ProdutosService.index()).data;
     console.log('Meus Produtos', this.listaprodutos)
     this.listaclientes = (await ClienteServices.index()).data;
