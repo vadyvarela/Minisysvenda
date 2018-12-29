@@ -27,6 +27,11 @@ export default {
             params: params 
         })
     },
+    byVendedor (params) {
+        return Api().get('vendPorVendedor', { 
+            params: params 
+        })
+    },
     byIdVenda ( params ) {
         return Api().get('ven', { 
             params: params 

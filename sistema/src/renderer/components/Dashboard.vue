@@ -117,19 +117,34 @@
                     <v-text-field box v-model="data_fim" type="date"></v-text-field>
                   </v-flex>-->
                   
-                  <v-flex xs12 sm3 md3>
+                  <v-flex xs4 sm3 md3>
                     <v-btn dark class="primary" v-shortkey="['ctrl','p']" @shortkey="pesquisar" @click="pesquisar"><v-icon>search</v-icon></v-btn>
                     <v-btn dark class="error" v-shortkey="['ctrl','r']" @shortkey="reload" @click="reload"><v-icon>loop</v-icon></v-btn>
                   </v-flex>
-                  <v-flex xs12 sm5 d-flex>
+                  <v-layout wrap align-center justify-center>
+                  <v-flex xs4 sm3 md5>
                     <v-select
                       v-model="filtro"
                       @input="pesByFiltro()"
                       :items="items"
                       standard
-                      label="FILTRO"
+                      label="POR TEMPO"
                     ></v-select>
                   </v-flex>
+                  <v-flex xs4 sm1 md1 >
+                  </v-flex>
+                  <v-flex xs4 sm3 md5 >
+                    <v-select
+                      v-model="filtroV"
+                      @input="pesByVendedor()"
+                      :items="vendedores"
+                      item-text="nome"
+                      item-value="id"
+                      standard
+                      label="POR VENDEDOR"
+                    ></v-select>
+                  </v-flex>
+                  </v-layout>
                 </v-card-title>
 
                 <v-data-table
@@ -166,7 +181,7 @@
                       </v-expansion-panel-content>
                     </v-expansion-panel>
 
-                  <td class="text-xs-left"> {{ props.item.User.usuario }} </td>
+                  <td class="text-xs-left"> {{ props.item.User.nome }} </td>
                   <td class="text-xs-left dark">
                     <v-btn flat icon color="primary" @click="printVenda(props.item)"> <v-icon>print</v-icon> </v-btn>
                     <v-btn title="Anular Venda" flat icon color="red" @click="AnularVenda(props.item)"> <v-icon>error_outline</v-icon> </v-btn>
@@ -179,14 +194,14 @@
             </v-card>
         </v-flex>
 
-        <v-flex sm6 md6>
+        <!-- <v-flex sm6 md6>
           <h3>Produtos mais vendidos</h3>
           <v-card>
             <chart-doughnut/>
           </v-card>
         </v-flex>
 
-        <!--<v-flex sm6 md6>
+        <v-flex sm6 md6>
           <h3>Produtos mais vendidos</h3>
           <v-card>
             <chart-bar/>
@@ -207,18 +222,21 @@ import ProdutosService from "@/services/ProdutosService";
 import StockServices from "@/services/StockServices";
 import VendaServices from "@/services/VendaServices";
 import CompraServices from "@/services/CompraServices";
+import UsuariosServices from "@/services/UsuariosServices";
 import listaVendaServices from "@/services/listaVendaServices";
 
 export default {
   data () {
     return {
       items: ['Diário', 'Semanal', 'Mensal', 'Trimestral'],
+      vendedores: [],
       menu1: false,
       menu2: false,
       data_ini: null,
       data_fim: null,
       total: null,
       filtro: null,
+      filtroV: null,
       totalProdutos: '',
       totalStock: '',
       totalVendas: '',
@@ -238,6 +256,12 @@ export default {
     ChartDoughnut
   },
   methods: {
+    async pesByVendedor() {
+      this.desserts = (await VendaServices.byVendedor({
+        idVendedor: this.filtroV
+      })).data;
+      this.total = this.desserts.length
+    },
     async pesByFiltro(){
       if (this.filtro == 'Semanal') {
         this.desserts = (await VendaServices.semanal()).data;
@@ -257,6 +281,8 @@ export default {
       this.desserts = []
       this.data_ini = null,
       this.data_fim = null,
+      this.filtroV = null,
+      this.filtro = null,
       this.total = this.desserts.length
     },
     async AnularVenda (item) {
@@ -293,8 +319,9 @@ export default {
     }
   },
   async mounted() {
-    this.desserts = (await VendaServices.total()).data;
-    this.totalVendas = this.desserts.length
+    this.vendedores = (await UsuariosServices.index()).data;
+    this.VendasT = (await VendaServices.total()).data;
+    this.totalVendas = this.VendasT.length
     this.Produtos = (await ProdutosService.index()).data;
     this.totalProdutos = this.Produtos.length
     this.Stock = (await StockServices.index()).data;
