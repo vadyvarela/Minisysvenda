@@ -136,12 +136,13 @@
               <v-flex sm7 md7>
                 <h2 class="myinputsdata">DATA: <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY") }} </span></h2>
               </v-flex>
-              <v-flex v-if="idSearch !== ''" sm1 md1>
-                <v-btn class="error" fab small @click.stop="reset"> <v-icon>loop</v-icon> </v-btn>
-              </v-flex>
+              
               <v-flex sm1 md1>
-                <v-btn style="display:none;" dark v-shortkey="['f3']" @shortkey="left = !left" @click.stop="left = !left"> TXT </v-btn>
+                <v-btn style="display:none;" dark v-shortkey="['f3']" @shortkey="left = !left" @click.stop="left = !left"> </v-btn>
                 <v-btn large left router-link to="listavendas" dark class="primary"> {{ $t('message.listavendas') }} </v-btn>
+                <span v-if="idSearch !== ''" sm2 md2>
+                  <v-btn class="success" @click.stop="reset"> NOVA VENDA <v-icon>loop</v-icon> </v-btn>
+                </span>
               </v-flex>
             </v-layout>
             <!--<h2 class="myinputs">NO: <span style="font-weight:100"> {{ idVenda }} </span> </h2>-->
@@ -341,13 +342,15 @@
                                 </div>
                               </v-flex>
                               <span >
-                                <h4 hidden v-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
-                                <h4 hidden v-if="pagamento.valorentregadovint4 != '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
-                                <h4 hidden v-if="pagamento.valorentregadocheque != '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
-                                <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
-                                <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadocheque != ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
-                                <h4 hidden v-else-if="pagamento.valorentregado != '' && pagamento.valorentregadovint4 != '' && pagamento.valorentregadocheque != '' ">TROOCOOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 + pagamento.valorentregadocheque - totalPrice }}</h4>
-                              </span>
+                                <h4 v-if="pagamento.valorentregado !== '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
+                                <h4 v-if="pagamento.valorentregadovint4 !== '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
+                                <h4 v-if="pagamento.valorentregadocheque !== '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
+                                <h4 v-if="pagamento.valorentregado !== '' && pagamento.valorentregadovint4 !== ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                                <h4 v-if="pagamento.valorentregado !== '' && pagamento.valorentregadocheque !== ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
+                                
+                                <h4 v-if="pagamento.valorentregadocheque !== '' && pagamento.valorentregadovint4 !== ''">TROCO CHEQUE & VINT4: {{ pagamento.troco = pagamento.valorentregadocheque + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                                
+                                 </span>
                               <v-flex xs12>
                                 <h4 class="primary--text text-md-center" style="font-size:2em;"> {{ $t('message.troco') }} </h4>
                                 <v-layout wrap>
@@ -570,7 +573,7 @@
                               <v-card style="padding:12px" flat tile class="d-flex">
                                 <v-img
                                   :src="'uploads/' + prod.filename"
-                                  :lazy-src="'uploads/' + prod.filename"aspect-ratio="1"
+                                  :lazy-src="'uploads/' + prod.filename" aspect-ratio="1"
                                   class="grey lighten-2"
                                   @click.native="dialogProdCategorias = false; pesquisarbyCat(index, nome)"
                                 >
@@ -659,7 +662,12 @@
                       <v-text-field box readonly :value="produto.nome" type="text"></v-text-field>
                     </v-flex>
                     <v-flex xs12 sm2 md2>
-                      <v-text-field box v-model.number="produto.quantidade" v-on:input="changeQuantidade(index)" @keyup.enter="addNewProduto(index)" ref="searchquantidade" label="Quantidade" type="number"></v-text-field>
+                      <div v-if="idSearch == '' && typeof produtos[index].idProduto.produto_nome === 'undefined'">
+                        <v-text-field box type="hidden"></v-text-field>
+                      </div>
+                      <div v-else>
+                        <v-text-field box v-model.number="produto.quantidade" v-on:input="changeQuantidade(index)" ref="searchquantidade" label="Quantidade" type="number"></v-text-field>
+                      </div>
                       <input v-model.number="produto.quantidade" v-on:input="changeQuantidade(index)" @keyup.enter="addNewProduto(index)" type="hidden"/>
                     </v-flex>
 
@@ -686,8 +694,8 @@
 
                               <v-card class="elevation-0 pa-3">
                               <v-card-title>
-                                <v-spacer></v-spacer>
-                                <v-btn color="red" icon outline right small fab dark @click.native="dialogPreco = false"><v-icon>close</v-icon></v-btn>
+                              <v-spacer></v-spacer>
+                              <v-btn color="red" icon outline right small fab dark @click.native="dialogPreco = false"><v-icon>close</v-icon></v-btn>
                               </v-card-title>
                                 <v-card-text>
                                   <div class="layout column align-center">
@@ -761,7 +769,9 @@
                     <v-flex xs12 sm2 md2>
                       <content>
                       <!--<v-text-field box readonly :value="produto.total" name="" type="number"></v-text-field>-->
-                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; width:80%; padding:15px 3px 12px 4px; margin-right:-3px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>
+                    
+                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; width:80%; padding:15px 3px 12px 4px; margin-right:-3px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>                   
+                      
                       <v-btn style="margin-left:-4px; width:10%;" small icon left dark @click="removeNewProdutoUpdate(index)" class="red"><v-icon>remove</v-icon></v-btn>
                       </content>
                     </v-flex>
@@ -1058,8 +1068,8 @@ export default {
         })
       }
     },
-    addNewProduto (banana) {
-      if (this.produtos[banana].search.length !== 0 && this.produtos[banana].ProdutoId.length !== 0) {
+    addNewProduto (index) {
+      if (this.produtos[index].search.length !== 0 ) {
         this.produtos.push({
           idSearchNew: '',
           total: '',
@@ -1286,7 +1296,8 @@ export default {
             this.$refs.search[index].reset();
             this.$refs.search[index].focus();
           } else {
-            this.$refs.searchquantidade[index].focus();
+            // this.$refs.searchquantidade[index].focus();
+            this.addNewProduto(index)
           }
           this.userconfig = ''
         }

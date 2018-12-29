@@ -17,8 +17,8 @@ module.exports = {
       const userJson = user.toJSON()
       console.log('»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»', userJson)
       res.send({
-        user: userJson
-        // token: jwtSignUser(userJson)
+        user: userJson,
+        token: jwtSignUser(userJson)
       })
     } catch (err) {
       res.status(400).send({
@@ -35,7 +35,11 @@ module.exports = {
         password: dados.password
       }, { where: { id: dados.id } })
       console.log('=======================================', user)
-      res.send(req.body)
+      const userJson = user.toJSON()
+      res.send({
+        user: userJson,
+        token: jwtSignUser(userJson)
+      })
     } catch (err) {
       res.status(500).send({
         error: err + 'Um erro ocoreu ao tentar atualizar dados do usuario'

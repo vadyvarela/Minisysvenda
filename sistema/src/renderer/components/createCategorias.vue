@@ -21,8 +21,8 @@
             <v-card class="elevation-1">
               <v-card-text>
                 <v-form method="post" name="cadastar" enctype="multipart/form-data" >
-                  <v-text-field required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de catgoria" type="text"></v-text-field>
-                  <v-text-field required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrisção de categoria" type="text"></v-text-field>
+                  <v-text-field required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de categoria" type="text"></v-text-field>
+                  <v-text-field required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrição de categoria" type="text"></v-text-field>
                   <input ref="file" name="categoria_desc" type="text">
                   <!-- <input 
                     type="file"
@@ -43,7 +43,7 @@
                     </v-flex>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn v-shortkey="['enter']" @shortkey="sendFile" :disabled="!valid" class="primary" @click="sendFile">Cadastrar categoria</v-btn>
+                    <v-btn v-shortkey="['enter']" @shortkey="sendFile" :disabled="!CatIsvalid" class="primary" @click="sendFile">Cadastrar categoria</v-btn>
                   </v-card-actions>
                </v-form>
               </v-card-text>
@@ -137,6 +137,14 @@ export default {
           console.log(err);
         }
     } */
+  },
+  computed: {
+    CatIsvalid() {
+      return (
+        this.categoria.categoria_nome &&
+        this.categoria.categoria_desc
+      );
+    },
   }
 };
 </script>

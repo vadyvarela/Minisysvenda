@@ -1,7 +1,9 @@
 <template>
     <panel title="Dashboard">
     <v-content>
-    <v-layout wrap align-center justify-center>
+      
+    <v-container grid-list-md>
+    <v-layout row align-center justify-center>
     
         <v-flex md3 sm3 xs6>
           <v-card class="" >
@@ -33,7 +35,7 @@
           </v-card>
         </v-flex>
 
-        <v-flex class="elevation-3" md3 sm3 xs6>
+        <v-flex md3 sm3 xs6>
           <v-card class="" >
             <div class="">
               <h3 class="h3Total">Total de Compras</h3>
@@ -42,7 +44,10 @@
             </div>
           </v-card>
         </v-flex>
+    </v-layout>
+    </v-container>
 
+    <v-layout wrap align-center justify-center>
         <!-- LISTA COMPRAS -->
         <v-flex sm12 md12>
           <v-card flat>
@@ -82,7 +87,7 @@
                         prepend-icon="event"
                         readonly
                       ></v-text-field>
-                      <v-date-picker v-model="data_ini" @input="$refs.menu2.save(data_ini)"></v-date-picker>
+                      <v-date-picker full-width landscape v-model="data_ini" @input="$refs.menu2.save(data_ini)"></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <v-flex xs4 sm3 md2>
@@ -105,7 +110,7 @@
                         prepend-icon="event"
                         readonly
                       ></v-text-field>
-                      <v-date-picker v-model="data_fim" @input="$refs.menu1.save(data_fim)"></v-date-picker>
+                      <v-date-picker full-width landscape v-model="data_fim" @input="$refs.menu1.save(data_fim)"></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <!--<v-flex xs12 sm4 md4>
@@ -288,8 +293,8 @@ export default {
     }
   },
   async mounted() {
-    this.VendasT = (await VendaServices.total()).data;
-    this.totalVendas = this.VendasT.length
+    this.desserts = (await VendaServices.total()).data;
+    this.totalVendas = this.desserts.length
     this.Produtos = (await ProdutosService.index()).data;
     this.totalProdutos = this.Produtos.length
     this.Stock = (await StockServices.index()).data;

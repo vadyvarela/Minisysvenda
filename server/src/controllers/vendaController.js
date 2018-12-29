@@ -5,12 +5,17 @@ module.exports = {
   async total (req, res) {
     try {
       const venda = await Venda.findAll({
+        include: [
+          { model: User },
+          { model: ListaVenda, include: [ { model: Produtos, include: [ { model: Iva } ] } ] }
+        ],
         where: {
           status: 'vendido',
           meio_pagamento_dinheiro: {
             $ne: null
           }
-        }
+        },
+        order: [ ['data_venda', 'DESC'] ]
       })
       res.send(venda)
     } catch (err) {

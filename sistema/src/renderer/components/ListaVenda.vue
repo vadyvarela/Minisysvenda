@@ -148,7 +148,7 @@
                       transition="scale-transition"
                       offset-y
                       full-width
-                      min-width="290px"
+                      min-width="490px"
                     >
                       <v-text-field
                         slot="activator"
@@ -157,7 +157,9 @@
                         prepend-icon="event"
                         readonly
                       ></v-text-field>
-                      <v-date-picker v-model="data_fim" @input="$refs.menu1.save(data_fim)"></v-date-picker>
+                      <v-flex xs12 sm6>
+                        <v-date-picker full-width v-model="data_fim" @input="$refs.menu1.save(data_fim)"></v-date-picker>
+                      </v-flex>
                     </v-menu>
                   </v-flex>
                   <!--<v-flex xs12 sm4 md4>
@@ -168,8 +170,8 @@
                     <v-btn dark class="primary" @click="pesquisar"><v-icon>search</v-icon> {{ $t('message.btnPesquisar') }} </v-btn>
                     <v-btn dark class="success" @click="reload"><v-icon>loop</v-icon> {{ $t('message.btnResetar') }}</v-btn>
                   </v-flex>
-                  <v-flex xs12 sm2 md2>
-                    <v-flex xs12 sm12 md12>
+                  <!--<v-flex xs12 sm2 md2>
+                    <v-flex  xs12 sm12 md12>
                       <v-dialog
                         ref="dialog"
                         v-model="modal"
@@ -187,7 +189,7 @@
                       </v-date-picker>
                       </v-dialog>
                     </v-flex>
-                  </v-flex>
+                  </v-flex>-->
                 </v-card-title>
 
               <v-card-text>

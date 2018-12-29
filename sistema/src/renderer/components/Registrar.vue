@@ -9,9 +9,7 @@
         </v-layout>
 
         <v-divider></v-divider>
-        <h2>TESDT {{ user }}</h2>
-        <br>
-
+<br>
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md4>
             <v-alert
@@ -25,7 +23,7 @@
               
               <v-card-text>
                 <v-form name="cadastar" autocomplete="off">
-                  <h2 >{{ usuario.LojaId = user.LojaId }}</h2>
+                  <h2 hidden>{{ usuario.LojaId = user.LojaId }}</h2>
                   <input name="" v-model="usuario.LojaId" type="hidden"/>
                   <v-text-field name="usuario" append-icon="people" box v-model="usuario.nome" label="Nome completo" type="text"></v-text-field>
                   <v-text-field box append-icon="account_circle" name="usuario" v-model="usuario.usuario" :label="$t('message.nomeUser')" type="text"></v-text-field>

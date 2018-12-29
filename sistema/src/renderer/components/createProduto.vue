@@ -140,13 +140,13 @@
 
                   <h2 hidden>{{ preco.ProdutoId = idProduto }}</h2>
                     <v-layout>
-                      <v-flex xs12 sm4 md4>
+                      <v-flex xs12 sm6 md6>
                         <v-text-field box name="pvenda_preco" v-model="preco.pvenda_preco" label="Preço de venda" type="number"></v-text-field>
                       </v-flex>
-                      <v-flex xs12 sm4 md4>
+                      <!--<v-flex xs12 sm4 md4>
                         <v-text-field box name="" :value="totalIva" label="Preço C/IVA" type="number"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm4 md4>
+                      </v-flex>-->
+                      <v-flex xs12 sm6 md6>
                         <v-text-field box readonly :value="total" label="Margem de lucro (%)" name="" type="number"></v-text-field>
                       </v-flex>
                       <input name="ProdutoId" v-model="preco.ProdutoId" type="hidden"/>
@@ -158,7 +158,7 @@
                   <v-spacer></v-spacer>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" :disabled="!PVendaIsValid" @click="createPrecos(), e1 = 3"> {{ $t('message.btnContinuar') }}  </v-btn>
+                    <v-btn color="primary" large :disabled="!PVendaIsValid" @click="createPrecos(), e1 = 3"> {{ $t('message.btnContinuar') }}  </v-btn>
                   </v-card-actions>
                 </v-form>
               
