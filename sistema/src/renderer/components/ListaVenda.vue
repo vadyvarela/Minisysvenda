@@ -168,7 +168,7 @@
                     <v-btn dark class="primary" @click="pesquisar"><v-icon>search</v-icon> {{ $t('message.btnPesquisar') }} </v-btn>
                     <v-btn dark class="success" @click="reload"><v-icon>loop</v-icon> {{ $t('message.btnResetar') }}</v-btn>
                   </v-flex>
-                  <v-flex xs12 sm2 md2>
+                  <!--<v-flex xs12 sm2 md2>
                     <v-flex xs12 sm12 md12>
                       <v-dialog
                         ref="dialog"
@@ -187,7 +187,7 @@
                       </v-date-picker>
                       </v-dialog>
                     </v-flex>
-                  </v-flex>
+                  </v-flex>-->
                 </v-card-title>
 
               <v-card-text>

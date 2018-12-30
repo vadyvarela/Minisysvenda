@@ -252,8 +252,10 @@
                   </div>
                   <div hidden v-if="produto.Produto">
                     <h3>ID Pesquisa: {{ produto.idSearch = idSearch }}</h3>
+                    <span hidden> {{ produto.adminPVenda = produtos[index].adminPVenda }} </span>
                     <h4>NOME: {{ produto.nome = produto.Produto.produto_nome }}</h4>
-                    <h2 v-if="user.nivel == 2 && userconfig != 1">PRECO VENDA: {{ produto.preco_venda = produto.Produto.PVendas[0].pvenda_preco }} </h2>
+                    <h2 hidden v-if="user.nivel == 2 && userconfig != 1">PRECO VENDA: {{ produto.preco_venda = produto.Produto.PVendas[0].pvenda_preco }} </h2>
+                    <h2 hidden v-if="user.nivel == 1 && produto.adminPVenda  == ''">PRECO VENDA ADMIn: {{ produto.preco_venda = produto.Produto.PVendas[0].pvenda_preco }} </h2>
                     <h2>PRECO VENDA 1: {{ produto.PVendaListOne = produto.Produto.PVendas[0] }} </h2>
                     <h2>SELECT PRECO VENDA: {{ produto.PVendaList = produto.Produto.PVendas }} </h2>
                     <h4>IVA: {{ produto.iva = produto.Produto.Iva.iva_valor }}</h4>
@@ -262,7 +264,9 @@
                   </div>
                   <h2 hidden> {{ banana = index }} </h2>
                   <div v-if="produtos[index].idProduto && produtos[index].idProduto.Iva">
+                    <span hidden> {{ produto.adminPVenda = produtos[index].adminPVenda }} </span>
                     <h2 hidden v-if="user.nivel == 2 && userconfig != 1">PRECO VENDA: {{ produto.preco_venda = produtos[index].idProduto.PVendas[0].pvenda_preco }} </h2>
+                    <h2 hidden v-if="user.nivel == 1 && produto.adminPVenda == '' ">PRECO VENDA ADMIn: {{ produto.preco_venda = produtos[index].idProduto.PVendas[0].pvenda_preco }} </h2>
                     <h2 hidden>PRECO VENDA 1: {{ produto.PVendaListOne = produtos[index].idProduto.PVendas[0] }} </h2>
                     <h2 hidden >SELECT PRECO VENDA: {{ produto.PVendaList = produtos[index].idProduto.PVendas }} </h2>
                     <h4 hidden>NOME: {{ produto.nome = produtos[index].idProduto.produto_nome }}</h4>
@@ -342,13 +346,12 @@
                                 </div>
                               </v-flex>
                               <span >
-                                <h4 v-if="pagamento.valorentregado !== '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
-                                <h4 v-if="pagamento.valorentregadovint4 !== '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
-                                <h4 v-if="pagamento.valorentregadocheque !== '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
-                                <h4 v-if="pagamento.valorentregado !== '' && pagamento.valorentregadovint4 !== ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
-                                <h4 v-if="pagamento.valorentregado !== '' && pagamento.valorentregadocheque !== ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
-                                
-                                <h4 v-if="pagamento.valorentregadocheque !== '' && pagamento.valorentregadovint4 !== ''">TROCO CHEQUE & VINT4: {{ pagamento.troco = pagamento.valorentregadocheque + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                                <h4 hidden v-if="pagamento.valorentregado !== '' && pagamento.valorentregadovint4 == '' && pagamento.valorentregadocheque == '' ">TROCO: {{ pagamento.troco = pagamento.valorentregado - totalPrice }}</h4>
+                                <h4 hidden v-if="pagamento.valorentregadovint4 !== '' && pagamento.valorentregado == '' && pagamento.valorentregadocheque == '' ">TROOCO: {{ pagamento.troco = pagamento.valorentregadovint4 - totalPrice }}</h4>
+                                <h4 hidden v-if="pagamento.valorentregadocheque !== '' && pagamento.valorentregado == '' && pagamento.valorentregadovint4 == '' ">TROOCOO: {{ pagamento.troco = pagamento.valorentregadocheque - totalPrice }}</h4>
+                                <h4 hidden v-if="pagamento.valorentregado !== '' && pagamento.valorentregadovint4 !== ''">TROOCOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadovint4 - totalPrice }}</h4>
+                                <h4 hidden v-if="pagamento.valorentregado !== '' && pagamento.valorentregadocheque !== ''">TROOCOOOO: {{ pagamento.troco = pagamento.valorentregado + pagamento.valorentregadocheque - totalPrice }}</h4>
+                                <h4 hidden v-if="pagamento.valorentregadocheque !== '' && pagamento.valorentregadovint4 !== ''">TROCO CHEQUE & VINT4: {{ pagamento.troco = pagamento.valorentregadocheque + pagamento.valorentregadovint4 - totalPrice }}</h4>
                                 
                                  </span>
                               <v-flex xs12>
@@ -508,7 +511,7 @@
 
                         <v-card-actions>
                           <v-spacer></v-spacer>
-                          <div v-if="trocoU >= 0 && tt < 0 || tt > 0">
+                          <div v-if="trocoU >= 0 ">
                             <v-btn large right color="primary darken-1" @click.native="updateVendaNoPrinter(index)"> Atualizar Venda </v-btn>
                             <v-btn large color="success darken-1" @click.native="updateVenda(index)"> Atualizar & Imprimir Venda </v-btn>
                           </div>
@@ -737,9 +740,12 @@
                       </v-card>
                     </v-dialog>
                     <v-flex xs12 sm2 md2>
+
+                      <v-text-field reverse box readonly v-if="user.nivel == 1 && produto.adminPVenda == ''" v-model.number="produto.preco_venda" @click="PVendachange(index)" name="" type="number"></v-text-field>
+                
                       <v-select
                         reverse
-                        v-if="user.nivel == 1"
+                        v-if="user.nivel == 1 && produto.adminPVenda == 1"
                         box color="blue"
                         v-model="produto.preco_venda"
                         :items="produto.PVendaList"
@@ -775,7 +781,7 @@
                       <!--<v-text-field box readonly :value="produto.total" name="" type="number"></v-text-field>-->
                     
                       <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; width:80%; padding:15px 3px 12px 4px; margin-right:-3px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>                   
-                      
+
                       <v-btn style="margin-left:-4px; width:10%;" small icon left dark @click="removeNewProdutoUpdate(index)" class="red"><v-icon>remove</v-icon></v-btn>
                       </content>
                     </v-flex>
@@ -817,7 +823,7 @@
            <v-btn
             color="white"
             flat
-            v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto(banana)"
+            v-shortkey="['ctrl','n']" @shortkey="addNewProduto(banana)" @click="addNewProduto(banana)"
           >
             <span style="font-size:1.5em;">NOVA</span>
             <v-icon>add</v-icon>
@@ -946,6 +952,7 @@ export default {
 
       fornecRules: [v => !!v || "Campo fornecedor é obrigatório"],
       produtos: [{
+        adminPVenda: '',
         input: null,
         idSearch: '',
         total: '',
@@ -1075,6 +1082,7 @@ export default {
     addNewProduto (index) {
       if (this.produtos[index].search.length !== 0 ) {
         this.produtos.push({
+          adminPVenda: '',
           idSearchNew: '',
           total: '',
           totalIva: '',
@@ -1100,15 +1108,13 @@ export default {
         this.dadosUser = response.data.user.nivel
         this.userconfig = this.dadosUser
         if(this.userconfig == 1) {
-          this.dialogUser = false;
-          this.snackbar = true
+          this.dialogPreco = false;
+          // this.snackbar = true
         } else if (this.userconfig == 2) {
           this.alertadmin = true;
           this.usuario = '',
           this.password = ''
-        }
-        console.log(this.userconfig)
-        
+        }        
       } catch (error) {
         this.error = error.response.data.error;
         // this.store.commit('LOADER', false)
@@ -1141,7 +1147,7 @@ export default {
         if(this.res.length !== 0 ) {
           this.pagamento = this.res[0]
           this.produtos = this.res[0].ListaVendas
-          console.log("Produto restornados »»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»", this.produtos)
+          console.log("Produto restornados -»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»", this.produtos)
         }else{
           this.$toast.error({
             title: "Aviso",
@@ -1153,7 +1159,6 @@ export default {
     async updateVendaNoPrinter(index) {
       listaVendaServices.postnewprod(this.produtos)
       VendaServices.putidpagamento(this.pagamento)
-      
       this.idSearch = ''
       this.dialog = false
       this.produtos = [{
@@ -1182,7 +1187,6 @@ export default {
         message: "Venda atualizada com sucesso no sistema!"
       })
     },
-    
     async pesquisarBolsa(banana) {
       try {
         this.search = 'Bolsa'
@@ -1203,7 +1207,9 @@ export default {
           } else {
             this.$refs.searchquantidade[banana].focus();
           }
-          this.userconfig = ''
+          /*this.userconfig = ''
+          this.adminPVenda = ''*/
+          this.produtos[index].adminPVenda = ''
         }
       } catch (err) {
         console.log(err);
@@ -1230,7 +1236,9 @@ export default {
           } else {
             this.$refs.searchquantidade[index].focus();
           }
-          this.userconfig = ''
+          /*this.userconfig = ''
+          this.adminPVenda = ''*/
+          this.produtos[index].adminPVenda = ''
         }
       } catch (err) {
         console.log(err);
@@ -1241,7 +1249,7 @@ export default {
         this.search = this.produtos[index].search
         if (this.search !== '') {
           this.produtos[index].idProduto = (await filterServices.bynamevenda(this.search)).data
-          console.log(this.produtos[index].idProduto)
+          console.log("PROD-----", this.produtos[index].idProduto)
           Object.keys(this.produtos[index].idProduto).forEach(key => {
             this.produtos[index].idProduto = this.produtos[index].idProduto[key];
             if (this.produtos[index].idProduto.Stock.quantidade === 0) {
@@ -1256,7 +1264,9 @@ export default {
             // this.$refs.searchquantidade[index].focus();
             this.addNewProduto(index)
           }
-          this.userconfig = ''
+          /*this.userconfig = ''
+          this.adminPVenda = ''*/
+          this.produtos[index].adminPVenda = ''
         }
       } catch (err) {
         console.log(err);
@@ -1284,6 +1294,9 @@ export default {
     },
     async searchCliente() {
       this.dialogPesquisaCliente = true
+    },
+    async PVendachange(index) {
+      this.produtos[index].adminPVenda = 1
     },
     async changePVenda() {
       this.dialogPreco = true

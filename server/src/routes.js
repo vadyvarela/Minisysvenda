@@ -68,7 +68,7 @@ module.exports = (app) => {
   app.put('/usuarios/:userId',
     AuthenticationControllerPolicy.register,
     AuthenticationController.put)
-  app.put('/usuario',
+  app.put('/usersenha/:userId',
     AuthenticationControllerPolicy.register,
     AuthenticationController.putsenha)
   app.put('/auser/:userId',

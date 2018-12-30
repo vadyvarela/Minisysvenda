@@ -221,7 +221,7 @@ import ChartDoughnut from "@/components/grafico/chart-doughnut";
 import ProdutosService from "@/services/ProdutosService";
 import StockServices from "@/services/StockServices";
 import VendaServices from "@/services/VendaServices";
-import CompraServices from "@/services/CompraServices";
+import listaCompraServices from "@/services/listaCompraServices";
 import UsuariosServices from "@/services/UsuariosServices";
 import listaVendaServices from "@/services/listaVendaServices";
 
@@ -326,7 +326,7 @@ export default {
     this.totalProdutos = this.Produtos.length
     this.Stock = (await StockServices.index()).data;
     this.totalStock = this.Stock.length
-    this.Compras = (await CompraServices.index()).data;
+    this.Compras = (await listaCompraServices.index()).data;
     this.totalCompras = this.Compras.length
     console.log("COMPRAS,", this.Compras)
   },

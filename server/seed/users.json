@@ -1,12 +1,16 @@
 [
   {
+    "nome": "Administrador do sistema",
     "usuario": "admin",
     "password": "admin",
+    "status": "1",
     "nivel": "1"
   },
   {
+    "nome": "Vendedor do sistema",
     "usuario": "vendedor",
     "password": "vendedor",
+    "status": "1",
     "nivel": "2"
   }
 ]

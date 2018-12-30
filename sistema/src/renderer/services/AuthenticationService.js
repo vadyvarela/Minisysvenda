@@ -16,7 +16,7 @@ export default {
     inativar ( user ) {
         return Api().put(`inauser/${user.id}`, user)
     },
-    putsenha ( credentials ) {
-        return Api().put(`usuario`, credentials)
+    putsenha ( user ) {
+        return Api().put(`usersenha/${user.id}`, user)
     }
 }

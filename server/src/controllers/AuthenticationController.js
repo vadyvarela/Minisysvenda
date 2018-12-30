@@ -26,20 +26,15 @@ module.exports = {
       })
     }
   },
-  async putsenha (req, res) {
+  putsenha (req, res) {
     const dados = req.body
     try {
-      const user = await User.update({
+      User.update({
         nome: dados.nome,
         usuario: dados.usuario,
         password: dados.password
-      }, { where: { id: dados.id } })
-      console.log('=======================================', user)
-      const userJson = user.toJSON()
-      res.send({
-        user: userJson,
-        token: jwtSignUser(userJson)
-      })
+      }, { where: { id: req.params.userId }, individualHooks: true })
+      res.send(req.body)
     } catch (err) {
       res.status(500).send({
         error: err + 'Um erro ocoreu ao tentar atualizar dados do usuario'
@@ -56,7 +51,7 @@ module.exports = {
       res.send(req.body)
     } catch (err) {
       res.status(500).send({
-        error: 'Um erro ocoreu ao tentar atualizar dados do usuario'
+        error: 'Um erro ocoreu ao tentar atualizar dados do usuario' + err
       })
     }
   },

@@ -23,11 +23,28 @@
         </v-btn>
       </v-snackbar>
 
+      <v-snackbar
+        v-model="snackbarnorow"
+        :color="colornorow"
+        :multi-line="mode === 'multi-line'"
+        :timeout="timeout"
+        :vertical="mode === 'vertical'"
+      >
+        {{ textnorow }}
+        <v-btn
+          dark
+          flat
+          @click="snackbarnorow = false"
+        >
+          Fechar
+        </v-btn>
+      </v-snackbar>
+
       <v-stepper v-model="e1">
         <v-stepper-header>
           <v-stepper-step editable :complete="e1 > 1" step="1">Dados de compra</v-stepper-step>
           <v-divider></v-divider>
-          <v-stepper-step step="2">Produtos</v-stepper-step>
+          <v-stepper-step editable step="2">Produtos</v-stepper-step>
         </v-stepper-header>
 
         <v-stepper-items>
@@ -114,23 +131,22 @@
                     <v-flex class="titleProd" xs12 sm2 md2>
                       <label>Quantidade</label>
                     </v-flex>
-                    <v-flex class="titleProd" xs12 sm1 md1>
+                    <v-flex style="text-align:right" class="titleProd" xs12 sm1 md1>
                       <label>Preço </label>
                     </v-flex>
-                    <v-flex class="titleProd" xs12 sm2 md2>
+                    <v-flex style="text-align:right" class="titleProd" xs12 sm2 md2>
                       <label>Preço VendA </label>
                     </v-flex>
-                    <v-flex class="titleProd" xs12 sm1 md1>
+                    <v-flex style="text-align:right" class="titleProd" xs12 sm1 md1>
                       <label>IVA%</label>
                     </v-flex>
-                    <v-flex class="titleProd" xs12 sm1 md1>
+                    <v-flex style="text-align:right" class="titleProd" xs12 sm2 md2>
                       <label>Total</label>
-                    </v-flex>
-                    <v-flex class="titleProd" xs12 sm1 md1>
                     </v-flex>
                   </v-layout>
                 </div>
                 <div v-bind:key="index" v-for="(produto, index) in produtos">
+                  <h2 hidden> {{ banana = index }} </h2>
                   <h2 hidden>{{ produto.CompraId = idCompra }}</h2>
                   <div v-if="produtos[index].idProduto && produtos[index].idProduto.Iva">
                     <h4 hidden>NOME: {{ produto.nome = produtos[index].idProduto.produto_nome }}</h4>
@@ -141,7 +157,8 @@
                       <h4 hidden>TOTAL LIQUIDO: {{ produto.totalLiquido = produto.quantidade * produto.preco_venda }}</h4>
                       <h4 hidden>TOTAL: {{ produto.total = produto.quantidade * produto.preco }}*</h4>
                       <span hidden> TOTAL IVA:  {{ produto.totalIva = produto.preco_venda * produto.iva / 100 }}</span>
-                      </span>
+                    </span>
+                    <p hidden> {{ blockLine = produto.nome }} </p>
                   </div>
                   <div v-else>
                     <h2 hidden>Sorry Vady</h2>
@@ -174,7 +191,6 @@
                                   <input name="" v-model="produto.search" type="hidden"/>   
                                 </p>
                               </v-flex>
-                              
                             </v-layout>
                           </v-container>
                         </v-card-text>
@@ -196,14 +212,20 @@
                       <v-text-field box readonly :value="produto.nome" type="text"></v-text-field>
                     </v-flex>
                     <v-flex xs12 sm2 md2>
-                      <v-text-field box v-model.number="produto.quantidade" @keyup.enter="addNewProduto(index)" ref="searchquantidade" label="Quantidade" type="text"></v-text-field>
-                      <input v-model.trim="produto.quantidade" @keyup.enter="addNewProduto(index)" type="hidden" autofocus/>
+                      <div v-if="typeof produtos[index].idProduto.produto_nome === 'undefined'">
+                        <v-text-field box type="hidden"></v-text-field>
+                      </div>
+                      <div v-else>
+                        <v-text-field box v-model.number="produto.quantidade" @keyup.enter="addNewProduto(index)" ref="searchquantidade" label="Quantidade" type="text"></v-text-field>
+                        <input v-model.trim="produto.quantidade" @keyup.enter="addNewProduto(index)" type="hidden" autofocus/>
+                      </div>
                     </v-flex>
                     <v-flex xs12 sm1 md1>
-                      <v-text-field box readonly :value="produto.preco" name="" type="number"></v-text-field>
+                      <v-text-field box reverse readonly :value="produto.preco" name="" type="number"></v-text-field>
                     </v-flex>
                     <v-flex xs12 sm2 md2>
                       <v-select
+                        reverse
                         readonly
                         v-model="produtos[index].idProduto.PVendas"
                         :items="produtos[index].idProduto.PVendas"
@@ -216,26 +238,18 @@
                       ></v-select>
                     </v-flex>
                     <v-flex right xs12 sm1 md1>
-                      <v-text-field box readonly :value="produto.iva" name="" type="number"></v-text-field>
+                      <v-text-field reverse box readonly :value="produto.iva" name="" type="number"></v-text-field>
                     </v-flex>
-                    <v-flex xs12 sm1 md1>
+                    <v-flex xs12 sm2 md2>
                       <!--<v-text-field box readonly :value="produto.total" name="" type="number"></v-text-field>-->
-                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; padding:15px 0 12px 4px; font-size:1.4em; color: green;" :value="produto.total"></vue-numeric>
+                      <vue-numeric readonly style="border-bottom:1px solid #999; background:#f5f5f5; width:80%; padding:15px 3px 12px 4px; margin-right:-3px; font-size:1.4em; color: green; text-align:right" :value="produto.total"> </vue-numeric>                   
+                      <v-btn style="margin-left:-4px; width:10%;" small icon left dark @click="removeNewProduto(index)" class="red"><v-icon>remove</v-icon></v-btn>
                     </v-flex>
-                    <v-spacer></v-spacer>
-                    <v-flex xs12 sm1 md1>
-                      <v-btn small left fab outline @click="removeNewProduto(index)" class="red"><v-icon>remove</v-icon></v-btn>
-                    </v-flex>
+                    
                   </v-layout>
                   </v-form>
                 </div>
-                
-                <v-spacer></v-spacer>
-                <v-card-actions>
-                  <v-btn dark fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewProduto" @click="addNewProduto"><v-icon>add</v-icon></v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn large class="green" @click="createCompraProd()"> <span style="font-size:2em; font-weight:bold; color: #fff;"> Finalizar </span> </v-btn>
-                </v-card-actions>
+              
               </v-flex>
             </v-layout>
         </v-stepper-content>
@@ -245,20 +259,61 @@
     </v-content>
 
     <v-bottom-nav
+      height="120"
       :value="showNav"
       fixed
       color="green"
     >
-      <v-flex xs12 sm8 md8>
-      </v-flex>
-      <v-flex class="text-xs-right" xs12 sm3 md3>
-        <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.total') }}: </span>
-      </v-flex>
-      <v-flex class="text-xs-right pr-4" xs12 sm2 md2>
-        <vue-numeric v-if="totalPrice === ''" read-only style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-right white--text" :value="0"></vue-numeric>
-        <vue-numeric v-else read-only style="font-size:2.5em; font-weight:700; color: #fff;" class="text-xs-right white--text" :value="totalPrice"></vue-numeric>
-      </v-flex>
+    <v-container>
+      <v-layout style="margin-top:-22px;" wrap>
+        <v-flex class="text-xs-left" xs12 sm10 md10>
+           <v-btn
+            color="white"
+            flat
+            v-shortkey="['ctrl','n']" @shortkey="addNewProduto(banana)" @click="addNewProduto(banana)"
+          >
+            <span style="font-size:1.5em;">NOVA</span>
+            <v-icon>add</v-icon>
+          </v-btn>
+        </v-flex>
+        <v-flex v-if="blockLine === ''" class="text-xs-right" xs12 sm2 md2>
+          <v-btn
+            disabled
+            color="white"
+            flat
+            v-shortkey="['ctrl','enter']" @shortkey="createCompraProd()" @click="createCompraProd()"
+          >
+            <span style="font-size:1.5em;">FINALIZAR COMPRA</span>
+            <v-icon>send</v-icon>
+          </v-btn>
+        </v-flex>
+        <v-flex v-else class="text-xs-right" xs12 sm2 md2>
+          <v-btn
+            color="white"
+            flat
+            v-shortkey="['ctrl','enter']" @shortkey="createCompraProd()" @click="createCompraProd()"
+          >
+            <span style="font-size:1.5em;">FINALIZAR COMPRA</span>
+            <v-icon>send</v-icon>
+          </v-btn>
+        </v-flex>
+      </v-layout>
+      <v-divider dark></v-divider>
+      <v-layout style="">
+        <v-flex xs12 sm9 md9>
+        </v-flex>
+        <v-flex class="text-xs-right" xs12 sm3 md3>
+          <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.totall') }}: </span>
+          <vue-numeric v-if="totalPrice === ''" read-only style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="0"></vue-numeric>
+          <vue-numeric v-if="totalPrice >= 100000" read-only style="font-size:1.6em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="totalPrice"></vue-numeric>
+          <vue-numeric v-else read-only style="font-size:2.5em; font-weight:700; color: #fff;" class="text-xs-left white--text" :value="totalPrice"></vue-numeric>
+          <span v-if="totalPrice >= 100000" style="font-size:1.6em; font-weight:700; color: #fff;" class="text-xs-right white--text" > CVE</span>
+          <span v-else style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-right white--text" > CVE</span>
+        </v-flex>
+      </v-layout>
+    </v-container>
     </v-bottom-nav>
+
 
     </panel>
 </template>
@@ -275,9 +330,14 @@ import stockServices from "@/services/stockServices"
 export default {
   data() {
     return {
+      blockLine: '',
+      snackbarnorow: false,
+      colornorow: 'error',
+      textnorow: 'Para criar nova linha tem que preencher a linha anterior',
       snack: false,
       snackColor: '',
       showNav: true,
+      blockRemoval: true,
       snackText: '',
       e1: '',
       listaprodutos: [],
@@ -296,7 +356,7 @@ export default {
         ProdutoId: '',
         idProduto: '',
         total: '',
-        quantidade: '',
+        quantidade: '1',
         search: '',
         stock_id: ''
       }],
@@ -314,20 +374,29 @@ export default {
       alert: false
     };
   },
+  watch: {
+    produtos () {
+      this.blockRemoval = this.produtos.length <= 1
+    }
+  },
   methods: {
-    addNewProduto() {
-      this.produtos.push({
-        CompraId: '',
-        ProdutoId: '',
-        idProduto: '',
-        total: '',
-        quantidade: '',
-        search: '',
-        stock_id: ''
-      })
+    addNewProduto(banana) {
+      if (this.produtos[banana].search.length !== 0 ) {
+        this.produtos.push({
+          CompraId: '',
+          ProdutoId: '',
+          idProduto: '',
+          total: '',
+          quantidade: '1',
+          search: '',
+          stock_id: ''
+        })
+      }else {
+         this.snackbarnorow = true
+      }
     },
     removeNewProduto(index) {
-      this.produtos.splice(index, 1)
+      if (!this.blockRemoval) this.produtos.splice(index, 1)
     },
     async searchProd() {
       this.dialogPesquisa = true
@@ -344,7 +413,8 @@ export default {
           this.$refs.search[index].reset();
           this.$refs.search[index].focus();
         } else {
-          this.$refs.searchquantidade[index].focus();
+          // this.$refs.searchquantidade[index].focus();
+          this.addNewProduto(index)
         }
         console.log('PRODUTO', this.produtos[index].idProduto)
       } catch (err) {
@@ -438,7 +508,6 @@ export default {
   padding: 10px 20px;
 }
 .titleProd {
-  text-align: center;
   margin-bottom: 26px;
   background: #999;
   color: #fff;
@@ -457,5 +526,40 @@ export default {
   font-size: 1.2em;
   margin: 0 auto !important;
   text-transform: uppercase
+}
+@media only screen and (min-width: 1264px){
+  .container {
+      max-width: 100% !important;
+  }
+}
+@media only screen and (min-width: 960px){
+  .container {
+      max-width: 900px !important;
+  }
+}
+@media only screen and (min-width: 1904px){
+  .container {
+      max-width: 100% !important;
+  }
+}
+@media only screen and (min-width: 960px){
+  .container[data-v-51dca86c] {
+      max-width: 100% !important;
+  }
+}
+.v-bottom-nav .v-btn {
+    background: transparent!important;
+    border-radius: 0;
+    box-shadow: none!important;
+    flex-shrink: 1;
+    font-weight: 400;
+    height: 100%;
+    margin: 0;
+    max-width: 168px;
+    min-width: 80px;
+    opacity: 1 !important;
+    padding: 8px 12px 10px;
+    text-transform: none;
+    width: 100%;
 }
 </style>
