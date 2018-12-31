@@ -77,7 +77,6 @@
                       lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <v-text-field
@@ -87,7 +86,7 @@
                         prepend-icon="event"
                         readonly
                       ></v-text-field>
-                      <v-date-picker full-width landscape v-model="data_ini" @input="$refs.menu2.save(data_ini)"></v-date-picker>
+                      <v-date-picker v-model="data_ini" @input="$refs.menu2.save(data_ini)"></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <v-flex xs4 sm3 md2>
@@ -100,7 +99,6 @@
                       lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <v-text-field
@@ -110,7 +108,7 @@
                         prepend-icon="event"
                         readonly
                       ></v-text-field>
-                      <v-date-picker full-width landscape v-model="data_fim" @input="$refs.menu1.save(data_fim)"></v-date-picker>
+                      <v-date-picker v-model="data_fim" @input="$refs.menu1.save(data_fim)"></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <!--<v-flex xs12 sm4 md4>

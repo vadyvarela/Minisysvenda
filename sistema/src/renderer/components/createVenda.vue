@@ -1,7 +1,6 @@
 <template>
-    <panel title="Vendas">
-      <div v-if="isOnline">
-      <v-content>
+    <panel title="NOVA VENDA">
+      <v-content class="meudivpad">
       <v-layout justify-end row wrap>
         <v-flex text-lg-left xs12>
         </v-flex>
@@ -533,8 +532,8 @@
                             >
                               <v-card style="padding:12px" flat tile class="d-flex">
                                 <v-img
-                                  :src="'uploads/' + categoria.filename"
-                                  :lazy-src="'uploads/' + categoria.filename"
+                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
+                                  :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
                                   aspect-ratio="1"
                                   class="grey lighten-2"
                                 >
@@ -568,21 +567,20 @@
                         <v-card-text>
                         <v-container grid-list-sm fluid>
                           <v-layout row wrap>
-                            <h2 class="text-md-center red--text" v-if="listaprodutosCat.length === 0">Nenhum produro encontrado nessa categoria!</h2>
+                            <h2 class="text-md-center red--text" v-if="listaprodutosCat.length === 0">Nenhum produto encontrado nessa categoria!</h2>
                             <v-flex
                               v-for="(prod, idx) in listaprodutosCat"
                               :key="idx"
-                              xs4
+                              xs3
                               d-flex
                             >
-                              <span hidden> {{ nome = prod.produto_nome }} </span>
                               
-                              <v-card style="padding:12px" flat tile class="d-flex">
+                              <v-card style="padding:12px;" flat tile class="elevation-4 d-flex">
                                 <v-img
-                                  :src="'uploads/' + prod.filename"
-                                  :lazy-src="'uploads/' + prod.filename" aspect-ratio="1"
+                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + prod.filename"
+                                  :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + prod.filename" aspect-ratio="1"
                                   class="grey lighten-2"
-                                  @click.native="dialogProdCategorias = false; pesquisarbyCat(index, nome)"
+                                  @click.native="dialogProdCategorias = false; pesquisarbyCat(index, nome = prod.produto_nome)"
                                 >
                                   <v-layout
                                     slot="placeholder"
@@ -592,7 +590,7 @@
                                     ma-0
                                   >
                                     <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                                  </v-layout>
+                                  </v-layout>   
                                 </v-img>
                               </v-card>
                             </v-flex>
@@ -769,7 +767,7 @@
                       <span v-if="produto.preco_venda">
                       <h4 hidden>TOTAL LIQUIDO: {{ produto.totalLiquido = produto.quantidade * produto.preco_venda }}</h4>
                       <h4 hidden>TOTAL: {{ produto.total = produto.quantidade * produto.preco_venda }}</h4>
-                      <span hidden> TOTAL IVA:  {{ produto.totalIva = produto.preco_venda * produto.iva / 100 }}</span>
+                      <span hidden> TOTAL IVA:  {{ produto.totalIva = produto.iva }}</span>
                       </span>
 
                     </v-flex>
@@ -863,22 +861,12 @@
       </v-layout>
     </v-container>
     </v-bottom-nav>
-    </div>
-    <div v-if="isOffline">
-      <v-content>
-      <v-layout justify-end row wrap>
-        <v-flex text-lg-left xs12>
-          <h2 class="red--text"> <span style="text-align:center">Sem conexão com a internet!</span> <br> Verifique sua conexão com a internet</h2>
-        </v-flex>
-      </v-layout>
-      </v-content>
-    </div>
-    </panel>
-
+</panel>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import Vendedor from "@/components/componentes/Vendedor";
 import FornecedoresService from "@/services/FornecedorService"
 import CategoriasService from "@/services/CategoriasService"
 import ProdutosService from "@/services/ProdutosService"
@@ -1011,6 +999,9 @@ export default {
       this.blockRemoval = this.produtos.length <= 1
     }
   },
+  components: {
+        Vendedor
+    },
   methods: {
     async reset () {
       this.idSearch = '',
@@ -1205,7 +1196,8 @@ export default {
             this.$refs.search[banana].reset();
             this.$refs.search[banana].focus();
           } else {
-            this.$refs.searchquantidade[banana].focus();
+            this.addNewProduto(banana)
+            // this.$refs.searchquantidade[banana].focus();
           }
           /*this.userconfig = ''
           this.adminPVenda = ''*/
@@ -1234,10 +1226,9 @@ export default {
             this.$refs.search[index].reset();
             this.$refs.search[index].focus();
           } else {
-            this.$refs.searchquantidade[index].focus();
+            this.addNewProduto(index)
+            // this.$refs.searchquantidade[index].focus();
           }
-          /*this.userconfig = ''
-          this.adminPVenda = ''*/
           this.produtos[index].adminPVenda = ''
         }
       } catch (err) {
@@ -1696,7 +1687,7 @@ export default {
     },
     totalIva() {
       return this.produtos.reduce((total, produto) => {
-        return total + Number(produto.preco_venda * produto.iva / 100);
+        return total + Number(produto.preco_venda * produto.totalIva / 100);
       }, 0);
     },
     totalPriceLiquido() {
@@ -1709,7 +1700,11 @@ export default {
 </script>
 
 <style scoped>
- 
+
+.meudivpad {
+  padding-left: 1px !important;
+  padding-right: 1px !important;
+}
 .span {
   padding: 6px;
   display: block;
@@ -1786,7 +1781,7 @@ export default {
 }
 @media only screen and (min-width: 960px){
   .container {
-      max-width: 900px !important;
+      max-width: 100% !important;
   }
 }
 @media only screen and (min-width: 1904px){

@@ -2,7 +2,7 @@ import Api from '@/services/Api'
 
 export default {
     total () {
-        return Api().get(`vendasTotal`)
+        return Api().get(`vendTotal`)
     },
     index (params) {
         return Api().get(`vendas`, {

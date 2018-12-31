@@ -82,8 +82,8 @@
                   <td>
                     <v-card width="100" style="padding:15px" flat tile class="d-flex">
                       <v-img
-                        :src="'uploads/' + props.item.filename"
-                        :lazy-src="'uploads/' + props.item.filename"
+                        :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + props.item.filename"
+                        :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + props.item.filename"
                         aspect-ratio="1"
                         class="grey lighten-2"
                       >

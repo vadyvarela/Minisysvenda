@@ -2,6 +2,7 @@
 <div>
     <v-toolbar color="primary" dark fixed app>
     <v-toolbar-title> Bemvindo {{ user.nome }} </v-toolbar-title>
+    <slot name="action" />
     <v-spacer></v-spacer>
     <v-menu offset-y>
       <v-btn
@@ -14,14 +15,14 @@
       </v-btn>
       <v-list light>
         <v-list-tile v-on:click="switchLocalePt()">
-          <img style="margin-right:8px" src="/static/portugal.png" alt="MiniSysVenda" width="30" height="30">
+          <img style="margin-right:8px" src="http://minisys.innovatmedialab.com/server/img/portugal.png" alt="MiniSysVenda" width="30" height="30">
           <v-list-tile-title> PORTUGUES</v-list-tile-title>
         </v-list-tile>
       </v-list>
       <v-divider></v-divider>
       <v-list light>
         <v-list-tile v-on:click="switchLocaleCh()">
-          <img style="margin-right:8px" src="/static/china.png" alt="MiniSysVenda" width="30" height="30">
+          <img style="margin-right:8px" src="http://minisys.innovatmedialab.com/server/img/china.png" alt="MiniSysVenda" width="30" height="30">
           <v-list-tile-title> CHINES</v-list-tile-title>
         </v-list-tile>
       </v-list>
@@ -30,6 +31,7 @@
       <v-icon>exit_to_app</v-icon>
     </v-btn>
     </v-toolbar>
+    
 </div> 
 </template>
 

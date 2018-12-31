@@ -1,7 +1,6 @@
 <template>
 <div>
-  
-  <v-app v-if="isUserLoggedIn, isOnline" id="inspire">
+ <div v-if="isOnline">
     <div v-if="user.nivel == 1">
       <v-navigation-drawer fixed v-model="drawer" :dark="dark" app>
           <v-toolbar flat class="transparent">
@@ -225,15 +224,10 @@
         No slot content defined.
       </slot>
     </div>
-
-    <v-footer v-if="!user.nivel == 2" color="primary" app inset>
-        <span align-center class="white--text">&nbsp;&nbsp;&nbsp;Sistema de vendas &copy; Imedia <span>{{ new Date() | moment("YYYY") }}</span></span>
-    </v-footer>
-  </v-app>
-
-  <v-app v-if="!isUserLoggedIn, isOffline" id="inspire">
+  </div> 
+  <div v-if="isOffline" >
     <conexao/>
-  </v-app>
+  </div>
 
 </div>
 </template>

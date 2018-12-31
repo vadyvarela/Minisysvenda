@@ -1,5 +1,5 @@
 <template>
-    <panel title="Vendas">
+    <panel title=""> 
     <v-content>
     <v-container fluid fill-heightgrid-list-md>
 
@@ -29,7 +29,6 @@
     
     </v-content>
     </panel>
-    
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-    <panel title="Lista de vendas">
+    <panel title="LISTA DE VENDAS">
       <v-content >
         <v-layout justify-end row>
           <v-flex text-lg-left xs6>
@@ -264,13 +264,14 @@
                 </v-layout>
               </v-card-text>
             </v-card>
-          
       <v-divider></v-divider>
     </v-content>
     </panel>
 </template>
 
 <script>
+import Vendedor from "@/components/componentes/Vendedor";
+import Admin from "@/components/componentes/Admin";
 import filterServices from "@/services/filterServices"
 import VendaServices from "@/services/VendaServices";
 import listaVendaServices from "@/services/listaVendaServices";
@@ -338,6 +339,10 @@ export default {
       CategoriaId: []
     };
   },
+  components: {
+        Vendedor,
+        Admin
+    },
   methods: {
     async AnularVendaAdmin() {
       this.dialogUser = true

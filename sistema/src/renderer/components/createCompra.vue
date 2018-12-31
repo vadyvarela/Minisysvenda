@@ -40,6 +40,8 @@
         </v-btn>
       </v-snackbar>
 
+      <v-btn style="display:none;" dark v-shortkey="['f3']" @shortkey="left = !left" @click.stop="left = !left"> </v-btn>
+                
       <v-stepper v-model="e1">
         <v-stepper-header>
           <v-stepper-step editable :complete="e1 > 1" step="1">Dados de compra</v-stepper-step>
@@ -158,7 +160,6 @@
                       <h4 hidden>TOTAL: {{ produto.total = produto.quantidade * produto.preco }}*</h4>
                       <span hidden> TOTAL IVA:  {{ produto.totalIva = produto.preco_venda * produto.iva / 100 }}</span>
                     </span>
-                    <p hidden> {{ blockLine = produto.nome }} </p>
                   </div>
                   <div v-else>
                     <h2 hidden>Sorry Vady</h2>
@@ -167,6 +168,85 @@
                   <v-form ref="form" name="cadastar" autocomplete="off" lazy-validation>
                   <v-layout class="layoutmeu">
                   
+                  <v-navigation-drawer width="700" temporary fixed :clipped="clipped" v-model="left" enable-resize-watcher app right >
+                      <v-divider></v-divider>
+                      <h4 class="primary--text text-md-center" style="font-size:2em; margin-top:4px">SELECIONE A CATEGORIA DO PRODUTO </h4>
+                      <v-divider></v-divider>
+                        <v-card-text>
+                        <v-container grid-list-sm fluid>
+                          <v-layout row wrap>
+                            <v-flex
+                              v-for="(categoria, index) in categorias"
+                              :key="index" xs3 d-flex @click="prodByCat1(myCatId = categoria.id)"
+                            >
+                              <v-card style="padding:12px" flat tile class="d-flex">
+                                <v-img
+                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
+                                  :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + categoria.filename"
+                                  aspect-ratio="1"
+                                  class="grey lighten-2"
+                                >
+                                  <v-layout
+                                    slot="placeholder"
+                                    fill-height
+                                    align-center
+                                    justify-center
+                                    ma-0
+                                  >
+                                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                                  </v-layout>
+                                </v-img>
+                              </v-card>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
+                        </v-card-text>
+                    </v-navigation-drawer>
+                    <v-navigation-drawer width="700" temporary fixed right :clipped="clipped" v-model="drawer1" enable-resize-watcher app >
+                      <v-divider></v-divider>
+                      <v-layout>
+                        <v-flex xs6 sm2 md2>
+                        <v-btn flat icon color="primary" dark @click="backToCat"> <v-icon>keyboard_backspace</v-icon> </v-btn>
+                        </v-flex>
+                        <v-flex xs6 sm8 md8>
+                        <h4 class="primary--text text-md-center" style="font-size:2em;">SELECIONE O PRODUTO </h4>
+                        </v-flex>
+                      </v-layout>
+                      <v-divider></v-divider>
+                        <v-card-text>
+                        <v-container grid-list-sm fluid>
+                          <v-layout row wrap>
+                            <h2 class="text-md-center red--text" v-if="listaprodutosCat.length === 0">Nenhum produto encontrado nessa categoria!</h2>
+                            <v-flex
+                              v-for="(prod, idx) in listaprodutosCat"
+                              :key="idx"
+                              xs3
+                              d-flex
+                            >
+                              
+                              <v-card style="padding:12px;" flat tile class="elevation-4 d-flex">
+                                <v-img
+                                  :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + prod.filename"
+                                  :lazy-src="'http://minisys.innovatmedialab.com/server/src/uploads/' + prod.filename" aspect-ratio="1"
+                                  class="grey lighten-2"
+                                  @click.native="dialogProdCategorias = false; pesquisarbyCat(index, nome = prod.produto_nome)"
+                                >
+                                  <v-layout
+                                    slot="placeholder"
+                                    fill-height
+                                    align-center
+                                    justify-center
+                                    ma-0
+                                  >
+                                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                                  </v-layout>   
+                                </v-img>
+                              </v-card>
+                            </v-flex>
+                          </v-layout>
+                          </v-container>
+                        </v-card-text>
+                    </v-navigation-drawer>
                   <v-dialog v-model="dialogPesquisa" persistent max-width="550px" @keydown.esc="dialogPesquisa = false">
                       <v-card align-center justify-center>
                         <v-card-title>
@@ -276,7 +356,7 @@
             <v-icon>add</v-icon>
           </v-btn>
         </v-flex>
-        <v-flex v-if="blockLine === ''" class="text-xs-right" xs12 sm2 md2>
+        <v-flex v-if="e1 == '1'" class="text-xs-right" xs12 sm2 md2>
           <v-btn
             disabled
             color="white"
@@ -287,7 +367,7 @@
             <v-icon>send</v-icon>
           </v-btn>
         </v-flex>
-        <v-flex v-else class="text-xs-right" xs12 sm2 md2>
+         <v-flex v-else class="text-xs-right" xs12 sm2 md2>
           <v-btn
             color="white"
             flat
@@ -322,6 +402,7 @@
 import { mapState } from 'vuex'
 import FornecedoresService from "@/services/FornecedorService";
 import ProdutosService from "@/services/ProdutosService";
+import CategoriasService from "@/services/CategoriasService"
 import filterServices from "@/services/filterServices"
 import CompraServices from "@/services/CompraServices"
 import listaCompraServices from "@/services/listaCompraServices"
@@ -330,11 +411,14 @@ import stockServices from "@/services/stockServices"
 export default {
   data() {
     return {
-      blockLine: '',
       snackbarnorow: false,
       colornorow: 'error',
       textnorow: 'Para criar nova linha tem que preencher a linha anterior',
       snack: false,
+      drawer: false,
+      left: false,
+      drawer1: false,
+      clipped: false,
       snackColor: '',
       showNav: true,
       blockRemoval: true,
@@ -342,6 +426,9 @@ export default {
       e1: '',
       listaprodutos: [],
       idCompra: [],
+      categorias: [],
+      listaprodutos: [],
+      listaprodutosCat: [],
       usuario_nome: '',
       snackbar: false,
       dialogPesquisa: false,
@@ -398,8 +485,58 @@ export default {
     removeNewProduto(index) {
       if (!this.blockRemoval) this.produtos.splice(index, 1)
     },
+    async backToCat () {
+      this.left = true
+      this.drawer1 = false
+    },
+    async prodByCat (myCatId) {
+      console.log('MEU ID CAT ___________.::::::::.____________', myCatId)
+      this.listaprodutosCat = (await ProdutosService.indexByCat({
+        CategoriaId: myCatId
+      })).data;
+      console.log('Meus Produtos', this.listaprodutosCat)
+      this.dialogPesquisaCategoria = false
+      this.dialogProdCategorias = true
+    },
+    async prodByCat1 (myCatId) {
+      console.log('MEU ID CAT ___________.::::::::.____________', myCatId)
+      this.listaprodutosCat = (await ProdutosService.indexByCat({
+        CategoriaId: myCatId
+      })).data;
+      console.log('Meus Produtos', this.listaprodutosCat)
+      this.left = false
+      this.drawer1 = true
+    },
     async searchProd() {
       this.dialogPesquisa = true
+    },
+    async pesquisarbyCat(index, nome) {
+      this.drawer1 = false
+      try {
+        this.search = nome
+        this.produtos[index].search = nome
+        if (this.search !== '') {
+          this.produtos[index].idProduto = (await filterServices.bynamevenda(this.search)).data
+          console.log(this.produtos[index].idProduto)
+          Object.keys(this.produtos[index].idProduto).forEach(key => {
+            this.produtos[index].idProduto = this.produtos[index].idProduto[key];
+            if (this.produtos[index].idProduto.Stock.quantidade === 0) {
+              this.dialogStock = true
+            }
+          });
+          if (this.produtos[index].idProduto.length === 0) {
+            this.snackbar = true
+            this.$refs.search[index].reset();
+            this.$refs.search[index].focus();
+          } else {
+            this.addNewProduto(index)
+            // this.$refs.searchquantidade[index].focus();
+          }
+          this.produtos[index].adminPVenda = ''
+        }
+      } catch (err) {
+        console.log(err);
+      }
     },
     async pesquisar(index) {
       try {
@@ -452,6 +589,8 @@ export default {
     this.FornecedoreId = (await FornecedoresService.index()).data;
     //this.ProdutoId = (await ProdutosService.index()).data;
     //console.log(this.ProdutoId)
+    this.categorias = (await CategoriasService.indexImage()).data;
+    console.log("MEUS CAT:", this.categorias)
   },
   computed: {
     ...mapState([
@@ -485,6 +624,7 @@ export default {
 </script>
 
 <style scoped>
+ 
 .span {
   padding: 6px;
   display: block;
@@ -527,6 +667,33 @@ export default {
   margin: 0 auto !important;
   text-transform: uppercase
 }
+
+.panel-body {
+	padding: 15px;
+}
+
+.dadosTolbar{
+  font-size: 1.6em;
+  color: #1976d2;
+  margin: 4px 5px 4px 0;
+}
+
+.myinputs {
+  font-size:1.2em; 
+  padding:6px 15px; 
+  border:2px solid #dcd5d5; 
+  border-radius:5px;
+  margin-bottom: 5px;
+  margin-left: 5px
+}
+.myinputsdata {
+  font-size:1.2em; 
+  padding:14px 16px; 
+  border:2px solid rgba(0,0,0,.54);
+  border-radius:5px;
+  margin-bottom: 5px;
+  margin-left: 5px
+}
 @media only screen and (min-width: 1264px){
   .container {
       max-width: 100% !important;
@@ -534,7 +701,7 @@ export default {
 }
 @media only screen and (min-width: 960px){
   .container {
-      max-width: 900px !important;
+      max-width: 100% !important;
   }
 }
 @media only screen and (min-width: 1904px){
