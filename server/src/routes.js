@@ -163,8 +163,62 @@ module.exports = (app) => {
       }
     })
   })
-  app.put('/produtos/:produtoId',
-    ProdutosController.put)
+  /* app.put('/produtos/:produtoId',
+    ProdutosController.put) */
+  app.put('/produtos', (req, res) => {
+    upload(req, res, (err) => {
+      if (err) {
+        return res.status(403).send({
+          error: err
+        })
+      } else {
+        if (req.file === undefined) {
+          try {
+            const produtos = Produtos.update({
+              produto_code: req.body.produto_code,
+              produto_nome: req.body.produto_nome,
+              produto_nome_rec: req.body.produto_nome_rec,
+              produto_preco: req.body.produto_preco,
+              produto_barcode: req.body.produto_barcode,
+              FornecedoreId: req.body.FornecedoreId,
+              CategoriaId: req.body.CategoriaId,
+              IvaId: req.body.IvaId
+            }, { where: { id: req.body.id }
+            })
+            res.send(produtos)
+          } catch (err) {
+            res.status(500).send({
+              error: 'Um erro ocoreu ao tentar cadastrar categoria'
+            })
+          }
+          /* return res.status(403).send({
+            error: 'ERRO: Favor selecione uma imagem'
+          }) */
+        } else {
+          try {
+            const produtos = Produtos.update({
+              produto_code: req.body.produto_code,
+              produto_nome: req.body.produto_nome,
+              produto_nome_rec: req.body.produto_nome_rec,
+              produto_preco: req.body.produto_preco,
+              produto_barcode: req.body.produto_barcode,
+              FornecedoreId: req.body.FornecedoreId,
+              CategoriaId: req.body.CategoriaId,
+              IvaId: req.body.IvaId,
+              filename: req.file.filename
+            }, { where: { id: req.body.id }
+            })
+            res.send(produtos)
+          } catch (err) {
+            res.status(500).send({
+              error: 'Um erro ocoreu ao tentar cadastrar categoria'
+            })
+          }
+        // console.log('IMG ---- ', req.file, req.body)
+        }
+      }
+    })
+  })
   app.delete('/produtos/:produtoId',
     ProdutosController.delete)
 
@@ -223,8 +277,50 @@ module.exports = (app) => {
     })
   })
   // app.post('/categorias', upload.single('file'), CategoriasController.post)
-  app.put('/categorias/:categoriaId',
-    CategoriasController.put)
+  /* app.put('/categorias/:categoriaId',
+    CategoriasController.put) */
+  app.put('/categorias/', (req, res) => {
+    upload(req, res, (err) => {
+      if (err) {
+        return res.status(403).send({
+          error: err
+        })
+      } else {
+        if (req.file === undefined) {
+          try {
+            const categorias = Categorias.update({
+              categoria_nome: req.body.categoria_nome,
+              categoria_desc: req.body.categoria_desc
+            }, { where: { id: req.body.id }
+            })
+            res.send(categorias)
+          } catch (err) {
+            res.status(500).send({
+              error: 'Um erro ocoreu ao tentar cadastrar categoria'
+            })
+          }
+          /* return res.status(403).send({
+            error: 'ERRO: Favor selecione uma imagem'
+          }) */
+        } else {
+          try {
+            const categorias = Categorias.update({
+              categoria_nome: req.body.categoria_nome,
+              categoria_desc: req.body.categoria_desc,
+              filename: req.file.filename
+            }, { where: { id: req.body.id }
+            })
+            res.send(categorias)
+          } catch (err) {
+            res.status(500).send({
+              error: 'Um erro ocoreu ao tentar cadastrar categoria'
+            })
+          }
+        // console.log('IMG ---- ', req.file, req.body)
+        }
+      }
+    })
+  })
   app.delete('/categorias/:categoriaId',
     CategoriasController.delete)
 

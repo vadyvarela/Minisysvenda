@@ -12,13 +12,26 @@
                   <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
                     <v-text-field required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de categoria" type="text"></v-text-field>
                     <v-text-field required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrição de categoria" type="text"></v-text-field>
+                    <input ref="file" name="categoria_desc" type="hidden">
+                    <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
+                      <img :src="imageUrl" height="150" v-if="imageUrl"/>
+                      <v-text-field label="Select Image" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
+                      <input
+                        type="file"
+                        ref="file"
+                        @change="onFilePicked"
+                        style="display: none"
+                        name=""
+                        accept="image/*"
+                      >
+                    </v-flex>
                   </v-form>
                 </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" outline flat @click.native="dialog = false">Cancelar</v-btn>
-                <v-btn :disabled="!valid" outline color="green darken-1" flat @click="update">Salvar</v-btn>
+                <v-btn :disabled="!valid" outline color="green darken-1" flat @click="sendFile">Salvar</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -79,7 +92,7 @@
                 <template slot="items" slot-scope="props">
                   <td>{{ props.item.categoria_nome }}</td>
                   <td class="text-xs-center ">{{ props.item.categoria_desc }}</td>
-                  <td>
+                  <td v-if="props.item.filename !== null">
                     <v-card width="100" style="padding:15px" flat tile class="d-flex">
                       <v-img
                         :src="'http://minisys.innovatmedialab.com/server/src/uploads/' + props.item.filename"
@@ -120,6 +133,9 @@ import CategoriasService from "@/services/CategoriasService";
 export default {
   data() {
     return {
+      imageName: '',
+      imageUrl: '',
+      imageFile: '',
       search: '',
       snackbar: false,
       color: 'success',
@@ -146,6 +162,29 @@ export default {
     };
   },
   methods: {
+    onFilePicked (e) {
+      this.categoria.categoria_file = this.$refs.file.files[0]
+			const files = e.target.files
+			if(files[0] !== undefined) {
+				this.imageName = files[0].name
+				if(this.imageName.lastIndexOf('.') <= 0) {
+					return
+				}
+				const fr = new FileReader ()
+				fr.readAsDataURL(files[0])
+				fr.addEventListener('load', () => {
+					this.imageUrl = fr.result
+					this.imageFile = files[0] // this is an image file that can be sent to server...
+				})
+			} else {
+				this.imageName = ''
+				this.imageFile = ''
+				this.imageUrl = ''
+			}
+		},
+    pickFile () {
+        this.$refs.file.click ()
+    },
     async deleteCategoria (item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.categoria = Object.assign({}, item);
@@ -173,7 +212,28 @@ export default {
       this.categoria = Object.assign({}, item);
       this.dialog = true;
     },
-    async update() {
+    async sendFile() {
+      console.log("DADOS CAT ---",  this.categoria);
+      const formData = new FormData()
+      formData.append('id', this.categoria.id)
+      formData.append('file', this.categoria.categoria_file)
+      formData.append('categoria_nome', this.categoria.categoria_nome)
+      formData.append('categoria_desc', this.categoria.categoria_desc)
+      console.log("DADOS CAT FOMDATA ---",  formData);
+      try {
+        this.dialog = false;
+        await CategoriasService.put(formData, this.categoria);
+        this.snackbar = true
+        this.$router.push({
+          name: "categorias"
+        });
+        Object.assign(this.desserts[this.editedIndex], this.categoria);
+      } catch (error) {
+        this.error = error.response.data.error;
+        this.alert = true;
+      }
+    },
+    /* async update() {
       if (this.$refs.form.validate()) {
         try {
           this.dialog = false;
@@ -188,7 +248,7 @@ export default {
         }
       }
       this.close();
-    }
+    }*/
   },
   async mounted() {
     // Fazer requisicao para pegar todas os produtos

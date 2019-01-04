@@ -151,6 +151,19 @@
                     item-value="id"
                   ></v-select>
                   </v-flex>
+
+                  <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
+                      <img :src="imageUrl" height="150" v-if="imageUrl"/>
+                      <v-text-field label="Select Image" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
+                      <input
+                        type="file"
+                        ref="file"
+                        @change="onFilePicked"
+                        style="display: none"
+                        name=""
+                        accept="image/*"
+                      >
+                    </v-flex>
                   </v-layout>
                   </v-container>
                   </v-stepper-content>
@@ -184,7 +197,7 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn outline right color="red" flat @click.native="dialog = false">Cancelar</v-btn>
-                  <v-btn outline :disabled="!valid" color="green" flat @click="update">Salvar dados</v-btn>
+                  <v-btn outline :disabled="!valid" color="green" flat @click="sendFile">Salvar dados</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -214,7 +227,6 @@
                 :headers="headers"
                 :items="desserts"
                 :search="search"
-                hide-actions
                 class="elevation-1"
             >
                 <template slot="headerCell" slot-scope="props">
@@ -262,6 +274,9 @@ import PVendaServices from "@/services/PVendaServices";
 export default {
   data() {
     return {
+      imageName: '',
+      imageUrl: '',
+      imageFile: '',
       e1: "",
       search: '',
       snackbar: false,
@@ -317,6 +332,29 @@ export default {
     };
   },
   methods: {
+    onFilePicked (e) {
+      this.produto.produto_file = this.$refs.file.files[0]
+			const files = e.target.files
+			if(files[0] !== undefined) {
+				this.imageName = files[0].name
+				if(this.imageName.lastIndexOf('.') <= 0) {
+					return
+				}
+				const fr = new FileReader ()
+				fr.readAsDataURL(files[0])
+				fr.addEventListener('load', () => {
+					this.imageUrl = fr.result
+					this.imageFile = files[0]
+				})
+			} else {
+				this.imageName = ''
+				this.imageFile = ''
+				this.imageUrl = ''
+			}
+		},
+    pickFile () {
+      this.$refs.file.click ()
+    },
     /* async deleteProduto (item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.produto = Object.assign({}, item);
@@ -371,7 +409,33 @@ export default {
         console.log(err);
       }
     },
-    async update() {
+    async sendFile() {
+      const formData = new FormData()
+      formData.append('file', this.produto.produto_file)
+      formData.append('id', this.produto.id)
+      formData.append('produto_code', this.produto.produto_code)
+      formData.append('produto_nome', this.produto.produto_nome)
+      formData.append('produto_nome_rec', this.produto.produto_nome_rec)
+      formData.append('produto_preco', this.produto.produto_preco)
+      formData.append('produto_barcode', this.produto.produto_barcode)
+      formData.append('FornecedoreId', this.produto.FornecedoreId)
+      formData.append('IvaId', this.produto.IvaId)
+      formData.append('CategoriaId', this.produto.CategoriaId)
+      try {
+        await PVendaServices.put(this.precos.PVendas);
+        await ProdutosService.put(formData)
+        this.idProduto = (await filterServices.lastid()).data[0].id;
+        this.snackbar = true
+        this.$router.push({
+          name: "produtos"
+        });
+        Object.assign(this.desserts[this.editedIndex], this.produto);
+      } catch (error) {
+        this.error = error.response.data.error;
+        this.alert = true;
+      }
+    },
+    /*async update() {
         try {
           this.dialog = false;
           console.log(this.produto)
@@ -386,7 +450,7 @@ export default {
         } catch (err) {
           console.log(err);
         }
-    }
+    }*/
   },
   async mounted() {
     // Fazer requisicao para pegar todas os produtos

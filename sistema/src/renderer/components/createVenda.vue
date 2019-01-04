@@ -227,7 +227,6 @@
                     <v-flex style="text-align:right" class="titleProd" xs12 sm2 md2>
                       <label>{{ $t('message.total') }}</label>
                     </v-flex>
-                    
                   </v-layout>
                 </div>
                 
@@ -240,6 +239,7 @@
                   
                 <div v-bind:key="index" v-for="(produto, index) in produtos">
                   <h3 hidden>ID Pesquisa: {{ produto.idSearchNew = idSearch }}</h3>
+                  <span hidden> {{ produto.adminPVenda = '' }} </span>
                   <div v-if="produto.idSearchNew == ''">
                     <h3 hidden>ID VENDA: {{ produto.VendaId = idVenda }}</h3>
                     <h3 hidden>ID VENDA UPDATE: {{ pagamento.VendaId = idVenda }}</h3>
@@ -1006,6 +1006,7 @@ export default {
     async reset () {
       this.idSearch = '',
       this.produtos = [{
+        adminPVenda: '',
         input: null,
         idSearch: '',
         total: '',
@@ -1153,6 +1154,7 @@ export default {
       this.idSearch = ''
       this.dialog = false
       this.produtos = [{
+        adminPVenda: '',
         total: '',
         totalIva: '',
         totalLiquido: '',
@@ -1407,7 +1409,6 @@ export default {
           cheque = ''
         }*/
 
-        console.log("TESTANDO  -----", dinheiro + ' __ ' + vint4 + ' __ ' + cheque)
         const escpos = require('escpos')
         const device = new escpos.USB()
         const options = { encoding: 'CP860' }
@@ -1420,9 +1421,9 @@ export default {
             .style('bu')
             .size(2, 1.6)
             .text('FRUT&PÃO - Loja de Conveniência')
-            .text('Praia - Fazenda')
+            .text('Rui Vaz')
             .text('NIF: 278272509')
-            .text('TEL/FAX: +238 3560200')
+            .text('TEL/FAX: +238 9188849')
             .text('------------------------------------------------')
             .text('\n')
             .text('VENDA NUMERO: ' + idvenda )
@@ -1523,6 +1524,7 @@ export default {
       this.dialog = false
       this.clipesquisa = '',
       this.produtos = [{
+        adminPVenda: '',
         input: null,
         idSearch: '',
         total: '',
@@ -1570,6 +1572,7 @@ export default {
       this.clipesquisa = '',
       this.dialog = false
       this.produtos = [{
+        adminPVenda: '',
         total: '',
         totalIva: '',
         totalLiquido: '',
@@ -1599,6 +1602,7 @@ export default {
       
       this.dialog = false
       this.produtos = [{
+        adminPVenda: '',
         total: '',
         totalIva: '',
         totalLiquido: '',

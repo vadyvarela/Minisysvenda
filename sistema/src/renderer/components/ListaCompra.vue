@@ -44,7 +44,6 @@
                 <v-data-table
                     :headers="headers"
                     :items="resultado"
-                    hide-actions
                     class="elevation-1"
                 >
                     <template slot="headerCell" slot-scope="props">

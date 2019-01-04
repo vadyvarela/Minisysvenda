@@ -16,7 +16,8 @@ export default {
         return Api().post('produtos', produto)
     },
     put ( produto ) {
-        return Api().put(`produtos/${produto.id}`, produto)
+        // return Api().put(`produtos/${produto.id}`, produto)
+        return Api().put(`produtos`, produto)
     },
     delete ( produto ) {
         return Api().delete(`produtos/${produto.id}`, produto)

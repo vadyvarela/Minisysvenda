@@ -134,7 +134,7 @@
                         prepend-icon="event"
                         readonly
                       ></v-text-field>
-                      <v-date-picker v-model="data_ini" @input="$refs.menu2.save(data_ini)"></v-date-picker>
+                      <v-date-picker v-model="data_ini" locale="pt-pt" @input="$refs.menu2.save(data_ini)"></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <v-flex xs12 sm3 md3>
@@ -157,7 +157,7 @@
                         prepend-icon="event"
                         readonly
                       ></v-text-field>
-                      <v-date-picker v-model="data_fim" @input="$refs.menu1.save(data_fim)"></v-date-picker>
+                      <v-date-picker v-model="data_fim" locale="pt-pt" @input="$refs.menu1.save(data_fim)"></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <!--<v-flex xs12 sm4 md4>
@@ -455,9 +455,9 @@ export default {
             .style('bu')
             .size(1, 1)
             .text('FRUT&PÃO - Loja de Conveniência')
-            .text('Praia - Fazenda')
+            .text('Rui Vaz')
             .text('NIF: 278272509')
-            .text('TEL/FAX: +238 3560200')
+            .text('TEL/FAX: +238 9188849')
             .text('------------------------------------------------')
             .text('\n')
             .text('VENDA NUMERO: ' + idvenda )

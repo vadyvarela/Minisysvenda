@@ -23,7 +23,7 @@
                 <v-form method="post" name="cadastar" enctype="multipart/form-data" >
                   <v-text-field required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de categoria" type="text"></v-text-field>
                   <v-text-field required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrição de categoria" type="text"></v-text-field>
-                  <input ref="file" name="categoria_desc" type="text">
+                  <input ref="file" name="categoria_desc" type="hidden">
                   <!-- <input 
                     type="file"
                     ref="file"

@@ -11,7 +11,7 @@ export default {
         return Api().post('categorias', categoria)
     },
     put ( categoria ) {
-        return Api().put(`categorias/${categoria.id}`, categoria)
+        return Api().put(`categorias`, categoria)
     },
     delete ( categoria ) {
         return Api().delete(`categorias/${categoria.id}`, categoria)
