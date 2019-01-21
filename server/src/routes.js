@@ -385,7 +385,7 @@ module.exports = (app) => {
     metodoPagamentoController.post)
 
   // Rotas Vendas
-  app.get('/vendasTotal',
+  app.get('/vendTotal',
     vendaController.total)
   app.get('/vendas',
     vendaController.index)

@@ -26,7 +26,20 @@
                 <v-spacer></v-spacer>
                 <v-card-title>
                   <v-flex xs12 sm4 md4>
-                    <v-select
+                    <v-autocomplete
+                      box color="blue"
+                      name="CategoriaId"
+                      append-icon="search"
+                      v-model="search"
+                      :items="CategoriaId"
+                      :label="$t('message.categoria_nome')"
+                      item-text="categoria_nome"
+                      item-value="id"
+                      >
+                    </v-autocomplete>
+                    <input name="" v-model="search" type="hidden"/>
+
+                    <!--<v-select
                       box color="blue"
                       v-model="search"
                       append-icon="search"
@@ -34,7 +47,7 @@
                       label="Categoria do produto"
                       item-text="categoria_nome"
                       item-value="id"
-                    ></v-select>
+                    ></v-select>-->
                   </v-flex>
                   <v-flex xs12 sm4 md4>
                     <v-btn dark class="primary" v-shortkey="['ctrl','p']" @shortkey="pesquisar" @click="pesquisar"><v-icon>search</v-icon> Pesquisar</v-btn>

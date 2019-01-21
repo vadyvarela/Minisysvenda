@@ -18,7 +18,13 @@
                     >
                   </v-alert>
                   <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                    <v-text-field name="nome" :rules="senhaRules" v-model="password" label="Digite a nova sennha" type="text"></v-text-field>
+                    <v-text-field box
+                    :rules="senhaRules"
+                    :append-icon="show1 ? 'visibility_off' : 'visibility'"
+                    :type="show1 ? 'text' : 'password'"
+                    @click:append="show1 = !show1"
+                    name="password" v-model="password" :label="$t('message.passUser')" id="password" ></v-text-field>
+                  
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -126,6 +132,7 @@ import AuthenticationService from "@/services/AuthenticationService";
 export default {
   data() {
     return {
+      show1: false,
       password: null,
       error: null,
       alert: false,
@@ -256,6 +263,7 @@ export default {
           this.$router.push({
             name: "usuarios"
           });
+          this.password = ""
           Object.assign(this.desserts[this.editedIndex], this.user);
         } catch (error) {  
           this.dialogSenha = true;

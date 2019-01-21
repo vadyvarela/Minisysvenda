@@ -71,7 +71,7 @@
                   <v-toolbar-title>Atualizar dados produto</v-toolbar-title>
                   <v-spacer></v-spacer>
                   <v-toolbar-items>
-                    <v-btn dark flat @click="update">Salvar</v-btn>
+                    <v-btn dark flat @click="sendFile">Salvar</v-btn>
                   </v-toolbar-items>
                 </v-toolbar>
                 <v-card-text>
@@ -422,9 +422,10 @@ export default {
       formData.append('IvaId', this.produto.IvaId)
       formData.append('CategoriaId', this.produto.CategoriaId)
       try {
+        this.dialog = false;
         await PVendaServices.put(this.precos.PVendas);
         await ProdutosService.put(formData)
-        this.idProduto = (await filterServices.lastid()).data[0].id;
+        // this.idProduto = (await filterServices.lastid()).data[0].id;
         this.snackbar = true
         this.$router.push({
           name: "produtos"

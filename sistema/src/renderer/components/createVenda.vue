@@ -437,8 +437,8 @@
                                     </v-flex>
                                       <v-flex xs5 sm5 md5>
                                         <div >
-                                          <v-text-field box v-model.number="valorentregadoU" v-if="dialog, tt > 0" autofocus type="number"></v-text-field>
-                                          <v-text-field box readonly v-model.number="valorentregadoU" v-if="dialog, tt < 0" autofocus type="number"></v-text-field>
+                                          <v-text-field box v-model.number="valorentregadoU" v-if="dialog && tt > 0" autofocus type="number"></v-text-field>
+                                          <v-text-field box readonly v-model.number="valorentregadoU" v-if="dialog && tt < 0" autofocus type="number"></v-text-field>
                                           <span hidden> {{ pagamento.valorentregado = valorentregadoU + pagamento.valor_venda_dinheiro }} </span>
                                         </div>
                                       </v-flex>

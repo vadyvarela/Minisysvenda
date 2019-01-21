@@ -59,17 +59,18 @@
                     <v-text-field box color="blue" required :rules="precocustoRules" name="produto_preco" v-model="produto.produto_preco" :label="$t('message.produto_preco')" type="number"></v-text-field>
                   </v-flex>
                   <v-flex xs12 sm6 md4>
-                  <v-select
-                    box color="blue"
-                    name="FornecedoreId"
-                    v-model="produto.FornecedoreId"
+                  <v-autocomplete
+                    box
                     :items="FornecedoreId"
+                    color="white"
+                    v-model="produto.FornecedoreId"
+                    item-text="fornecedor_nome"
+                    item-value="id"
                     :label="$t('message.fornecedor_nome')"
                     required
                     :rules="fornecRules"
-                    item-text="fornecedor_nome"
-                    item-value="id"
-                  ></v-select>
+                  ></v-autocomplete>
+                  <input name="" v-model="produto.FornecedoreId" type="hidden"/>   
                   </v-flex>
 
                   <v-flex xs12 sm6 md4>
@@ -87,17 +88,18 @@
                   </v-flex>
 
                   <v-flex xs12 sm6 md4>
-                  <v-select
-                    box color="blue"
-                    name="CategoriaId"
-                    v-model="produto.CategoriaId"
-                    :items="CategoriaId"
-                    :label="$t('message.categoria_nome')"
-                    required
-                    :rules="categoriaRules"
-                    item-text="categoria_nome"
-                    item-value="id"
-                  ></v-select>
+                    <v-autocomplete
+                      box color="blue"
+                      name="CategoriaId"
+                      v-model="produto.CategoriaId"
+                      :items="CategoriaId"
+                      :label="$t('message.categoria_nome')"
+                      required
+                      :rules="categoriaRules"
+                      item-text="categoria_nome"
+                      item-value="id"
+                      ></v-autocomplete>
+                      <input name="" v-model="produto.CategoriaId" type="hidden"/>   
                   </v-flex>
                   <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
                       <img :src="imageUrl" height="150" v-if="imageUrl"/>
