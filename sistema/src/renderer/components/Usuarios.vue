@@ -53,17 +53,17 @@
                   </v-alert>
 
                   <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                    <v-text-field name="nome" :rules="nomeRules" v-model="user.nome" label="Seu nome completo" type="text"></v-text-field>
-                    <v-text-field name="usuario" :rules="usuarioRules" v-model="user.usuario" label="Usuario" type="text"></v-text-field>
-                    <v-text-field name="nivel" :rules="nivelRules" v-model="user.nivel" label="Nivel de acesso" id="nivel" type="text"></v-text-field>
+                    <v-text-field box append-icon="people" name="nome" :rules="nomeRules" v-model="user.nome" label="Seu nome completo" type="text"></v-text-field>
+                    <v-text-field box append-icon="account_circle" name="usuario" :rules="usuarioRules" v-model="user.usuario" label="Usuario" type="text"></v-text-field>
+                    <v-text-field box name="nivel" :rules="nivelRules" v-model="user.nivel" label="Nivel de acesso" id="nivel" type="text"></v-text-field>
                     <small>Nivel de acesso <br> <span>1 = ADMINISTRADOR <br> 2 = VENDEDOR</span></small>
                   </v-form>
                 </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" flat @click.native="dialog = false">Cancelar</v-btn>
-                <v-btn :disabled="!valid" color="green darken-1" flat @click="update">Salvar</v-btn>
+                <v-btn color="red darken-1" flat outline @click.native="dialog = false">Cancelar</v-btn>
+                <v-btn :disabled="!valid" outline color="green darken-1" flat @click="update">Salvar</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -118,6 +118,9 @@
                 </v-tooltip>
               </td>
               </template>
+              <template slot="no-data">
+                <p class="noDataLoading"> {{ noDataLoading }} </p>
+              </template>
           </v-data-table>
       </v-container>
       <v-divider></v-divider>
@@ -132,6 +135,7 @@ import AuthenticationService from "@/services/AuthenticationService";
 export default {
   data() {
     return {
+      noDataLoading: 'Carregando os dados aguarde',
       show1: false,
       password: null,
       error: null,
@@ -277,4 +281,10 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.noDataLoading{
+  padding: 30px;
+  font-size: 1.2em;
+  text-align: center;
+  color: #c37f2a;
+}
 </style>

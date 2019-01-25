@@ -194,6 +194,28 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+
+    <v-dialog
+      v-model="meuloading"
+      hide-overlay
+      persistent
+      width="300"
+    >
+      <v-card
+        color="primary"
+        dark
+      >
+        <v-card-text>
+          Realizando cadastro, Aguarde...
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     </v-content>
     </panel>
 </template>
@@ -210,6 +232,7 @@ import CBarraService from "@/services/CBarraService";
 export default {
   data() {
     return {
+      meuloading: false,
       imageName: '',
       imageUrl: '',
       imageFile: '',
@@ -219,7 +242,7 @@ export default {
       color: "success",
       mode: "",
       timeout: 6000,
-      text: "Produto foi salvo com sucesso",
+      text: "Produto cadastrado com sucesso",
       idProduto: [],
       precos: [
         {
@@ -330,8 +353,10 @@ export default {
     },
     async cadProd() {
       try {
+        this.meuloading = true
         await StockServices.post(this.stock);
-        this.snackbar = true;
+        // this.snackbar = true;
+        this.meuloading = false
         this.$toast.success({
           title: "Sucesso",
           message: "Produto cadastrado com sucesso"

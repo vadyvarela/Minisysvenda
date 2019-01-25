@@ -76,6 +76,27 @@
           </v-flex>
         </v-layout>
 
+         <v-dialog
+          v-model="meuloading"
+          hide-overlay
+          persistent
+          width="300"
+        >
+          <v-card
+            color="primary"
+            dark
+          >
+            <v-card-text>
+              Efetuando login, Aguarde...
+              <v-progress-linear
+                indeterminate
+                color="white"
+                class="mb-0"
+              ></v-progress-linear>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+
       </v-container>
     </v-content>
   </v-app>
@@ -87,11 +108,12 @@
 <script>
 import AuthenticationService from "@/services/AuthenticationService";
 import Conexao from "@/components/componentes/Conexao";
-// import Loader from "./componentes/loader.vue"
+// import Loader from "./componentes/loader"
 
 export default {
   data() {
     return {
+      meuloading: false,
       usuario: "",
       password: "",
       error: null,
@@ -104,6 +126,7 @@ export default {
   },
   methods: {
     async login() {
+      this.meuloading = true
       try {
         const response = await AuthenticationService.login({
           usuario: this.usuario,
@@ -113,16 +136,19 @@ export default {
         this.$store.dispatch("setUser", response.data.user);
         //this.$store.commit('LOADER', true)
         if (response.data.user.nivel === 1){
+          this.meuloading = false
           this.$router.push({
             name: "dashboard"
           });
         } else {
+          this.meuloading = false
           this.$router.push({
             name: "vendedor"
           });
         }
         
       } catch (error) {
+        this.meuloading = false
         this.error = error.response.data.error;
         // this.store.commit('LOADER', false)
         this.alert = true;
@@ -147,7 +173,7 @@ export default {
 </script>
 
 <style scoped lang="css">
-
+ 
   #login {
     height: 50%;
     width: 100%;

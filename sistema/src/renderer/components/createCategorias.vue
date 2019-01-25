@@ -21,8 +21,8 @@
             <v-card class="elevation-1">
               <v-card-text>
                 <v-form method="post" name="cadastar" enctype="multipart/form-data" >
-                  <v-text-field required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de categoria" type="text"></v-text-field>
-                  <v-text-field required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrição de categoria" type="text"></v-text-field>
+                  <v-text-field box required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de categoria" type="text"></v-text-field>
+                  <v-text-field box required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrição de categoria" type="text"></v-text-field>
                   <input ref="file" name="categoria_desc" type="hidden">
                   <!-- <input 
                     type="file"
@@ -31,7 +31,7 @@
                   >-->
                     <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
                       <img :src="imageUrl" height="150" v-if="imageUrl"/>
-                      <v-text-field label="Select Image" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
+                      <v-text-field box label="Select Image" @click='pickFile' v-model='imageName' append-icon='attach_file'></v-text-field>
                       <input
                         type="file"
                         ref="file"

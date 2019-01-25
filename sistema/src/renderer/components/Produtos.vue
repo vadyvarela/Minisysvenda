@@ -254,6 +254,9 @@
                 </td> -->
                 </tr>
                 </template>
+                <template slot="no-data">
+                  <p class="noDataLoading"> {{ noDataLoading }} </p>
+                </template>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">
                   Sua pesquisa por "{{ search }}" não encontrou nenhum resultados.
                 </v-alert>
@@ -274,6 +277,7 @@ import PVendaServices from "@/services/PVendaServices";
 export default {
   data() {
     return {
+      noDataLoading: 'Carregando os dados aguarde',
       imageName: '',
       imageUrl: '',
       imageFile: '',
@@ -466,4 +470,10 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.noDataLoading{
+  padding: 30px;
+  font-size: 1.2em;
+  text-align: center;
+  color: #c37f2a;
+}
 </style>

@@ -10,12 +10,12 @@
               <v-card-text>
                 <v-container grid-list-md>
                   <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                    <v-text-field required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de categoria" type="text"></v-text-field>
-                    <v-text-field required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrição de categoria" type="text"></v-text-field>
+                    <v-text-field box required :rules="nomeRules" name="categoria_nome" v-model="categoria.categoria_nome" label="Nome de categoria" type="text"></v-text-field>
+                    <v-text-field box required name="categoria_desc" v-model="categoria.categoria_desc" label="Descrição de categoria" type="text"></v-text-field>
                     <input ref="file" name="categoria_desc" type="hidden">
                     <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
                       <img :src="imageUrl" height="150" v-if="imageUrl"/>
-                      <v-text-field label="Select Image" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
+                      <v-text-field box label="Select Image" @click='pickFile' v-model='imageName' append-icon='attach_file'></v-text-field>
                       <input
                         type="file"
                         ref="file"
@@ -30,7 +30,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" outline flat @click.native="dialog = false">Cancelar</v-btn>
+                <v-btn color="red darken-1" outline flat @click.native="dialog = false">Cancelar</v-btn>
                 <v-btn :disabled="!valid" outline color="green darken-1" flat @click="sendFile">Salvar</v-btn>
               </v-card-actions>
             </v-card>
@@ -117,6 +117,9 @@
                     <!--v-btn flat icon color="red" @click="deleteCategoria(props.item)"> <v-icon>delete</v-icon> </v-btn-->
                   </td>
                 </template>
+                <template slot="no-data">
+                  <p class="noDataLoading"> {{ noDataLoading }} </p>
+                </template>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">
                   Sua pesquisa por "{{ search }}" não encontrou nenhum resultados.
                 </v-alert>
@@ -133,6 +136,7 @@ import CategoriasService from "@/services/CategoriasService";
 export default {
   data() {
     return {
+      noDataLoading: 'Carregando os dados aguarde',
       imageName: '',
       imageUrl: '',
       imageFile: '',
@@ -258,4 +262,10 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.noDataLoading{
+  padding: 30px;
+  font-size: 1.2em;
+  text-align: center;
+  color: #c37f2a;
+}
 </style>

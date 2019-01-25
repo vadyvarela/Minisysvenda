@@ -21,10 +21,10 @@
             <v-card class="elevation-1">
               <v-card-text>
                 <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                  <v-text-field required :rules="nameRules" name="fornecedor_nome" v-model="fornecedor.fornecedor_nome" label="Nome de fornecedor" type="text"></v-text-field>
-                  <v-text-field required :rules="nifRules" :counter="9" name="fornecedor_nif" v-model="fornecedor.fornecedor_nif" label="Numero de NIF" type="number"></v-text-field>
-                  <v-text-field required :rules="enderecoRules" name="fornecedor_endereco" v-model="fornecedor.fornecedor_endereco" label="Endereço" type="text"></v-text-field>
-                  <v-text-field required :rules="contatoRules" name="fornecedor_movel" v-model="fornecedor.fornecedor_movel" label="Contato telefonico" type="number"></v-text-field>
+                  <v-text-field box append-icon="account_circle" required :rules="nameRules" name="fornecedor_nome" v-model="fornecedor.fornecedor_nome" label="Nome de fornecedor" type="text"></v-text-field>
+                  <v-text-field box append-icon="perm_identity" required :rules="nifRules" :counter="9" name="fornecedor_nif" v-model="fornecedor.fornecedor_nif" label="Numero de NIF" type="number"></v-text-field>
+                  <v-text-field box append-icon="home" required :rules="enderecoRules" name="fornecedor_endereco" v-model="fornecedor.fornecedor_endereco" label="Endereço" type="text"></v-text-field>
+                  <v-text-field box append-icon="smartphone" required :rules="contatoRules" name="fornecedor_movel" v-model="fornecedor.fornecedor_movel" label="Contato telefonico" type="number"></v-text-field>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn  v-shortkey="['enter']" @shortkey="create" :disabled="!valid" class="primary" @click="create">Cadastrar fornecedor</v-btn>
@@ -35,6 +35,30 @@
             </v-card>
           </v-flex>
         </v-layout>
+
+
+        <v-dialog
+          v-model="meuloading"
+          hide-overlay
+          persistent
+          width="300"
+        >
+          <v-card
+            color="primary"
+            dark
+          >
+            <v-card-text>
+              Fazendo cadastro, Aguarde...
+              <v-progress-linear
+                indeterminate
+                color="white"
+                class="mb-0"
+              ></v-progress-linear>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+
+
     </v-content>
     </panel>
 </template>
@@ -45,6 +69,7 @@ import FornecedoresService from "@/services/FornecedorService";
 export default {
   data() {
     return {
+      meuloading: false,
       valid: true,
       nameRules: [v => !!v || "Campo nome é obrigatorio"],
       nifRules: [
@@ -66,9 +91,11 @@ export default {
   },
   methods: {
     async create() {
+      this.meuloading = true
       if (this.$refs.form.validate()) {
         try {
           await FornecedoresService.post(this.fornecedor);
+          this.meuloading = false
           this.$toast.success({
             title: "Sucesso",
             message: "Fornecedor cadastrado co sucesso"

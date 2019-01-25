@@ -10,16 +10,16 @@
               <v-card-text>
                 <v-container grid-list-md>
                   <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                    <v-text-field required :rules="nameRules" name="fornecedor_nome" v-model="fornecedor.fornecedor_nome" label="Nome de fornecedor" id="fornecedor_nome" type="text"></v-text-field>
-                    <v-text-field required :rules="nifRules" :counter="9" name="fornecedor_nif" v-model="fornecedor.fornecedor_nif" label="Numero de NIF" id="fornecedor_nif" type="number"></v-text-field>
-                    <v-text-field required :rules="enderecoRules" name="fornecedor_endereco" v-model="fornecedor.fornecedor_endereco" label="Endereço" id="fornecedor_endereco" type="text"></v-text-field>
-                    <v-text-field required :rules="contatoRules" name="fornecedor_movel" v-model="fornecedor.fornecedor_movel" label="Contato telefonico" id="fornecedor_movel" type="number"></v-text-field>
+                    <v-text-field box append-icon="account_circle" required :rules="nameRules" name="fornecedor_nome" v-model="fornecedor.fornecedor_nome" label="Nome de fornecedor" id="fornecedor_nome" type="text"></v-text-field>
+                    <v-text-field box append-icon="perm_identity" required :rules="nifRules" :counter="9" name="fornecedor_nif" v-model="fornecedor.fornecedor_nif" label="Numero de NIF" id="fornecedor_nif" type="number"></v-text-field>
+                    <v-text-field box append-icon="home" required :rules="enderecoRules" name="fornecedor_endereco" v-model="fornecedor.fornecedor_endereco" label="Endereço" id="fornecedor_endereco" type="text"></v-text-field>
+                    <v-text-field box append-icon="smartphone" required :rules="contatoRules" name="fornecedor_movel" v-model="fornecedor.fornecedor_movel" label="Contato telefonico" id="fornecedor_movel" type="number"></v-text-field>
                   </v-form>
                 </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" outline flat @click.native="dialog = false">Cancelar</v-btn>
+                <v-btn color="red darken-1" outline flat @click.native="dialog = false">Cancelar</v-btn>
                 <v-btn :disabled="!valid" outline color="green darken-1" flat @click="update">Salvar dados</v-btn>
               </v-card-actions>
             </v-card>
@@ -64,6 +64,7 @@
             ></v-text-field>
           </v-card-title>
             <v-data-table
+                v-cloak
                 :headers="headers"
                 :items="desserts"
                 :search="search"
@@ -88,6 +89,9 @@
                     <!-- v-btn flat icon color="red" @click="deleteFornecedor(props.item)"> <v-icon>delete</v-icon> </v-btn -->
                   </td>
                 </template>
+                <template slot="no-data">
+                  <p class="noDataLoading"> {{ noDataLoading }} </p>
+                </template>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">
                   Sua pesquisa por "{{ search }}" não encontrou nenhum resultados.
                 </v-alert>
@@ -104,6 +108,7 @@ import FornecedoresService from "@/services/FornecedorService";
 export default {
   data() {
     return {
+      noDataLoading: 'Carregando os dados aguarde',
       search: '',
       snackbar: false,
       color: 'success',
@@ -192,4 +197,13 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.noDataLoading{
+  padding: 30px;
+  font-size: 1.2em;
+  text-align: center;
+  color: #c37f2a;
+}
+[v-cloak] {
+    display: none;
+  }
 </style>

@@ -73,17 +73,18 @@
                           <input name="produto_id" v-model="compra.UserId" type="hidden"/>
                         </v-flex>
                         <v-flex xs12 sm4 md4>
-                          <v-select
-                            box color="blue"
-                            name="FornecedoreId"
-                            v-model="compra.FornecedoreId"
+                          <v-autocomplete
+                            box
                             :items="FornecedoreId"
-                            label="Selecione o fornecedor"
-                            required
-                            :rules="fornecRules"
+                            color="white"
+                            v-model="compra.FornecedoreId"
                             item-text="fornecedor_nome"
                             item-value="id"
-                          ></v-select>
+                            :label="$t('message.fornecedor_nome')"
+                            required
+                            :rules="fornecRules"
+                          ></v-autocomplete>
+                          <input name="" v-model="compra.FornecedoreId" type="hidden"/>  
                         </v-flex>
                         <v-flex xs12 sm4 md4>
                           <span hidden>{{ compra.data_compra = Date() | moment("DD-MM-YYYY HH:mm:ss") }}</span>
