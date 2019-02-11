@@ -216,6 +216,24 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog v-model="dialogProdExiste" persistent max-width="550px" @keydown.esc="dialogProdExiste = false">
+      <v-card align-center justify-center>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <h4 class="red--text text-md-center" style="font-size:2em;"> Esse produto já se encontra cadastrado no sistema!  </h4>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn center large color="primary darken-1" @click.native="dialogProdExiste = false; reload()">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     </v-content>
     </panel>
 </template>
@@ -232,6 +250,7 @@ import CBarraService from "@/services/CBarraService";
 export default {
   data() {
     return {
+      dialogProdExiste: false,
       meuloading: false,
       imageName: '',
       imageUrl: '',
@@ -339,7 +358,14 @@ export default {
       formData.append('IvaId', this.produto.IvaId)
       formData.append('CategoriaId', this.produto.CategoriaId)
       try {
-        await ProdutosService.post(formData)
+        await ProdutosService.post(formData).then((result)=>{
+          if (result.data.error == '1') {
+            this.dialogProdExiste = true
+          }
+            console.log('::::::::::::::::::::::: teste::::: ---- ', result.data.error)
+        },(error)=>{
+            console.log('EROO ::::::::::::::::::::::::::::::::', error)
+        });
         this.idProduto = (await filterServices.lastid()).data[0].id;
         this.alert = false;
         /* this.$toast.success({
@@ -350,6 +376,20 @@ export default {
         this.error = error.response.data.error;
         this.alert = true;
       }
+    },
+    async reload() {
+      this.e1 = 1
+      this.produto = {
+        produto_code: '',
+        produto_nome: '',
+        produto_nome_rec: '',
+        produto_preco: '',
+        produto_barcode: '',
+        FornecedoreId: "",
+        IvaId: "",
+        // PVendaId: "",
+        CategoriaId: ""
+      }      
     },
     async cadProd() {
       try {

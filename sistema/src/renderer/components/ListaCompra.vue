@@ -73,8 +73,9 @@
                     <td>{{ props.item.produto_nome }}</td>
                     <td class="text-xs-left">{{ props.item.Categoria.categoria_nome }} </td>
                     <td class="text-xs-left"> 
-                      <span v-if="props.item.Stock.quantidade < 10 " class="boxquantidadeerror">{{ props.item.Stock.quantidade }} </span>
-                      <span v-else class="boxquantidadesuccess">{{ props.item.Stock.quantidade }} </span>
+                      <span v-if="props.item.Stock.quantidade >= 10" class="boxquantidadesuccess">{{ props.item.Stock.quantidade }} </span>
+                      <span v-else-if="props.item.Stock.quantidade >= 1 && props.item.Stock.quantidade < 10" class="boxquantidadealert">{{ props.item.Stock.quantidade }} </span>
+                      <span v-else class="boxquantidadeerror">{{ props.item.Stock.quantidade }} </span>
                     </td>
                     </template>
                     <template slot="no-data">
@@ -160,6 +161,12 @@ export default {
 }
 .boxquantidadeerror {
   background: red;
+  color: aliceblue;
+  padding: 4px 6px;
+  border-radius: 10%
+}
+.boxquantidadealert{
+  background: orange;
   color: aliceblue;
   padding: 4px 6px;
   border-radius: 10%

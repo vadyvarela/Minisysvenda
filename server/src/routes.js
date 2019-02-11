@@ -120,20 +120,30 @@ module.exports = (app) => {
       } else {
         if (req.file === undefined) {
           try {
-            const produtos = Produtos.create({
-              produto_code: req.body.produto_code,
-              produto_nome: req.body.produto_nome,
-              produto_nome_rec: req.body.produto_nome_rec,
-              produto_preco: req.body.produto_preco,
-              produto_barcode: req.body.produto_barcode,
-              FornecedoreId: req.body.FornecedoreId,
-              CategoriaId: req.body.CategoriaId,
-              IvaId: req.body.IvaId
+            Produtos.findOrCreate({
+              where: {
+                $or: [ { produto_code: req.body.produto_code }, { produto_nome: req.body.produto_nome } ]
+              },
+              defaults: {
+                produto_code: req.body.produto_code,
+                produto_nome: req.body.produto_nome,
+                produto_nome_rec: req.body.produto_nome_rec,
+                produto_preco: req.body.produto_preco,
+                produto_barcode: req.body.produto_barcode,
+                FornecedoreId: req.body.FornecedoreId,
+                CategoriaId: req.body.CategoriaId,
+                IvaId: req.body.IvaId
+              }
+            }).then(function (result) {
+              var created = result[1]
+              if (!created) {
+                res.status(200).json({ 'error': '1' })
+              }
             })
-            res.send(produtos)
+            // res.send(produtos)
           } catch (err) {
             res.status(500).send({
-              error: 'Um erro ocoreu ao tentar cadastrar categoria'
+              error: 'Um erro ocoreu ao tentar cadastrar o produto'
             })
           }
           /* return res.status(403).send({

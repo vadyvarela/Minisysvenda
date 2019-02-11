@@ -301,6 +301,7 @@ export default {
         const troco = item.valor_troco
         const horaVenda = moment().format('LT')
         const dataVenda = moment().format('l')
+        const ano = moment().year()
         const vendedor = this.user.nome
         let dinheiro =  item.valor_venda_dinheiro
         let vint4 = item.valor_venda_vint4 + ' CVE'
@@ -342,13 +343,13 @@ export default {
             .align('lt')
             .style('bu')
             .size(1, 1)
-            .text('FRUT&PÃO - Loja de Conveniência')
+            .text('Solid Invest - Investimentos e Comércio Geral Sociedade Unipessoal, Lda')
             .text('Rui Vaz')
-            .text('NIF: 278272509')
+            .text('NIF: 235491705')
             .text('TEL/FAX: +238 9188849')
             .text('------------------------------------------------')
             .text('\n')
-            .text('VENDA NUMERO: ' + idvenda )
+            .text('Fatura/Recibo nº ' + idvenda + ' / ' + ano)
             .text('Data do Doc: ' + dataVenda + '  ' + horaVenda)
             .text('VENDEDOR: ' + vendedor)
             .text('\n')
@@ -421,6 +422,7 @@ export default {
             .align('ct')
             .size(1, 1)
             .text('\n')
+            .text('Processado pelo programa MiniSysVenda, Licenciado exclusivamente pelo contribuinte Solid Invest')
             .text('Obrigado e volte sempre')
             .text('\n')
             .cut()
