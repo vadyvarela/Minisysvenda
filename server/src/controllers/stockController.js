@@ -11,6 +11,18 @@ module.exports = {
       })
     }
   },
+  async soma (req, res) {
+    try {
+      const stock = await Stock.findAll({
+        attributes: [[Sequelize.fn('sum', Sequelize.col('quantidade')), 'total']]
+      })
+      res.send(stock)
+    } catch (err) {
+      res.status(500).send({
+        error: 'Ocoreu um erro ao tentar pegar valor iva'
+      })
+    }
+  },
   async post (req, res) {
     try {
       const stock = await Stock.create(req.body)

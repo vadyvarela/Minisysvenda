@@ -1,9 +1,9 @@
 <template>
-    <panel title="Cadastrar fornecedor">
+    <panel :title="$t('message.cadNovoFornec')">
       <v-content>
       <v-layout justify-end row wrap>
               <v-flex text-lg-right xs6>
-                <v-btn router-link to="fornecedores" text-lg-right class="primary"><v-icon>perm_identity</v-icon> Mostrar fornecedores </v-btn>
+                <v-btn router-link to="fornecedores" text-lg-right class="primary"><v-icon>perm_identity</v-icon> {{ $t('message.mostarFornecedor') }} </v-btn>
               </v-flex>
         </v-layout>
         <v-divider></v-divider>
@@ -21,13 +21,13 @@
             <v-card class="elevation-1">
               <v-card-text>
                 <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                  <v-text-field box append-icon="account_circle" required :rules="nameRules" name="fornecedor_nome" v-model="fornecedor.fornecedor_nome" label="Nome de fornecedor" type="text"></v-text-field>
-                  <v-text-field box append-icon="perm_identity" required :rules="nifRules" :counter="9" name="fornecedor_nif" v-model="fornecedor.fornecedor_nif" label="Numero de NIF" type="number"></v-text-field>
-                  <v-text-field box append-icon="home" required :rules="enderecoRules" name="fornecedor_endereco" v-model="fornecedor.fornecedor_endereco" label="Endereço" type="text"></v-text-field>
-                  <v-text-field box append-icon="smartphone" required :rules="contatoRules" name="fornecedor_movel" v-model="fornecedor.fornecedor_movel" label="Contato telefonico" type="number"></v-text-field>
+                  <v-text-field box append-icon="account_circle" required :rules="nameRules" name="fornecedor_nome" v-model="fornecedor.fornecedor_nome" :label="$t('message.novoFornecedor')" type="text"></v-text-field>
+                  <v-text-field box append-icon="perm_identity" required :rules="nifRules" :counter="9" name="fornecedor_nif" v-model="fornecedor.fornecedor_nif" label="NIF" type="number"></v-text-field>
+                  <v-text-field box append-icon="home" required :rules="enderecoRules" name="fornecedor_endereco" v-model="fornecedor.fornecedor_endereco" :label="$t('message.endereco')" type="text"></v-text-field>
+                  <v-text-field box append-icon="smartphone" required :rules="contatoRules" name="fornecedor_movel" v-model="fornecedor.fornecedor_movel" :label="$t('message.telefone')" type="number"></v-text-field>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn  v-shortkey="['enter']" @shortkey="create" :disabled="!valid" class="primary" @click="create">Cadastrar fornecedor</v-btn>
+                    <v-btn  v-shortkey="['enter']" @shortkey="create" :disabled="!valid" class="primary" @click="create"> {{ $t('message.cadFornenedor') }} </v-btn>
                   </v-card-actions>
                </v-form>
               </v-card-text>
@@ -91,8 +91,9 @@ export default {
   },
   methods: {
     async create() {
-      this.meuloading = true
+      
       if (this.$refs.form.validate()) {
+        this.meuloading = true
         try {
           await FornecedoresService.post(this.fornecedor);
           this.meuloading = false

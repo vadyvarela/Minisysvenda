@@ -1,5 +1,5 @@
 <template>
-    <panel title="Inventário de produto">
+    <panel :title="$t('message.inventarioProd')">
       <v-content>
         <v-snackbar
         v-model="snackbar"
@@ -50,7 +50,7 @@
                     ></v-select>-->
                   </v-flex>
                   <v-flex xs12 sm4 md4>
-                    <v-btn dark class="primary" v-shortkey="['ctrl','p']" @shortkey="pesquisar" @click="pesquisar"><v-icon>search</v-icon> Pesquisar</v-btn>
+                    <v-btn dark class="primary" v-shortkey="['ctrl','p']" @shortkey="pesquisar" @click="pesquisar"><v-icon>search</v-icon> {{ $t('message.btnPesquisar') }} </v-btn>
                     <v-btn dark class="success" @click="reload"><v-icon>loop</v-icon> {{ $t('message.btnResetar') }}</v-btn>
                   </v-flex>
                 </v-card-title>

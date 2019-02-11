@@ -55,7 +55,7 @@
                     </v-list-tile-action>
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        Listar produto
+                        {{ $t("message.listaproduto") }}
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
@@ -65,7 +65,7 @@
                     </v-list-tile-action>
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        Categoria
+                        {{ $t("message.Categoria") }}
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
@@ -75,7 +75,7 @@
                     </v-list-tile-action>
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        Valores IVA
+                        {{ $t("message.valorIva") }}
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
@@ -92,21 +92,21 @@
                     </v-list-tile-action>
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        <v-list-tile-title> Gestão de Stock </v-list-tile-title>
+                        <v-list-tile-title> {{ $t("message.gstock") }} </v-list-tile-title>
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
                   <v-list-tile router-link to="compras">
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        Registar Compra
+                        {{ $t("message.regCompra") }}
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
                   <v-list-tile router-link to="listacompras">
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        Inventário de produtos
+                        {{ $t("message.inventarioProd") }}
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
@@ -123,21 +123,21 @@
                     </v-list-tile-action>
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        <v-list-tile-title> Vendas </v-list-tile-title>
+                        <v-list-tile-title> {{ $t("message.vendas") }} </v-list-tile-title>
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
                   <v-list-tile router-link to="vendedor">
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        Registar Venda
+                        {{ $t("message.registrarvendas") }}
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
                   <v-list-tile router-link to="listavendas">
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        Listar vendas
+                        {{ $t("message.listavendas") }}
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>

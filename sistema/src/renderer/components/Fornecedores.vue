@@ -1,36 +1,36 @@
 <template>
-    <panel title="Nossos fornecedores">
+    <panel :title="$t('message.nossosfornecedores')">
       <v-content>
       <v-container>
             <v-dialog v-model="dialog" persistent max-width="500px">
             <v-card>
               <v-card-title>
-                <span class="headline center">Atualizar dados fornecedor</span>
+                <span class="headline center"> {{ $t('message.updateDadFornec') }} </span>
               </v-card-title>
               <v-card-text>
                 <v-container grid-list-md>
                   <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                    <v-text-field box append-icon="account_circle" required :rules="nameRules" name="fornecedor_nome" v-model="fornecedor.fornecedor_nome" label="Nome de fornecedor" id="fornecedor_nome" type="text"></v-text-field>
-                    <v-text-field box append-icon="perm_identity" required :rules="nifRules" :counter="9" name="fornecedor_nif" v-model="fornecedor.fornecedor_nif" label="Numero de NIF" id="fornecedor_nif" type="number"></v-text-field>
-                    <v-text-field box append-icon="home" required :rules="enderecoRules" name="fornecedor_endereco" v-model="fornecedor.fornecedor_endereco" label="Endereço" id="fornecedor_endereco" type="text"></v-text-field>
-                    <v-text-field box append-icon="smartphone" required :rules="contatoRules" name="fornecedor_movel" v-model="fornecedor.fornecedor_movel" label="Contato telefonico" id="fornecedor_movel" type="number"></v-text-field>
+                    <v-text-field box append-icon="account_circle" required :rules="nameRules" name="fornecedor_nome" v-model="fornecedor.fornecedor_nome" :label="$t('message.novoFornecedor')" id="fornecedor_nome" type="text"></v-text-field>
+                    <v-text-field box append-icon="perm_identity" required :rules="nifRules" :counter="9" name="fornecedor_nif" v-model="fornecedor.fornecedor_nif" label="NIF" id="fornecedor_nif" type="number"></v-text-field>
+                    <v-text-field box append-icon="home" required :rules="enderecoRules" name="fornecedor_endereco" v-model="fornecedor.fornecedor_endereco" :label="$t('message.endereco')" id="fornecedor_endereco" type="text"></v-text-field>
+                    <v-text-field box append-icon="smartphone" required :rules="contatoRules" name="fornecedor_movel" v-model="fornecedor.fornecedor_movel" :label="$t('message.telefone')" id="fornecedor_movel" type="number"></v-text-field>
                   </v-form>
                 </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="red darken-1" outline flat @click.native="dialog = false">Cancelar</v-btn>
-                <v-btn :disabled="!valid" outline color="green darken-1" flat @click="update">Salvar dados</v-btn>
+                <v-btn color="red darken-1" outline flat @click.native="dialog = false"> {{ $t('message.cancelar') }} </v-btn>
+                <v-btn :disabled="!valid" outline color="green darken-1" flat @click="update">{{ $t('message.salvar') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
 
           <v-layout justify-end row wrap>
             <v-flex text-lg-left xs6>
-              <v-subheader>Nossos fornecedores</v-subheader>
+              <v-subheader> {{ $t('message.nossosfornecedores') }} </v-subheader>
             </v-flex>
             <v-flex text-lg-right xs6>
-              <v-btn :to="{name: 'cadFornecedores'}" text-lg-right class="primary"> Cadastrar novo fornecedor </v-btn>
+              <v-btn :to="{name: 'cadFornecedores'}" text-lg-right class="primary"> {{ $t('message.cadNovoFornec') }} </v-btn>
             <v-snackbar
               v-model="snackbar"
               :color="color"
@@ -56,11 +56,10 @@
             <v-text-field
               v-model="search"
               append-icon="search"
-              label="Pesquisar"
               single-line
               hide-details
               solo
-              placeholder="Pesquisar fornecedor"
+              :label="$t('message.pesquisarfornecedor')"
             ></v-text-field>
           </v-card-title>
             <v-data-table

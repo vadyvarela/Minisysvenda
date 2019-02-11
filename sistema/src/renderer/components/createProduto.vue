@@ -1,5 +1,5 @@
 <template>
-    <panel title="Cadastrar produtos">
+    <panel :title="$t('message.cadProduto')">
       <v-content>
         <v-layout justify-end row wrap>
             <v-flex text-lg-right xs6>
@@ -132,7 +132,7 @@
           <v-flex xs12 sm12 md12>
               <v-btn small fab class="primary" v-shortkey="['ctrl','n']" @shortkey="addNewPrice" @click="addNewPrice"><v-icon>add</v-icon></v-btn>
                 <v-form ref="form" name="cadastar" autocomplete="off" lazy-validation>
-                  <h2 style="text-align:center; font-size: 1.6em; color: #1976d2;"> PREÇO DO PRODUTO: {{ produto.produto_preco }} CVE</h2>
+                  <h2 style="text-align:center; font-size: 1.6em; color: #1976d2;"> {{ $t('message.precoProd') }}: {{ produto.produto_preco }} CVE</h2>
                   <v-container v-bind:key="index" v-for="(preco, index) in precos" grid-list-md>
                   <h5>Preco de venda #{{ index }}</h5>
 
@@ -143,13 +143,13 @@
                   <h2 hidden>{{ preco.ProdutoId = idProduto }}</h2>
                     <v-layout>
                       <v-flex xs12 sm6 md6>
-                        <v-text-field box name="pvenda_preco" v-model="preco.pvenda_preco" label="Preço de venda" type="number"></v-text-field>
+                        <v-text-field box name="pvenda_preco" v-model="preco.pvenda_preco" :label="$t('message.precodevenda')" type="number"></v-text-field>
                       </v-flex>
                       <!--<v-flex xs12 sm4 md4>
                         <v-text-field box name="" :value="totalIva" label="Preço C/IVA" type="number"></v-text-field>
                       </v-flex>-->
                       <v-flex xs12 sm6 md6>
-                        <v-text-field box readonly :value="total" label="Margem de lucro (%)" name="" type="number"></v-text-field>
+                        <v-text-field box readonly :value="total" :label="$t('message.marLucro')" name="" type="number"></v-text-field>
                       </v-flex>
                       <input name="ProdutoId" v-model="preco.ProdutoId" type="hidden"/>
                       <v-flex xs12 sm1 md1>
@@ -172,7 +172,7 @@
         <v-flex center xs12 sm6 md6>
         <v-card class="centarlizar elevation-0">
             <v-card-text>
-              <h2 class="meutitulo green--text ">Finalizar cadastro de produtos</h2>
+              <h2 class="meutitulo green--text "> {{ $t('message.finalizarcprod') }} </h2>
               <p></p>
               <h2 hidden>{{ stock.ProdutoId = idProduto }}</h2>
               <v-form @submit.prevent="submit" ref="form" name="cadastar" autocomplete="off" lazy-validation>
@@ -184,7 +184,7 @@
               </v-layout>
               <v-spacer></v-spacer>
               <div class="text-xs-center">
-                <v-btn center color="primary textbutton" large :disabled="!stockIsValid" @click="cadProd"> <v-icon>add</v-icon> Cadastrar produto  </v-btn>
+                <v-btn center color="primary textbutton" large :disabled="!stockIsValid" @click="cadProd"> <v-icon>add</v-icon> {{ $t('message.cadProduto') }}  </v-btn>
               </div>
               </v-form>
             </v-card-text>

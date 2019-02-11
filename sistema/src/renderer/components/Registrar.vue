@@ -1,10 +1,10 @@
 <template>
-    <panel title="Cadastar novo usuario">
+    <panel :title="$t('message.cadUser')">
       <v-content>
       <v-container fluid >
         <v-layout justify-end row wrap>
               <v-flex text-lg-right xs6>
-                <v-btn router-link to="usuarios" text-lg-right class="primary"><v-icon>perm_identity</v-icon> Mostrar usuarios </v-btn>
+                <v-btn router-link to="usuarios" text-lg-right class="primary"><v-icon>perm_identity</v-icon> {{$t('message.mostrarUser')}} </v-btn>
               </v-flex>
         </v-layout>
 
@@ -25,7 +25,7 @@
                 <v-form name="cadastar" autocomplete="off">
                   <h2 hidden>{{ usuario.LojaId = user.LojaId }}</h2>
                   <input name="" v-model="usuario.LojaId" type="hidden"/>
-                  <v-text-field name="usuario" append-icon="people" box v-model="usuario.nome" label="Nome completo" type="text"></v-text-field>
+                  <v-text-field name="usuario" append-icon="people" box v-model="usuario.nome" :label="$t('message.nomeCompleto')" type="text"></v-text-field>
                   <v-text-field box append-icon="account_circle" name="usuario" v-model="usuario.usuario" :label="$t('message.nomeUser')" type="text"></v-text-field>
                   <v-text-field box
                     :append-icon="show1 ? 'visibility_off' : 'visibility'"
@@ -37,7 +37,7 @@
                     name="nivel"
                     v-model="usuario.nivel"
                     :items="nivel"
-                    label="Nivel do usuario"
+                    :label="$t('message.levelUser')"
                     required
                     item-text="nome"
                     item-value="id"
@@ -46,7 +46,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn class="primary" large @click="register"> <v-icon>arrow_forward </v-icon> &nbsp; Cadastrar</v-btn>
+                <v-btn class="primary" large @click="register"> <v-icon>arrow_forward </v-icon> &nbsp; {{$t('message.cadastrar')}}</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>

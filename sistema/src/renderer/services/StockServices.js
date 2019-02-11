@@ -4,6 +4,9 @@ export default {
     index () {
         return Api().get('stock')
     },
+    soma () {
+        return Api().get('stocks')
+    },
     post ( stock ) {
         return Api().post('stock', stock)
     },

@@ -1,12 +1,12 @@
 <template>
-    <panel title="Usuarios">
+    <panel :title="$t('message.usuarios')">
       <v-content>
       <v-container fluid>
 
           <v-dialog @keydown.esc="dialogSenha= false" v-model="dialogSenha" persistent max-width="500px">
             <v-card>
               <v-card-title >
-                <span class="headline">Atualizar senha usuario <br> <b> {{ user.nome }} </b></span>
+                <span class="headline"> {{ $t('message.updatesenhauser') }} <br> <b> {{ user.nome }} </b></span>
               </v-card-title>
               <v-card-text>
                 <v-container grid-list-md>
@@ -30,8 +30,8 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" flat @click.native="dialogSenha = false">Cancelar</v-btn>
-                <v-btn :disabled="!valid" color="green darken-1" flat @click="updateSenha">Salvar</v-btn>
+                <v-btn color="red darken-1" flat outline @click.native="dialogSenha = false">{{ $t('message.cancelar') }}</v-btn>
+                <v-btn :disabled="!valid" outline color="green darken-1" flat @click="updateSenha">{{ $t('message.salvar') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -39,7 +39,7 @@
           <v-dialog @keydown.esc="dialog= false" v-model="dialog" persistent max-width="500px">
             <v-card>
               <v-card-title>
-                <span class="headline center">Atualizar dados usuario <b> {{ user.nome }} </b></span>
+                <span class="headline center">{{ $t('message.updatedadosuser') }} <b> {{ user.nome }} </b></span>
               </v-card-title>
               <v-card-text>
                 <v-container grid-list-md>
@@ -53,27 +53,27 @@
                   </v-alert>
 
                   <v-form ref="form" name="cadastar" autocomplete="off" v-model="valid" lazy-validation>
-                    <v-text-field box append-icon="people" name="nome" :rules="nomeRules" v-model="user.nome" label="Seu nome completo" type="text"></v-text-field>
-                    <v-text-field box append-icon="account_circle" name="usuario" :rules="usuarioRules" v-model="user.usuario" label="Usuario" type="text"></v-text-field>
-                    <v-text-field box name="nivel" :rules="nivelRules" v-model="user.nivel" label="Nivel de acesso" id="nivel" type="text"></v-text-field>
+                    <v-text-field box append-icon="people" name="nome" :rules="nomeRules" v-model="user.nome" :label="$t('message.nomeCompleto')" type="text"></v-text-field>
+                    <v-text-field box append-icon="account_circle" name="usuario" :rules="usuarioRules" v-model="user.usuario" :label="$t('message.nomeUser')" type="text"></v-text-field>
+                    <v-text-field box name="nivel" :rules="nivelRules" v-model="user.nivel" :label="$t('message.levelUser')" id="nivel" type="text"></v-text-field>
                     <small>Nivel de acesso <br> <span>1 = ADMINISTRADOR <br> 2 = VENDEDOR</span></small>
                   </v-form>
                 </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="red darken-1" flat outline @click.native="dialog = false">Cancelar</v-btn>
-                <v-btn :disabled="!valid" outline color="green darken-1" flat @click="update">Salvar</v-btn>
+                <v-btn color="red darken-1" flat outline @click.native="dialog = false">{{ $t('message.cancelar') }}</v-btn>
+                <v-btn :disabled="!valid" outline color="green darken-1" flat @click="update">{{ $t('message.salvar') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
 
           <v-layout justify-end row wrap>
               <v-flex text-lg-right xs6>
-                <v-subheader>Usuarios Cadastrados no Sistema</v-subheader>
+                <v-subheader> {{ $t('message.titleuser') }}</v-subheader>
               </v-flex>
               <v-flex text-lg-right xs6>
-                <v-btn router-link to="register" text-lg-right class="primary"><v-icon>perm_identity</v-icon> Novo usuario</v-btn>
+                <v-btn router-link to="register" text-lg-right class="primary"><v-icon>perm_identity</v-icon> {{ $t('message.novouser') }} </v-btn>
               </v-flex>
           </v-layout>
 
@@ -135,7 +135,7 @@ import AuthenticationService from "@/services/AuthenticationService";
 export default {
   data() {
     return {
-      noDataLoading: 'Carregando os dados aguarde',
+      noDataLoading: this.$t('message.carregandoaguarde'),
       show1: false,
       password: null,
       error: null,
@@ -156,9 +156,9 @@ export default {
       dialog: false,
       dialogSenha: false,
       headers: [
-        { text: "Nome ", name:"nome", align: "left", sortable: true},
-        { text: "Usuario ", align: "left", sortable: false},
-        { text: "Nivel ", align: "center", sortable: false},
+        { text: this.$t('message.nomeCompleto'), name:"nome", align: "left", sortable: true},
+        { text: this.$t('message.nomeUser'), align: "left", sortable: false},
+        { text: this.$t('message.levelUser'), align: "center", sortable: false},
         { text: 'Actions', align: "center", value: 'name', sortable: false }
       ],
       desserts: []
@@ -172,15 +172,15 @@ export default {
     async inativarUser (item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.user = Object.assign({}, item);
-      const res = await this.$confirm('Deseja mesmo inativar usuario ' + this.user.nome + '?', {
+      const res = await this.$confirm(this.$t('message.msginative') + this.user.nome + '?', {
       });
       
       if (res) {
         try {
           await AuthenticationService.inativar(this.user);
           this.$toast.success({
-          title: "Aviso",
-          message: "Usuario inativado com sucesso no sistema!"
+          title: this.$t('message.aviso'),
+          message: this.$t('message.inativeuser')
           })
           this.$router.push({
             name: "usuarios"
@@ -194,15 +194,15 @@ export default {
     async ativarUser (item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.user = Object.assign({}, item);
-      const res = await this.$confirm('Deseja mesmo ativar usuario ' + this.user.nome + '?', {
+      const res = await this.$confirm(this.$t('message.msgactive') + this.user.nome + '?', {
       });
       
       if (res) {
         try {
           await AuthenticationService.ativar(this.user);
           this.$toast.success({
-          title: "Aviso",
-          message: "Usuario foi ativado com sucesso no sistema!"
+          title: this.$t('message.aviso'),
+          message: this.$t('message.activeuser')
           })
           this.$router.push({
             name: "usuarios"

@@ -432,6 +432,8 @@ module.exports = (app) => {
   // Rotas Stock
   app.get('/stock',
     stockController.index)
+  app.get('/stocks',
+    stockController.soma)
   app.post('/stock',
     stockController.post)
   app.put('/stock',

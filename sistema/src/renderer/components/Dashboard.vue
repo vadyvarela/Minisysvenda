@@ -1,5 +1,5 @@
 <template>
-    <panel title="Dashboard">
+    <panel :title="$t('message.estatisticas')">
     <v-content>
       
     <v-container grid-list-md>
@@ -8,7 +8,7 @@
         <v-flex md3 sm3 xs6>
           <v-card class="" >
             <div class="">
-              <h3 class="h3Total">Total de produtos</h3>
+              <h3 class="h3Total"> {{ $t('message.tprodutos') }} </h3>
               <v-divider></v-divider>
               <p class="text-md-center spanTotal">{{ totalProdutos }}</p>
             </div>
@@ -18,7 +18,7 @@
         <v-flex md3 sm3 xs6>
           <v-card class="" >
             <div class="">
-              <h3 class="h3Total light-blue--text">Total de Stock</h3>
+              <h3 class="h3Total light-blue--text"> {{ $t('message.tstock') }} </h3>
               <v-divider></v-divider>
               <p class="text-md-center spanTotal">{{ totalStock }}</p>
             </div>
@@ -28,7 +28,7 @@
         <v-flex md3 sm3 xs6>
           <v-card class="" >
             <div class="">
-              <h3 class="h3Total">Total de Vendas</h3>
+              <h3 class="h3Total"> {{ $t('message.tvendas') }} </h3>
               <v-divider></v-divider>
               <p class="text-md-center spanTotal"> {{ totalVendas }} </p>
             </div>
@@ -38,7 +38,7 @@
         <v-flex md3 sm3 xs6>
           <v-card class="" >
             <div class="">
-              <h3 class="h3Total">Total de Compras</h3>
+              <h3 class="h3Total"> {{ $t('message.tcompras') }} </h3>
               <v-divider></v-divider>
               <p class="text-md-center spanTotal">{{ totalCompras }}</p>
             </div>
@@ -466,12 +466,12 @@ export default {
     this.totalVendas = this.VendasT.length
     this.Produtos = (await ProdutosService.index()).data;
     this.totalProdutos = this.Produtos.length
-    this.Stock = (await StockServices.index()).data;
-    this.totalStock = this.Stock.length
+    this.Stock = (await StockServices.soma()).data[0].total;
+    this.totalStock = this.Stock;
+    console.log('TESTE DE SOA DE PROD --- ', this.totalStock);
     this.Compras = (await listaCompraServices.index()).data;
     this.totalCompras = this.Compras.length
-    console.log("COMPRAS,", this.Compras)
-  },
+  }
 }
 </script>
 

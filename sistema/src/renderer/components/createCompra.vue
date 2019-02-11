@@ -1,5 +1,5 @@
 <template>
-    <panel title="Compras">
+    <panel :title="$t('message.compra')">
       <v-content>
       <v-layout justify-end row wrap>
         <v-flex text-lg-left xs12>
@@ -44,9 +44,9 @@
                 
       <v-stepper v-model="e1">
         <v-stepper-header>
-          <v-stepper-step editable :complete="e1 > 1" step="1">Dados de compra</v-stepper-step>
+          <v-stepper-step editable :complete="e1 > 1" step="1"> {{ $t('message.dadoscompra') }} </v-stepper-step>
           <v-divider></v-divider>
-          <v-stepper-step editable step="2">Produtos</v-stepper-step>
+          <v-stepper-step editable step="2"> {{ $t('message.produtos') }} </v-stepper-step>
         </v-stepper-header>
 
         <v-stepper-items>
@@ -69,7 +69,7 @@
                         </v-flex>
                         <span hidden>{{ compra.UserId = user.id }}</span>
                         <v-flex xs12 sm4 md4>
-                          <v-text-field readonly box color="blue" name="usuarios_id" :value="user.usuario" label="Funcionario" type="text"></v-text-field>
+                          <v-text-field readonly box color="blue" name="usuarios_id" :value="user.usuario" :label="$t('message.funcionario')" type="text"></v-text-field>
                           <input name="produto_id" v-model="compra.UserId" type="hidden"/>
                         </v-flex>
                         <v-flex xs12 sm4 md4>
@@ -89,14 +89,14 @@
                         <v-flex xs12 sm4 md4>
                           <span hidden>{{ compra.data_compra = Date() | moment("DD-MM-YYYY HH:mm:ss") }}</span>
                           <input name="" v-model="compra.data_compra" type="hidden"/>   
-                          <v-text-field box color="blue" readonly required :value="compra.data_compra" name="data_compra" label="Data da compra" type="text"></v-text-field>
+                          <v-text-field box color="blue" readonly required :value="compra.data_compra" name="data_compra" :label="$t('message.dataCompra')" type="text"></v-text-field>
                         </v-flex>
                     </v-layout>
                   </v-container>
                   <v-spacer></v-spacer>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" :disabled="!formIsValid" @click="createCompra(), e1 = 2"> Continuar </v-btn>
+                    <v-btn color="primary" :disabled="!formIsValid" @click="createCompra(), e1 = 2"> {{ $t('message.btnContinuar') }} </v-btn>
                   </v-card-actions>
               </v-form>
             </v-card-text>
@@ -112,11 +112,11 @@
             color="white"
           >
             <v-flex xs6>
-              <v-toolbar-title style="font-weight:bold; font-size:1.8em;" class="primary--text">LISTA DE PRODUTOS</v-toolbar-title>
+              <v-toolbar-title style="font-weight:bold; font-size:1.8em;" class="primary--text">{{ $t('message.listaproduto') }}</v-toolbar-title>
             </v-flex>
             <v-spacer></v-spacer>
             <v-flex text-lg-right xs6>
-              <v-btn right large router-link to="listacompras" dark class="primary" >Inventário de produtos</v-btn>
+              <v-btn right large router-link to="listacompras" dark class="primary" > {{ $t('message.inventarioProd') }} </v-btn>
             </v-flex>
           </v-toolbar>
           <br>
@@ -126,25 +126,25 @@
                 <div grid-list-md>
                   <v-layout style="margin-bottom: -25px;">
                     <v-flex class="titleProd" xs12 sm2 md2>
-                      <label class="">Ref/ Cód barra</label>
+                      <label class=""> {{ $t('message.refCodBarra') }} </label>
                     </v-flex>
                     <v-flex class="titleProd" xs12 sm2 md2>
-                      <label >Produto</label>
+                      <label >{{ $t('message.produto') }}</label>
                     </v-flex>
                     <v-flex class="titleProd" xs12 sm2 md2>
-                      <label>Quantidade</label>
+                      <label>{{ $t('message.quantidade') }}</label>
                     </v-flex>
                     <v-flex style="text-align:right" class="titleProd" xs12 sm1 md1>
-                      <label>Preço </label>
+                      <label> {{ $t('message.preço') }} </label>
                     </v-flex>
                     <v-flex style="text-align:right" class="titleProd" xs12 sm2 md2>
-                      <label>Preço VendA </label>
+                      <label> {{ $t('message.precodevenda') }} </label>
                     </v-flex>
                     <v-flex style="text-align:right" class="titleProd" xs12 sm1 md1>
-                      <label>IVA%</label>
+                      <label> {{ $t('message.iva') }} </label>
                     </v-flex>
                     <v-flex style="text-align:right" class="titleProd" xs12 sm2 md2>
-                      <label>Total</label>
+                      <label> {{ $t('message.total') }} </label>
                     </v-flex>
                   </v-layout>
                 </div>
@@ -353,7 +353,7 @@
             flat
             v-shortkey="['ctrl','n']" @shortkey="addNewProduto(banana)" @click="addNewProduto(banana)"
           >
-            <span style="font-size:1.5em;">NOVA</span>
+            <span style="font-size:1.5em;"> {{ $t('message.novaL') }} </span>
             <v-icon>add</v-icon>
           </v-btn>
         </v-flex>
@@ -364,7 +364,7 @@
             flat
             v-shortkey="['ctrl','enter']" @shortkey="createCompraProd()" @click="createCompraProd()"
           >
-            <span style="font-size:1.5em;">FINALIZAR COMPRA</span>
+            <span style="font-size:1.5em;"> {{ $t('message.finalizarCompra') }} </span>
             <v-icon>send</v-icon>
           </v-btn>
         </v-flex>
@@ -374,7 +374,7 @@
             flat
             v-shortkey="['ctrl','enter']" @shortkey="createCompraProd()" @click="createCompraProd()"
           >
-            <span style="font-size:1.5em;">FINALIZAR COMPRA</span>
+            <span style="font-size:1.5em;"> {{ $t('message.finalizarCompra') }} </span>
             <v-icon>send</v-icon>
           </v-btn>
         </v-flex>
@@ -384,7 +384,7 @@
         <v-flex xs12 sm9 md9>
         </v-flex>
         <v-flex class="text-xs-right" xs12 sm3 md3>
-          <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.totall') }}: </span>
+          <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.total') }}: </span>
           <vue-numeric v-if="totalPrice === ''" read-only style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="0"></vue-numeric>
           <vue-numeric v-if="totalPrice >= 100000" read-only style="font-size:1.6em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="totalPrice"></vue-numeric>
           <vue-numeric v-else read-only style="font-size:2.5em; font-weight:700; color: #fff;" class="text-xs-left white--text" :value="totalPrice"></vue-numeric>

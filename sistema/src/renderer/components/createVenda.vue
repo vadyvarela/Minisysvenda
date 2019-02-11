@@ -1,5 +1,5 @@
 <template>
-    <panel title="NOVA VENDA">
+    <panel :title="$t('message.novaVenda')">
       <v-content class="meudivpad">
       <v-layout justify-end row wrap>
         <v-flex text-lg-left xs12>
@@ -57,10 +57,7 @@
         </v-btn>
       </v-snackbar>
 
-      <v-card
-        class="hide-overflow"
-        color="white lighten-1"
-      >
+      <v-card class="marginmeu hide-overflow" color="white lighten-1">
         <v-card-text>
           <v-dialog v-model="dialogPesquisaCliente" persistent max-width="550px" @keydown.esc="dialogPesquisaCliente = false">
             <v-card align-center justify-center>
@@ -72,7 +69,7 @@
                 <v-container grid-list-md>
                   <v-layout wrap>
                     <v-flex xs12>
-                      <h4 class="primary--text text-md-center" style="font-size:2em;">DIGITE O NOME DO CLIENTE </h4>
+                      <h4 class="primary--text text-md-center" style="font-size:2em;"> {{ $t('message.searchcliente') }} </h4>
                       <p class="red--text" style="text-align:center; font-size:2em;">
                         <v-autocomplete
                           box
@@ -81,7 +78,7 @@
                           v-model="cliente.search"
                           item-text="cliente_nome"
                           item-value="cliente_nome"
-                          label="Nome cliente"
+                          :label="$t('message.cliente')"
                         ></v-autocomplete>
                         <input name="" v-model="cliente.search" type="hidden"/>   
                       </p>
@@ -92,36 +89,36 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn center large color="primary darken-1" @click.native="dialogPesquisaCliente = false; pesquisarCliente()">OK</v-btn>
+                <v-btn center large color="primary darken-1" @click.native="dialogPesquisaCliente = false; pesquisarCliente()"> {{ $t('message.ok') }} </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
           <v-dialog v-model="dialogNewCliente" persistent max-width="550px" @keydown.esc="dialogNewCliente = false">
               <v-card align-center justify-center>
                 <v-card-title>
-                  <span class="headline"> <v-icon>account_circle</v-icon> Novo Cliente</span>
+                  <span class="headline"> <v-icon>account_circle</v-icon> {{ $t('message.novocliente') }} </span>
                   <v-spacer></v-spacer>
                   <v-btn color="red" icon outline right small fab dark @click.native="dialogNewCliente = false"><v-icon>close</v-icon></v-btn>
                 </v-card-title>
                 <v-card-text>
                   <v-container grid-list-md>
                       <v-flex xs12 sm12 md12>
-                        <v-text-field small box v-model="cliente.cliente_nome" label="Nome do cliente" type="text"></v-text-field>
+                        <v-text-field small box v-model="cliente.cliente_nome" :label="$t('message.cliente')" type="text"></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm12 md12>
-                        <v-text-field box v-model="cliente.cliente_morada" label="Morada do cliente" type="text"></v-text-field>
+                        <v-text-field box v-model="cliente.cliente_morada" :label="$t('message.morada')" type="text"></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm12 md12>
-                        <v-text-field box v-model="cliente.cliente_nif" label="NIF" type="number"></v-text-field>
+                        <v-text-field box v-model="cliente.cliente_nif" :label="$t('message.nif')" type="number"></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm12 md12>
-                        <v-text-field box v-model="cliente.cliente_telefone" label="Telefone" type="number"></v-text-field>
+                        <v-text-field box v-model="cliente.cliente_telefone" :label="$t('message.telefone')" type="number"></v-text-field>
                       </v-flex>
                   </v-container>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn center large color="primary darken-1" @click.native="createCliente()">Salvar</v-btn>
+                  <v-btn center large color="primary darken-1" @click.native="createCliente()"> {{ $t('message.salvar') }} </v-btn>
                 </v-card-actions>
               </v-card>
           </v-dialog>
@@ -133,14 +130,14 @@
                 <v-text-field outline label="N. Venda" @keyup.enter="searchIdProd()" v-model.number="idSearch" type="text"></v-text-field> 
               </v-flex>
               <v-flex sm7 md7>
-                <h2 class="myinputsdata">DATA: <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY") }} </span></h2>
+                <h2 class="myinputsdata"> {{ $t('message.data')}} : <span style="font-weight:100"> {{ Date() | moment("DD-MM-YYYY") }} </span></h2>
               </v-flex>
               
               <v-flex sm1 md1>
                 <v-btn style="display:none;" dark v-shortkey="['f3']" @shortkey="left = !left" @click.stop="left = !left"> </v-btn>
                 <v-btn large left router-link to="listavendas" dark class="primary"> {{ $t('message.listavendas') }} </v-btn>
                 <span v-if="idSearch !== ''" sm2 md2>
-                  <v-btn class="success" @click.stop="reset"> NOVA VENDA <v-icon>loop</v-icon> </v-btn>
+                  <v-btn class="success" @click.stop="reset"> {{ $t('message.novaVenda') }} <v-icon>loop</v-icon> </v-btn>
                 </span>
               </v-flex>
             </v-layout>
@@ -174,10 +171,10 @@
                   </span>
                 </div>
                 <v-flex xs12 sm6 md6>
-                  <h2 class="myinputs">CLIENTE: <span style="font-weight:100"> {{ cliente.cliente_no }} </span>  </h2>
+                  <h2 class="myinputs"> {{ $t('message.cliente') }} : <span style="font-weight:100"> {{ cliente.cliente_no }} </span>  </h2>
                 </v-flex>
                 <v-flex xs12 sm5 md5>
-                  <h2 class="myinputs"> NIF: <span style="font-weight:100"> {{ cliente.cliente_ni }}</span> </h2>
+                  <h2 class="myinputs"> {{ $t('message.nif') }}: <span style="font-weight:100"> {{ cliente.cliente_ni }}</span> </h2>
                 </v-flex>
                 <v-flex xs1 sm1 md1>
                   <v-btn style="margin-top:-2px" fab small dark @click="searchCliente" class="primary"> <v-icon>search</v-icon> </v-btn>
@@ -186,10 +183,10 @@
               <v-layout row>
                 
                 <v-flex xs6 sm6 md6>
-                  <h2 class="myinputs">MORADA: <span style="font-weight:100"> {{ cliente.cliente_mor }} </span> </h2>
+                  <h2 class="myinputs">{{ $t('message.morada') }}: <span style="font-weight:100"> {{ cliente.cliente_mor }} </span> </h2>
                 </v-flex>
                 <v-flex xs6 sm5 md5>
-                  <h2 class="myinputs">TELEFONE: <span style="font-weight:100"> {{ cliente.cliente_tel }} </span> </h2>
+                  <h2 class="myinputs">{{ $t('message.telefone') }}: <span style="font-weight:100"> {{ cliente.cliente_tel }} </span> </h2>
                 </v-flex>
                 <v-flex xs1 sm1 md1>
                   <v-btn style="margin-top:-2px" fab small dark @click="newCliente" class="primary"> <v-icon>add</v-icon> </v-btn>
@@ -609,7 +606,7 @@
                           <v-container grid-list-md>
                             <v-layout wrap>
                               <v-flex xs12>
-                                <h4 class="primary--text text-md-center" style="font-size:2em;">DIGITE O NOME PRODUTO </h4>
+                                <h4 class="primary--text text-md-center" style="font-size:2em;"> {{ $t('message.searchnomepro') }} </h4>
                                 <p class="red--text" style="text-align:center; font-size:2em;">
                                   <v-autocomplete
                                     box
@@ -629,7 +626,7 @@
                         </v-card-text>
                         <v-card-actions>
                           <v-spacer></v-spacer>
-                          <v-btn center large color="primary darken-1" @click.native="dialogPesquisa = false; pesquisar(index)">OK</v-btn>
+                          <v-btn center large color="primary darken-1" @click.native="dialogPesquisa = false; pesquisar(index)"> {{ $t('message.ok') }} </v-btn>
                         </v-card-actions>
                       </v-card>
                     </v-dialog>
@@ -640,14 +637,14 @@
                           <v-container grid-list-md>
                             <v-layout wrap>
                               <v-flex xs12>
-                                <h4 class="red--text text-md-center" style="font-size:2em;">Esse produto não tem estoque </h4>
+                                <h4 class="red--text text-md-center" style="font-size:2em;"> {{ $t('message.noestoque') }} </h4>
                               </v-flex>
                             </v-layout>
                           </v-container>
                         </v-card-text>
                         <v-card-actions>
                           <v-spacer></v-spacer>
-                          <v-btn center large color="primary darken-1" @click.native="dialogStock = false; removeNewProduto(index)">OK</v-btn>
+                          <v-btn center large color="primary darken-1" @click.native="dialogStock = false; removeNewProduto(index)">{{ $t('message.ok') }}</v-btn>
                         </v-card-actions>
                       </v-card>
                     </v-dialog>
@@ -704,7 +701,7 @@
                               </v-card-title>
                                 <v-card-text>
                                   <div class="layout column align-center">
-                                    <h1 class="flex my-4 primary--text">LOGIN ADMINISTRADOR</h1>
+                                    <h1 class="flex my-4 primary--text"> {{ $t('message.laginadmin') }} </h1>
                                   </div>                
                                   <v-form>
                                     <v-text-field
@@ -728,7 +725,7 @@
                                 </v-card-text>
                                 <v-card-actions>
                                   <v-spacer></v-spacer>
-                                  <v-btn class="primary" @click="login()">Efetuar login</v-btn>
+                                  <v-btn class="primary" @click="login()">{{ $t('message.btnEfetuarLogn')}}</v-btn>
                                 </v-card-actions>
                               </v-card>
                             </v-flex>
@@ -823,7 +820,7 @@
             flat
             v-shortkey="['ctrl','n']" @shortkey="addNewProduto(banana)" @click="addNewProduto(banana)"
           >
-            <span style="font-size:1.5em;">NOVA</span>
+            <span style="font-size:1.5em;"> {{ $t(('message.novaL')) }}  </span>
             <v-icon>add</v-icon>
           </v-btn>
           <v-btn
@@ -831,7 +828,7 @@
             flat
             v-shortkey="['ctrl','b']" @shortkey="pesquisarBolsa(banana)" @click.native="pesquisarBolsa(banana)"
           >
-            <span style="font-size:1.5em; float_left">BOLSA</span>
+            <span style="font-size:1.5em; float_left">{{ $t(('message.bolsa')) }} </span>
             <v-icon>shopping_basket</v-icon>
           </v-btn>
         </v-flex>
@@ -841,7 +838,7 @@
             flat
             v-shortkey="['ctrl','enter']" @shortkey="modoPagamento()" @click="modoPagamento()"
           >
-            <span style="font-size:1.5em;">FINALIZAR VENDA</span>
+            <span style="font-size:1.5em;"> {{ $t(('message.finalizacompra')) }} </span>
             <v-icon>send</v-icon>
           </v-btn>
         </v-flex>
@@ -851,7 +848,7 @@
         <v-flex xs12 sm9 md9>
         </v-flex>
         <v-flex class="text-xs-right" xs12 sm3 md3>
-          <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.totall') }}: </span>
+          <span style="font-size:2.4em; font-weight:300; margin-right:8px" class="text-xs-right white--text"> {{ $t('message.total') }}: </span>
           <vue-numeric v-if="totalPrice === ''" read-only style="font-size:2.4em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="0"></vue-numeric>
           <vue-numeric v-if="totalPrice >= 100000" read-only style="font-size:1.6em; font-weight:700; color: #fff;" class="text-xs-center white--text" :value="totalPrice"></vue-numeric>
           <vue-numeric v-else read-only style="font-size:2.5em; font-weight:700; color: #fff;" class="text-xs-left white--text" :value="totalPrice"></vue-numeric>
@@ -929,7 +926,7 @@ export default {
       color: 'error',
       mode: '',
       timeout: 6000,
-      text: 'Não foi encontrado produto com esse código ou código de barra',
+      text: this.$t('message.semprod'),
 
       snackbarnorow: false,
       colornorow: 'error',
@@ -1812,5 +1809,8 @@ export default {
     padding: 8px 12px 10px;
     text-transform: none;
     width: 100%;
+}
+.marginmeu {
+  margin-bottom: 200px;
 }
 </style>
