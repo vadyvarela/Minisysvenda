@@ -40,6 +40,7 @@ module.exports = {
         produto_nome: 'Produto',
         produto_nome_rec: 'Descrisão curta',
         produto_preco: 'Preço de custo',
+        produto_p: 'Preço',
         iva_valor: 'Selecione o valor IVA',
         categoria_nome: 'Categoria do produto',
         fornecedor_nome: 'Selecionar o fornecedor',
@@ -69,7 +70,7 @@ module.exports = {
         fcompraimprimir: 'Finalizar venda & Imprimir',
         iniciarVenda: 'INICIAR VENDA',
         bemvindo: 'BEMVINDO',
-        bemvindominivenda: 'BEMVINDO Á MINSYSVENDA',
+        bemvindominivenda: 'BEMVINDO Á IVENDA',
         nomeUser: 'Nome de usuario',
         passUser: 'Palavra passe',
 
@@ -170,6 +171,7 @@ module.exports = {
           produto_nome: '產品',
           produto_nome_rec: '短缺',
           produto_preco: '成本價格',
+          produto_p: '成本',
           iva_valor: '選擇增值稅值',
           categoria_nome: '產品類別',
           fornecedor_nome: '選擇供應商',
@@ -198,7 +200,7 @@ module.exports = {
           fcompraimprimir: '結帳和打印',
           iniciarVenda: '出售房屋',
           bemvindo: '歡迎',
-          bemvindominivenda: '歡迎來到 MINSYSVENDA',
+          bemvindominivenda: '歡迎來到 IVENDA',
           nomeUser: '用戶名',
           passUser: '密碼',
 

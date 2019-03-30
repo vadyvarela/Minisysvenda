@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import Vuetify from 'vuetify'
 import VeeValidate from 'vee-validate'
 import VueNumeric from 'vue-numeric'
+// import JsonExcel from 'vue-json-excel'
 // import { sync } from 'vuex-router-sync'
 // import store from '@/store/store'
 import axios from 'axios'
@@ -86,6 +87,7 @@ Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 // Carregando o componente Header e Menu drawer
 Vue.component('panel', Panel)
+// Vue.component('downloadExcel', JsonExcel)
 // sync(store, router)
 /* eslint-disable no-new */
 new Vue({

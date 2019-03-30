@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const ListaVenda = sequelize.define('ListaVenda', {
-    quantidade: DataTypes.INTEGER,
+    quantidade: DataTypes.FLOAT,
     preco_venda: DataTypes.STRING
   })
 

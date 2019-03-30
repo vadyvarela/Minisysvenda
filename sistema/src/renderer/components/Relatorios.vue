@@ -1,51 +1,6 @@
 <template>
-    <panel :title="$t('message.estatisticas')">
+    <panel title="Relatório IVA">
     <v-content>
-      
-    <v-container grid-list-md>
-    <v-layout row align-center justify-center>
-    
-        <v-flex md3 sm3 xs6>
-          <v-card class="" >
-            <div class="">
-              <h3 class="h3Total"> {{ $t('message.tprodutos') }} </h3>
-              <v-divider></v-divider>
-              <p class="text-md-center spanTotal">{{ totalProdutos }}</p>
-            </div>
-          </v-card>
-        </v-flex>
-
-        <v-flex md3 sm3 xs6>
-          <v-card class="" >
-            <div class="">
-              <h3 class="h3Total light-blue--text"> {{ $t('message.tstock') }} </h3>
-              <v-divider></v-divider>
-              <p class="text-md-center spanTotal">{{ totalStock }}</p>
-            </div>
-          </v-card>
-        </v-flex>
-
-        <v-flex md3 sm3 xs6>
-          <v-card class="" >
-            <div class="">
-              <h3 class="h3Total"> {{ $t('message.tvendas') }} </h3>
-              <v-divider></v-divider>
-              <p class="text-md-center spanTotal"> {{ totalVendas }} </p>
-            </div>
-          </v-card>
-        </v-flex>
-
-        <v-flex md3 sm3 xs6>
-          <v-card class="" >
-            <div class="">
-              <h3 class="h3Total"> {{ $t('message.tcompras') }} </h3>
-              <v-divider></v-divider>
-              <p class="text-md-center spanTotal">{{ totalCompras }}</p>
-            </div>
-          </v-card>
-        </v-flex>
-    </v-layout>
-    </v-container>
 
     <v-layout wrap align-center justify-center>
         <!-- LISTA COMPRAS -->
@@ -56,12 +11,11 @@
                 <v-layout row wrap>
                 <v-flex class="elevation-3" xs12 sm12 md12>
                 <v-spacer></v-spacer>
-
                 <v-layout v-if="total > 0 " justify-end row>
                   <v-flex text-lg-center xs12>
                     <v-badge class='mt-3 mr-4' right>              
-                      <span style="font-size:2em" class="green--text title"> {{ $t('message.TotalVendasFeitas') }} </span>
-                      <span class="TVenda"> {{ total }} </span>
+                      <span style="font-size:2em" class="green--text title"> Total de Iva <b>{{ filtro }}</b>  </span>
+                      <span class="TVenda"> {{ totalIva }} </span>
                     </v-badge>
                   </v-flex>
                 </v-layout>
@@ -163,7 +117,8 @@
                   <template slot="items" slot-scope="props">
                   <td class="text-xs-left"> {{ props.item.createdAt | moment("DD-MM-YYYY") }} </td>
                   <td class="text-xs-left"> {{ props.item.createdAt | moment("HH:mm:ss") }} </td>
-                  
+                   <td class="text-xs-left"> {{ props.item.valor_iva }} </td>
+
                     <v-expansion-panel popout>
                       <v-expansion-panel-content>
                         <div slot="header">Lista de produtos</div>
@@ -180,10 +135,7 @@
                     </v-expansion-panel>
 
                   <td class="text-xs-left"> {{ props.item.User.nome }} </td>
-                  <td class="text-xs-left dark">
-                    <v-btn flat icon color="primary" @click="printVenda(props.item)"> <v-icon>print</v-icon> </v-btn>
-                    <v-btn title="Anular Venda" flat icon color="red" @click="AnularVenda(props.item)"> <v-icon>error_outline</v-icon> </v-btn>
-                  </td>
+                  
                   </template>
                 </v-data-table>
                 </v-flex>
@@ -198,7 +150,6 @@
             <chart-doughnut/>
           </v-card>
         </v-flex>
-
         <v-flex sm6 md6>
           <h3>Produtos mais vendidos</h3>
           <v-card>
@@ -207,7 +158,6 @@
         </v-flex>-->
 
     </v-layout>
-
     </v-content>
     </panel>
 </template>
@@ -242,8 +192,8 @@ export default {
       headers: [
         { text: "Data", align: "left", sortable: false },
         { text: "Hora", align: "left", sortable: false },
+        { text: "Valor Iva", align: "left", sortable: false },
         { text: "Produto / Quantidade", align: "left", sortable: false },
-        { text: "Vendedor", align: "left", sortable: false },
         { text: "Ações", align: "left", sortable: false },
       ],
       desserts: []
@@ -260,7 +210,7 @@ export default {
       })).data;
       this.total = this.desserts.length
     },
-    async pesByFiltro(){
+    async pesByFiltro(index){
       if (this.filtro == 'Semanal') {
         this.desserts = (await VendaServices.semanal()).data;
         this.total = this.desserts.length
@@ -462,6 +412,15 @@ export default {
       console.log("Pesquisa: ", this.desserts)
     }
   },
+  computed: {
+    totalIva: function(){
+      let totalIva = [];
+      Object.entries(this.desserts).forEach(([key, val]) => {
+          totalIva.push(val.valor_iva) // the value of the current key.
+      });
+      return totalIva.reduce(function(total, num){ return total + num }, 0);
+    },
+  },
   async mounted() {
     this.vendedores = (await UsuariosServices.index()).data;
     this.VendasT = (await VendaServices.total()).data;
@@ -469,7 +428,7 @@ export default {
     this.Produtos = (await ProdutosService.index()).data;
     this.totalProdutos = this.Produtos.length
     this.Stock = (await StockServices.soma()).data[0].total;
-    this.totalStock = this.Stock.toFixed(3);
+    this.totalStock = this.Stock;
     console.log('TESTE DE SOA DE PROD --- ', this.totalStock);
     this.Compras = (await listaCompraServices.index()).data;
     this.totalCompras = this.Compras.length

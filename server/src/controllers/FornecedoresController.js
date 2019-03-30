@@ -13,7 +13,17 @@ module.exports = {
   },
   async post (req, res) {
     try {
-      const fornecedores = await Fornecedores.create(req.body)
+      const fornecedores = await Fornecedores.findOrCreate({
+        where: {
+          fornecedor_nome: req.body.fornecedor_nome
+        },
+        defaults: {
+          fornecedor_nome: req.body.fornecedor_nome,
+          fornecedor_nif: req.body.fornecedor_nif,
+          fornecedor_endereco: req.body.fornecedor_endereco,
+          fornecedor_movel: req.body.fornecedor_movel
+        }
+      })
       res.send(fornecedores)
     } catch (err) {
       res.status(500).send({

@@ -86,6 +86,11 @@ export default new Router({
       component: require('@/components/createPrecoVenda').default
     },
     {
+      path: '/relatorios',
+      name: 'relatorios',
+      component: require('@/components/Relatorios').default
+    },
+    {
       path: '/cbarra',
       name: 'cbarra',
       component: require('@/components/CBarra').default

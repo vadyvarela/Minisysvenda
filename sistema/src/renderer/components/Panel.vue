@@ -145,6 +145,30 @@
               </template>
             </v-list>
 
+            <v-list dense>
+              <template>
+                <v-list-group>
+                  <v-list-tile slot="activator">
+                    <v-list-tile-action>
+                      <v-icon>assessment</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                      <v-list-tile-title>
+                        <v-list-tile-title> Relatórios </v-list-tile-title>
+                      </v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile router-link to="relatorios">
+                    <v-list-tile-content>
+                      <v-list-tile-title>
+                        Relatórios IVA
+                      </v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                </v-list-group>
+              </template>
+            </v-list>
+
             <v-list-tile router-link to="fornecedores">
               <v-list-tile-action>
                 <v-icon>people_outline</v-icon>

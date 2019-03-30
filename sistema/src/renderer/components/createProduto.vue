@@ -103,7 +103,7 @@
                   </v-flex>
                   <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
                       <img :src="imageUrl" height="150" v-if="imageUrl"/>
-                      <v-text-field label="Select Image" @click='pickFile' v-model='imageName' prepend-icon='attach_file'></v-text-field>
+                      <v-text-field box label="Select Image" @click='pickFile' v-model='imageName' append-icon='attach_file'></v-text-field>
                       <input
                         type="file"
                         ref="file"
@@ -174,17 +174,17 @@
             <v-card-text>
               <h2 class="meutitulo green--text "> {{ $t('message.finalizarcprod') }} </h2>
               <p></p>
-              <h2 hidden>{{ stock.ProdutoId = idProduto }}</h2>
+              <!--<h2 hidden>{{ stock.ProdutoId = idProduto }}</h2>-->
               <v-form @submit.prevent="submit" ref="form" name="cadastar" autocomplete="off" lazy-validation>
-              <v-layout>
+              <!--<v-layout>
                 <v-flex hidden xs12 sm12 md12>
                   <input name="stock_quantidade" v-model="stock.quantidade" type="hidden"/>
                 </v-flex>
                 <input name="produto_id" v-model="stock.ProdutoId" type="hidden"/>
-              </v-layout>
+              </v-layout>-->
               <v-spacer></v-spacer>
               <div class="text-xs-center">
-                <v-btn center color="primary textbutton" large :disabled="!stockIsValid" @click="cadProd"> <v-icon>add</v-icon> {{ $t('message.cadProduto') }}  </v-btn>
+                <v-btn center color="primary textbutton" large @click="cadProd"> <v-icon>add</v-icon> {{ $t('message.cadProduto') }}  </v-btn>
               </div>
               </v-form>
             </v-card-text>
@@ -270,10 +270,10 @@ export default {
           total: ''
         }
       ],
-      stock: {
+      /*stock: {
         quantidade: "0",
         ProdutoId: ""
-      },
+      },*/
       valid: true,
       CategoriaId: [],
       barcode: [],
@@ -287,7 +287,7 @@ export default {
       ivaRules: [v => !!v || "Campo IVA é obrigatorio"],
       fornecRules: [v => !!v || "Campo fornecedor é obrigatório"],
       precocustoRules: [v => !!v || "Campo preço de custo é obrigatório"],
-      quantidadeRules: [v => !!v || "Campo quantidade stock é obrigatório"],
+      // quantidadeRules: [v => !!v || "Campo quantidade stock é obrigatório"],
       // pvendaRules: [v => !!v || "Campo preço de venda é obrigatório"],
       produto_nome: "",
       produto_code: "",
@@ -394,9 +394,9 @@ export default {
     async cadProd() {
       try {
         this.meuloading = true
-        await StockServices.post(this.stock);
+        // await StockServices.post(this.stock);
         // this.snackbar = true;
-        this.meuloading = false
+        // this.meuloading = false
         this.$toast.success({
           title: "Sucesso",
           message: "Produto cadastrado com sucesso"
@@ -442,9 +442,9 @@ export default {
         this.produto.IvaId
       );
     },
-    stockIsValid() {
+    /*stockIsValid() {
       return this.stock.quantidade;
-    },
+    },*/
     PVendaIsValid() {
       return this.precos[0].pvenda_preco;
     }

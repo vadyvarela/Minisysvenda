@@ -42,7 +42,7 @@
 
       <v-btn style="display:none;" dark v-shortkey="['f3']" @shortkey="left = !left" @click.stop="left = !left"> </v-btn>
                 
-      <v-stepper v-model="e1">
+      <v-stepper class="marginmeu" v-model="e1">
         <v-stepper-header>
           <v-stepper-step editable :complete="e1 > 1" step="1"> {{ $t('message.dadoscompra') }} </v-stepper-step>
           <v-divider></v-divider>
@@ -129,13 +129,13 @@
                       <label class=""> {{ $t('message.refCodBarra') }} </label>
                     </v-flex>
                     <v-flex class="titleProd" xs12 sm2 md2>
-                      <label >{{ $t('message.produto') }}</label>
+                      <label >{{ $t('message.produto_nome') }}</label>
                     </v-flex>
                     <v-flex class="titleProd" xs12 sm2 md2>
                       <label>{{ $t('message.quantidade') }}</label>
                     </v-flex>
                     <v-flex style="text-align:right" class="titleProd" xs12 sm1 md1>
-                      <label> {{ $t('message.preço') }} </label>
+                      <label> {{ $t('message.produto_p') }} </label>
                     </v-flex>
                     <v-flex style="text-align:right" class="titleProd" xs12 sm2 md2>
                       <label> {{ $t('message.precodevenda') }} </label>
@@ -729,5 +729,8 @@ export default {
     padding: 8px 12px 10px;
     text-transform: none;
     width: 100%;
+}
+.marginmeu {
+  margin-bottom: 200px;
 }
 </style>

@@ -18,7 +18,7 @@ const ClienteController = require('./controllers/ClienteController')
 const LojaController = require('./controllers/LojaController')
 const multer = require('multer')
 const path = require('path')
-const { Categorias, Produtos } = require('./models')
+const { Categorias, Produtos, Stock } = require('./models')
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -135,6 +135,15 @@ module.exports = (app) => {
                 IvaId: req.body.IvaId
               }
             }).then(function (result) {
+              /* PEGA ULTIMO ID */
+              console.log('----------------------- RESULTADO -', result[0].id)
+              const stock = Stock.create({
+                quantidade: 0,
+                ProdutoId: result[0].id
+              })
+              res.send(stock)
+              console.log('DADOS STCOK ==================', stock)
+              /* END PEGAR ID ULTIMO */
               var created = result[1]
               if (!created) {
                 res.status(200).json({ 'error': '1' })
@@ -143,7 +152,7 @@ module.exports = (app) => {
             // res.send(produtos)
           } catch (err) {
             res.status(500).send({
-              error: 'Um erro ocoreu ao tentar cadastrar o produto'
+              error: 'Um erro ocoreu ao tentar cadastrar categoria'
             })
           }
           /* return res.status(403).send({
@@ -255,9 +264,14 @@ module.exports = (app) => {
       } else {
         if (req.file === undefined) {
           try {
-            const categorias = Categorias.create({
-              categoria_nome: req.body.categoria_nome,
-              categoria_desc: req.body.categoria_desc
+            const categorias = Categorias.findOrCreate({
+              where: {
+                categoria_nome: req.body.categoria_nome
+              },
+              defaults: {
+                categoria_nome: req.body.categoria_nome,
+                categoria_desc: req.body.categoria_desc
+              }
             })
             res.send(categorias)
           } catch (err) {
@@ -265,15 +279,17 @@ module.exports = (app) => {
               error: 'Um erro ocoreu ao tentar cadastrar categoria'
             })
           }
-          /* return res.status(403).send({
-            error: 'ERRO: Favor selecione uma imagem'
-          }) */
         } else {
           try {
-            const categorias = Categorias.create({
-              categoria_nome: req.body.categoria_nome,
-              categoria_desc: req.body.categoria_desc,
-              filename: req.file.filename
+            const categorias = Categorias.findOrCreate({
+              where: {
+                categoria_nome: req.body.categoria_nome
+              },
+              defaults: {
+                categoria_nome: req.body.categoria_nome,
+                categoria_desc: req.body.categoria_desc,
+                filename: req.file.filename
+              }
             })
             res.send(categorias)
           } catch (err) {

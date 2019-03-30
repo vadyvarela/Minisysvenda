@@ -534,7 +534,7 @@ export default {
             .align('ct')
             .size(1, 1)
             .text('\n')
-            .text('Processado pelo programa MiniSysVenda, Licenciado exclusivamente pelo contribuinte Solid Invest')
+            .text('Processado pelo programa Ivenda, Licenciado exclusivamente pelo contribuinte Solid Invest')
             .text('Obrigado e volte sempre')
             .text('\n')
             .cut()

@@ -88,10 +88,10 @@ module.exports = {
       const { usuario, password } = req.body
       const user = await User.findOne({
         where: {
-          usuario: usuario,
-          status: 1
+          usuario: usuario
         }
       })
+
       if (!user) {
         return res.status(403).send({
           error: 'Informações de login estão incoretos! Tente Novamente '

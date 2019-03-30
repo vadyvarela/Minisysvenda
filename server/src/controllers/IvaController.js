@@ -13,7 +13,15 @@ module.exports = {
   },
   async post (req, res) {
     try {
-      const iva = await Iva.create(req.body)
+      const iva = await Iva.findOrCreate({
+        where: {
+          iva_valor: req.body.iva_valor
+        },
+        defaults: {
+          iva_valor: req.body.iva_valor,
+          iva_desc: req.body.iva_desc
+        }
+      })
       res.send(iva)
     } catch (err) {
       res.status(500).send({

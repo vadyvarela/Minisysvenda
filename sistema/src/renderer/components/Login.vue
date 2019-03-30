@@ -46,7 +46,7 @@
               <v-card-text>
                 <div class="layout column align-center">
                   <img src="http://minisys.innovatmedialab.com/server/img/m.png" alt="MiniSysVenda" width="120" height="120">
-                  <h1 class="flex my-4 primary--text">MiniSysVenda</h1>
+                  <h1 class="flex my-4 primary--text">IVENDA</h1>
                 </div>  
                         
                   <v-text-field

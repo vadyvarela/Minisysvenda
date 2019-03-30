@@ -1,12 +1,12 @@
 module.exports = {
   port: process.env.PORT || 8095,
   db: {
-    database: process.env.DB_NAME || 'minisysvenda',
+    database: process.env.DB_NAME || 'minsysvenda',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASS || '',
     options: {
       dialect: process.env.DIALECT || 'mysql',
-      host: process.env.HOST || '127.0.0.1'
+      host: process.env.HOST || 'localhost'
       // logging: false
     }
   },
