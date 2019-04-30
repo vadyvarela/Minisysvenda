@@ -19,4 +19,5 @@ npm run seed
 -------------------- INICIAR SISTEMA ----------------------                                                                
 execute o comando para compilar e executar o sistema                                                  
 npm run dev
+sdsd
 
