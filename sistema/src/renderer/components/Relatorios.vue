@@ -281,7 +281,7 @@ export default {
           cheque = cheque + ' CVE'
         }
       
-        const path = require('path');
+        /*const path = require('path');
         const escpos = require('escpos')
         const device = new escpos.USB()
         const options = { encoding: 'CP860' }
@@ -377,7 +377,7 @@ export default {
             .text('\n')
             .cut()
             .close()
-          })
+          })*/
     },
     async AnularVenda (item) {
       this.editedIndex = this.desserts.indexOf(item);
