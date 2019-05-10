@@ -3,6 +3,23 @@
     <v-content>
     <v-container fluid fill-heightgrid-list-md>
 
+      <v-dialog
+        v-model="meuloading"
+        persistent
+        width="300">
+        <v-card color="primary" dark>
+          <v-card-text>
+            Carregando seu ambiente de venda, Aguarde...
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0"
+            ></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+
+
     <section class="section">
         <p class="time" v-text="currentTime"></p>
         <p class="date" v-text="currentDate"></p>
@@ -39,6 +56,7 @@ import moment from 'moment'
 export default {
     data() {
         return {
+            meuloading: false,
             currentTime: null,
             currentDate: null,
             venda: {
@@ -56,10 +74,12 @@ export default {
             console.log("MEU STATUS NA INTERNET", status);
         }, */
         async createVenda() {
+            this.meuloading = true;
             console.log(this.venda)
             await VendaServices.post(this.venda);
             this.idVenda = (await VendaServices.lastid()).data[0].id;
             console.log("ID: ", this.idVenda)
+            this.meuloading = false;
             this.$router.push({
                 name: 'vendas'
             })

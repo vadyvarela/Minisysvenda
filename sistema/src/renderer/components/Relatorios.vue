@@ -1,8 +1,41 @@
 <template>
     <panel title="Relatório IVA">
     <v-content>
-
     <v-layout wrap align-center justify-center>
+
+      <v-snackbar
+        v-model="snackbarnorow"
+        :color="colornorow"
+        :multi-line="mode === 'multi-line'"
+        :timeout="timeout"
+        :vertical="mode === 'vertical'">
+        {{ textnorow }}
+        <v-btn
+          dark
+          flat
+          @click="snackbarnorow = false">
+          Fechar
+        </v-btn>
+      </v-snackbar>
+
+      <v-dialog
+        v-model="meuloading"
+        persistent
+        width="300">
+        <v-card
+          color="primary"
+          dark>
+          <v-card-text>
+            Carregando os dados, Aguarde...
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0"
+            ></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+
         <!-- LISTA COMPRAS -->
         <v-flex sm12 md12>
           <v-card flat>
@@ -179,6 +212,10 @@ export default {
       items: ['Diário', 'Semanal', 'Mensal', 'Trimestral'],
       vendedores: [],
       menu1: false,
+      snackbarnorow: false,
+      colornorow: 'error',
+      textnorow: 'Erro ao ligar a base de dados! Verifica sua conexão com a internet!',
+      meuloading: false,
       menu2: false,
       data_ini: null,
       data_fim: null,
@@ -205,23 +242,30 @@ export default {
   },
   methods: {
     async pesByVendedor() {
+      this.meuloading = true
       this.desserts = (await VendaServices.byVendedor({
         idVendedor: this.filtroV
       })).data;
+      this.meuloading = false
       this.total = this.desserts.length
     },
     async pesByFiltro(index){
+      this.meuloading = true
       if (this.filtro == 'Semanal') {
         this.desserts = (await VendaServices.semanal()).data;
+        this.meuloading = false
         this.total = this.desserts.length
       } else if (this.filtro == 'Diário') {
         this.desserts = (await VendaServices.diario()).data;
+        this.meuloading = false
         this.total = this.desserts.length
       } else if (this.filtro == 'Mensal') {
         this.desserts = (await VendaServices.mensal()).data;
+        this.meuloading = false
         this.total = this.desserts.length
       } else if (this.filtro == 'Trimestral') {
         this.desserts = (await VendaServices.trimestral()).data;
+        this.meuloading = false
         this.total = this.desserts.length
       }
     },
@@ -281,7 +325,7 @@ export default {
           cheque = cheque + ' CVE'
         }
       
-        /*const path = require('path');
+        const path = require('path');
         const escpos = require('escpos')
         const device = new escpos.USB()
         const options = { encoding: 'CP860' }
@@ -377,7 +421,7 @@ export default {
             .text('\n')
             .cut()
             .close()
-          })*/
+          })
     },
     async AnularVenda (item) {
       this.editedIndex = this.desserts.indexOf(item);
@@ -403,13 +447,22 @@ export default {
       }
     },
     async pesquisar() {
-      //Lista venda
-      this.desserts = (await VendaServices.DadosGeral({
-        dataIni: this.data_ini,
-        dataFim: this.data_fim
-      })).data;
-      this.total = this.desserts.length
-      console.log("Pesquisa: ", this.desserts)
+      try{
+        this.meuloading = true
+        this.desserts = (await VendaServices.DadosGeral({
+          dataIni: this.data_ini,
+          dataFim: this.data_fim
+        })).data;
+        this.meuloading = false
+        this.total = this.desserts.length
+        console.log("Pesquisa: ", this.desserts)
+        }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarnorow = true
+          console.log("MEU ERRO -- " + error)
+        }
+      }
     }
   },
   computed: {
@@ -422,6 +475,8 @@ export default {
     },
   },
   async mounted() {
+    try{
+    this.meuloading = true
     this.vendedores = (await UsuariosServices.index()).data;
     this.VendasT = (await VendaServices.total()).data;
     this.totalVendas = this.VendasT.length
@@ -431,7 +486,18 @@ export default {
     this.totalStock = this.Stock;
     console.log('TESTE DE SOA DE PROD --- ', this.totalStock);
     this.Compras = (await listaCompraServices.index()).data;
-    this.totalCompras = this.Compras.length
+    this.meuloading = false
+    this.totalCompras = this.Compras.length;
+    }catch (error) {
+      if (!error.response) {
+        // network error
+        this.meuloading = false
+        this.snackbarnorow = true
+        //this.error = 'Erro: Verifica sua conexao com a internet! ';
+        //this.alert = true;
+        console.log("MEU ERRO -- " + error)
+      }
+    }
   }
 }
 </script>

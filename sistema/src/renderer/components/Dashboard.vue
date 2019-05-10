@@ -45,6 +45,20 @@
           </v-card>
         </v-flex>
     </v-layout>
+    <v-snackbar
+        v-model="snackbarnorow"
+        :color="colornorow"
+        :multi-line="mode === 'multi-line'"
+        :timeout="timeout"
+        :vertical="mode === 'vertical'">
+        {{ textnorow }}
+        <v-btn
+          dark
+          flat
+          @click="snackbarnorow = false">
+          Fechar
+        </v-btn>
+      </v-snackbar>
 
     <v-dialog
       v-model="meuloadingwindow"
@@ -263,6 +277,9 @@ export default {
       vendedores: [],
       menu1: false,
       menu2: false,
+      snackbarnorow: false,
+      colornorow: 'error',
+      textnorow: 'Erro ao ligar a base de dados! Verifica sua conexão com a internet!',
       data_ini: null,
       data_fim: null,
       total: null,
@@ -288,31 +305,45 @@ export default {
   },
   methods: {
     async pesByVendedor() {
-      this.meuloading = true
-      this.desserts = (await VendaServices.byVendedor({
-        idVendedor: this.filtroV
-      })).data;
-      this.meuloading = false
-      this.total = this.desserts.length
+      try{
+        this.meuloading = true
+        this.desserts = (await VendaServices.byVendedor({
+          idVendedor: this.filtroV
+        })).data;
+        this.meuloading = false
+        this.total = this.desserts.length
+      }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarnorow = true
+        }
+      }
     },
     async pesByFiltro(){
-      this.meuloading = true
-      if (this.filtro == 'Semanal') {
-        this.desserts = (await VendaServices.semanal()).data;
-        this.meuloading = false
-        this.total = this.desserts.length
-      } else if (this.filtro == 'Diário') {
-        this.desserts = (await VendaServices.diario()).data;
-        this.meuloading = false
-        this.total = this.desserts.length
-      } else if (this.filtro == 'Mensal') {
-        this.desserts = (await VendaServices.mensal()).data;
-        this.meuloading = false
-        this.total = this.desserts.length
-      } else if (this.filtro == 'Trimestral') {
-        this.desserts = (await VendaServices.trimestral()).data;
-        this.meuloading = false
-        this.total = this.desserts.length
+      try{
+        this.meuloading = true
+        if (this.filtro == 'Semanal') {
+          this.desserts = (await VendaServices.semanal()).data;
+          this.meuloading = false
+          this.total = this.desserts.length
+        } else if (this.filtro == 'Diário') {
+          this.desserts = (await VendaServices.diario()).data;
+          this.meuloading = false
+          this.total = this.desserts.length
+        } else if (this.filtro == 'Mensal') {
+          this.desserts = (await VendaServices.mensal()).data;
+          this.meuloading = false
+          this.total = this.desserts.length
+        } else if (this.filtro == 'Trimestral') {
+          this.desserts = (await VendaServices.trimestral()).data;
+          this.meuloading = false
+          this.total = this.desserts.length
+        }
+      }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarnorow = true
+        }
       }
     },
     async reload() {
@@ -493,30 +524,45 @@ export default {
       }
     },
     async pesquisar() {
-      this.meuloading = true
-      //Lista venda
-      this.desserts = (await VendaServices.DadosGeral({
-        dataIni: this.data_ini,
-        dataFim: this.data_fim
-      })).data;
-      this.meuloading = false
-      this.total = this.desserts.length
-      console.log("Pesquisa: ", this.desserts)
+      try{
+        this.meuloading = true
+        //Lista venda
+        this.desserts = (await VendaServices.DadosGeral({
+          dataIni: this.data_ini,
+          dataFim: this.data_fim
+        })).data;
+        this.meuloading = false
+        this.total = this.desserts.length
+        console.log("Pesquisa: ", this.desserts)
+      }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarnorow = true
+        }
+      }
     }
   },
   async mounted() {
     this.meuloadingwindow = true
-    this.vendedores = (await UsuariosServices.index()).data;
-    this.VendasT = (await VendaServices.total()).data;
-    this.totalVendas = this.VendasT.length
-    this.Produtos = (await ProdutosService.index()).data;
-    this.totalProdutos = this.Produtos.length
-    this.Stock = (await StockServices.soma()).data[0].total;
-    this.totalStock = (Number(this.Stock).toFixed(2));
-    console.log('TESTE DE SOA DE PROD --- ', this.totalStock);
-    this.Compras = (await listaCompraServices.index()).data;
-    this.totalCompras = this.Compras.length
-    this.meuloadingwindow = false
+    try{
+      this.vendedores = (await UsuariosServices.index()).data;
+      this.VendasT = (await VendaServices.total()).data;
+      this.totalVendas = this.VendasT.length
+      this.Produtos = (await ProdutosService.index()).data;
+      this.totalProdutos = this.Produtos.length
+      this.Stock = (await StockServices.soma()).data[0].total;
+      this.totalStock = (Number(this.Stock).toFixed(2));
+      console.log('TESTE DE SOA DE PROD --- ', this.totalStock);
+      this.Compras = (await listaCompraServices.index()).data;
+      this.totalCompras = this.Compras.length
+      this.meuloadingwindow = false
+    }catch (error) {
+      if (!error.response) {
+        this.meuloading = false
+        this.snackbarnorow = true
+      }
+    }
+    
   }
 }
 </script>

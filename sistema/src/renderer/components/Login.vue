@@ -145,7 +145,7 @@ export default {
             name: "vendedor"
           });
         }
-        
+      
       } catch (error) {
         if (!error.response) {
             // network error

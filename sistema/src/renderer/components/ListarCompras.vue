@@ -29,7 +29,6 @@
           Fechar
         </v-btn>
       </v-snackbar>
-
       <v-snackbar
         v-model="snackbar"
         :color="color"
@@ -47,6 +46,26 @@
 
       <v-btn style="display:none;" dark v-shortkey="['f3']" @shortkey="left = !left" @click.stop="left = !left"> </v-btn>
 
+       <v-dialog
+        v-model="meuloading"
+        persistent
+        width="300">
+        <v-card
+          color="primary"
+          dark>
+          <v-card-text>
+            Carregando os dados, Aguarde...
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0"
+            ></v-progress-linear>
+          </v-card-text>
+          <!-- <v-card-text>
+            <v-btn router-link to="listarcompras" >RELOAD</v-btn>
+          </v-card-text> -->
+        </v-card>
+      </v-dialog>
 
       <v-dialog v-model="dialog" persistent fullscreen hide-overlay transition="dialog-bottom-transition">
       <v-card>
@@ -388,7 +407,7 @@
                   </template>
                   
                   <template slot="items" slot-scope="props" v-if="props.item.ListaCompra !== ''">
-                  <tr style="cursor:pointer" @click="editCompra(props.item)">
+                  <tr style="cursor:pointer">
                     <td class="text-xs-left"> {{ props.item.id }} <!--<router-link :to="{ name: 'venda', params: { vendasId: props.item.id }}" > TXT </router-link>--> </td>
                     <td class="text-xs-left"> {{ props.item.createdAt | moment("DD-MM-YYYY") }} - {{ props.item.createdAt | moment("HH:mm:ss") }} </td>
                     <v-expansion-panel popout>
@@ -400,19 +419,21 @@
                             <td>NOME PRODUTO</td>
                             <td>QUANTIDADE</td>
                             <td>PREÇO</td>
+                            <td> TOTAL </td>
                             </tr>
 
                             <tr class="nobordertr" v-bind:key="index" v-for="(produto,index) in props.item.ListaCompras">
                             <td v-if="produto.Produto">{{ produto.Produto.produto_nome }}</td>
                             <td v-if="produto.Produto">{{ q = produto.quantidade }}</td>
                             <td v-if="produto.Produto">{{ p = produto.Produto.produto_preco }}</td>
+                            <td class="text-xs-left"> <span> {{q * p}} </span> </td>
                             </tr>
                           </v-card-text>
                         </v-card>
                       </v-expansion-panel-content>
                     </v-expansion-panel>
                     <td class="text-xs-left"> {{ props.item.Fornecedore.fornecedor_nome }} </td>
-                    <td class="text-xs-left"> <span class="boxquantidadegreen"> {{q * p}} CVE </span> </td>
+                    
                     <td class="text-xs-left dark">
                       <!-- <v-btn flat icon color="primary" @click="PrintVenda(props.item)"> <v-icon>print</v-icon> </v-btn> -->
                       <v-btn flat icon color="primary" @click="editCompra(props.item)"> <v-icon>edit</v-icon> </v-btn>
@@ -462,6 +483,7 @@ export default {
       menu1: false,
       menu2: false,
       drawer: false,
+      meuloading: false,
       left: false,
       drawer1: false,
       clipped: false,
@@ -510,7 +532,7 @@ export default {
         { text: "Data / Hora", value: "createdAt", align: "left", sortable: true },
         { text: "Produto / Quantidade", align: "left", sortable: false },
         { text: "Fornecedor", align: "left", sortable: false },
-        { text: "Valor Total", value: "valor_total", align: "left", sortable: true },
+        // { text: "Valor Total", value: "valor_total", align: "left", sortable: true },
         { text: "Ações", align: "left", sortable: false },
       ],
       desserts: [],
@@ -526,9 +548,11 @@ export default {
       this.dialogPesquisa = true
     },
     async reload() {
+      this.meuloading = true
       if (this.isUserLoggedIn) {
         this.desserts = (await CompraServices.index()).data;
       }
+      this.meuloading = false;
       this.data_ini = null,
       this.data_fim = null,
       this.totall = this.desserts.length
@@ -703,10 +727,12 @@ export default {
       //this.precos = Object.assign({}, item)
     },
     async pesquisar() {
+      this.meuloading = true
         this.desserts = (await CompraServices.indexTotal({
           dataIni: this.data_ini,
           dataFim: this.data_fim
         })).data;
+        this.meuloading = false
       this.totall = this.desserts.length
       console.log("TESTE::: "  + this.desserts)
     },
@@ -745,6 +771,7 @@ export default {
     }
   },
   async mounted() {
+    this.meuloading = true
     this.desserts = (await CompraServices.index()).data;
     console.log("DADOS", this.desserts)
     this.totall = this.desserts.length
@@ -755,6 +782,7 @@ export default {
     //this.ProdutoId = (await ProdutosService.index()).data;
     //console.log(this.ProdutoId)
     this.categorias = (await CategoriasService.indexImage()).data;
+    this.meuloading = false;
     console.log("MEUS CAT:", this.categorias)
   }
 }

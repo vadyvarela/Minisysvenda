@@ -15,6 +15,21 @@
               <v-btn dark flat @click="snackbar = false">Fechar</v-btn>
             </v-snackbar>
         </v-layout>
+
+        <v-snackbar
+        v-model="snackbarnorow"
+        :color="colornorow"
+        :multi-line="mode === 'multi-line'"
+        :timeout="timeout"
+        :vertical="mode === 'vertical'">
+        {{ textnorow }}
+        <v-btn
+          dark
+          flat
+          @click="snackbarnorow = false">
+          Fechar
+        </v-btn>
+      </v-snackbar>
         <v-divider></v-divider>
 
         <v-stepper v-model="e1">
@@ -254,6 +269,9 @@ export default {
       imageName: '',
       imageUrl: '',
       imageFile: '',
+      snackbarnorow: false,
+      colornorow: 'error',
+      textnorow: 'Erro ao ligar a base de dados! Verifica sua conexão com a internet!',
       e1: "",
       dialogPesquisa: false,
       snackbar: false,
@@ -449,12 +467,20 @@ export default {
     }
   },
   async mounted() {
+    try{
     // Fazer requisicao para pegar todas os fornecedores
     this.FornecedoreId = (await FornecedoresService.index()).data;
     this.IvaId = (await IvaService.index()).data;
     this.CategoriaId = (await CategoriasService.index()).data;
     this.PVendaId = (await PVendaServices.index()).data;
     this.barcode = (await CBarraService.index()).data;
+    }catch (error) {
+      if (!error.response) {
+        // network error
+        this.meuloading = false
+        this.snackbarnorow = true
+      }
+    }
   }
 };
 </script>

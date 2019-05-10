@@ -255,7 +255,7 @@
                 </tr>
                 </template>
                 <template slot="no-data">
-                  <p v-if="totais > 0" class="noDataLoading"> {{ noDataLoading }} </p>
+                  <p v-if="totais !== 0" class="noDataLoading"> {{ noDataLoading }} </p>
                   <p v-else class="noDataLoading"> NENHUM PRODUTO ENCONTRADO </p>
                 </template>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -460,14 +460,22 @@ export default {
     }*/
   },
   async mounted() {
-    // Fazer requisicao para pegar todas os produtos
-    this.desserts = (await ProdutosService.index()).data;
-    this.totais = this.desserts.length;
-    console.log(this.desserts)
+    try{
+      // Fazer requisicao para pegar todas os produtos
+      this.desserts = (await ProdutosService.index()).data;
+      this.totais = this.desserts.length;
+      console.log(this.desserts)
 
-    this.FornecedoreId = (await FornecedoresService.index()).data;
-    this.IvaId = (await IvaService.index()).data;
-    this.CategoriaId = (await CategoriasService.index()).data;
+      this.FornecedoreId = (await FornecedoresService.index()).data;
+      this.IvaId = (await IvaService.index()).data;
+      this.CategoriaId = (await CategoriasService.index()).data;
+    }catch (error) {
+      if (!error.response) {
+        // network error
+        this.meuloading = false
+        this.snackbarnorow = true
+      }
+    }
   }
 };
 </script>

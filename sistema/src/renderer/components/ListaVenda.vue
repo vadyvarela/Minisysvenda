@@ -13,6 +13,27 @@
           </v-flex>
         </v-layout>
 
+        <v-dialog
+        v-model="meuloading"
+        persistent
+        width="300">
+        <v-card
+          color="primary"
+          dark>
+          <v-card-text>
+            Carregando os dados, Aguarde...
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0"
+            ></v-progress-linear>
+          </v-card-text>
+          <!-- <v-card-text>
+            <v-btn router-link to="listarcompras" >RELOAD</v-btn>
+          </v-card-text> -->
+        </v-card>
+      </v-dialog>
+
         <v-snackbar
           v-model="snackbar"
           :color="color"
@@ -255,10 +276,14 @@
                   </td>
                   </template>
                   <template slot="no-data">
+                    <p v-if="total !== 0" class="noDataLoading"> {{ noDataLoading }} </p>
+                    <p v-else class="noDataLoading"> NENHUM VENDA FOI EFETUADA </p>
+                  </template>
+
                       <v-alert :value="true" color="warning" icon="warning">
                         {{ $t('message.txtResuPesquisa') }} {{data_ini}} & {{data_fim}}!
                       </v-alert>
-                    </template>
+                  
                 </v-data-table>
                 </v-flex>
                 </v-layout>
@@ -283,6 +308,7 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
+      meuloading: false,
       data_hoje: new Date().toISOString().substr(0, 10),
       modal: false,
       idSearch: "",
@@ -358,19 +384,23 @@ export default {
       this.total = this.desserts.length
     },
     async pesquisarhoje() {
+      this.meuloading = true
       this.desserts = (await VendaServices.hoje({
         userId: this.user.id,
         dataHoje: this.data_hoje
       })).data;
+      this.meuloading = false;
       this.total = this.desserts.length
     },
     async pesquisar() {
       //Lista venda
+      this.meuloading = true
       this.desserts = (await VendaServices.indexTotal({
         userId: this.user.id,
         dataIni: this.data_ini,
         dataFim: this.data_fim
       })).data;
+      this.meuloading = false
       this.total = this.desserts.length
     },
     async login() {
@@ -443,7 +473,7 @@ export default {
           cheque = cheque + ' CVE'
         }
       
-        /*const path = require('path');
+        const path = require('path');
         const escpos = require('escpos')
         const device = new escpos.USB()
         const options = { encoding: 'CP860' }
@@ -539,7 +569,7 @@ export default {
             .text('\n')
             .cut()
             .close()
-          })*/
+          })
     },
     async AnularVenda (item) {
       if(this.userconfig == 0) {
@@ -580,11 +610,13 @@ export default {
     ])
   },
   async mounted() {
+    this.meuloading = true
     if (this.isUserLoggedIn) {
       this.desserts = (await VendaServices.index({
         userId: this.user.id
       })).data;
     }
+    this.meuloading = false
     console.log("DADOS", this.desserts)
     this.total = this.desserts.length
   }

@@ -17,6 +17,25 @@
           Fechar
         </v-btn>
       </v-snackbar>
+
+      <v-dialog
+        v-model="meuloading"
+        persistent
+        width="300">
+        <v-card
+          color="primary"
+          dark>
+          <v-card-text>
+            Carregando os dados, Aguarde...
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0"
+            ></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+
         
             <v-card flat>
               <v-divider></v-divider>
@@ -102,6 +121,10 @@ import CategoriasService from "@/services/CategoriasService";
 export default {
   data() {
     return {
+      snackbarnorow: false,
+      colornorow: 'error',
+      textnorow: 'Erro ao ligar a base de dados! Verifica sua conexão com a internet!',
+      meuloading: false,
       search: '',
       snackbar: false,
       color: 'error',
@@ -131,23 +154,37 @@ export default {
     },
     async pesquisar(index) {
       try {
+        this.meuloading = true
         this.resultado = (await filterServices.bycategory(this.search)).data
         console.log("Resultdo retornado", this.resultado)
         if (this.resultado.length === 0) {
           this.snackbar = true
         }
-        /*Object.keys(this.resultado).forEach(key => {
-          this.resultado = this.resultado[key];
-        });*/
+        this.meuloading = false
       } catch (err) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarnorow = true
+          console.log("MEU ERRO -- " + error)
+        }
         console.log(err);
       }
     },
   },
   async mounted() {
+    try{
+    this.meuloading = true;
     // Fazer requisicao para pegar todas os produtos
     this.resultado = (await ProdutosService.index()).data;
     this.CategoriaId = (await CategoriasService.index()).data;
+    this.meuloading = false
+    }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarnorow = true
+          console.log("MEU ERRO -- " + error)
+        }
+      }
   }
 };
 </script>
