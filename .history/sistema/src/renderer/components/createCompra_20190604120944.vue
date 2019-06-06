@@ -252,7 +252,7 @@
                     <v-flex xs12 sm2 md2>
                       <v-btn style="display:none;" v-shortkey="['ctrl','p']" @shortkey="searchProd" @click.stop="searchProd"></v-btn>
                       <v-text-field box v-model.trim="produto.search" ref="search" autofocus v-on:keyup.enter="pesquisar(index)" type="text"></v-text-field>
-                      <!--input v-model="produto.search" type="hidden" /-->
+                      <input v-model="produto.search" type="hidden" />
                       <input v-model="produto.CompraId" type="hidden"/>
                       <input v-model="produto.ProdutoId" type="hidden"/>
                     </v-flex>

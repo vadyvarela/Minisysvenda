@@ -252,7 +252,7 @@
                     <v-flex xs12 sm2 md2>
                       <v-btn style="display:none;" v-shortkey="['ctrl','p']" @shortkey="searchProd" @click.stop="searchProd"></v-btn>
                       <v-text-field box v-model.trim="produto.search" ref="search" autofocus v-on:keyup.enter="pesquisar(index)" type="text"></v-text-field>
-                      <!--input v-model="produto.search" type="hidden" /-->
+                      <input v-model="produto.search" type="hidden" autofocus />
                       <input v-model="produto.CompraId" type="hidden"/>
                       <input v-model="produto.ProdutoId" type="hidden"/>
                     </v-flex>
@@ -336,7 +336,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn center large color="primary darken-1" @click.native="dialogPesquisa = false; pesquisarmodal(banana)">OK</v-btn>
+          <v-btn center large color="primary darken-1" @click.native="dialogPesquisa = false; pesquisar(banana)">OK</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -542,27 +542,7 @@ export default {
         console.log(err);
       }
     },
-    async pesquisar(index) {
-      try {
-        this.search = this.produtos[index].search
-        this.produtos[index].search = this.search
-        this.produtos[index].idProduto = (await filterServices.bynamecompra(this.search)).data
-        Object.keys(this.produtos[index].idProduto).forEach(key => {
-          this.produtos[index].idProduto = this.produtos[index].idProduto[key];
-        })
-        if (this.produtos[index].idProduto.length === 0) {
-          this.snackbar = true
-          this.$refs.search[index].reset();
-          this.$refs.search[index].focus();
-        } else {
-          this.addNewProduto(index)
-        }
-        console.log('PRODUTO', this.produtos[index].idProduto)
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    async pesquisarmodal(banana) {
+    async pesquisar(banana) {
       try {
         this.search = this.podpesquisa
         this.produtos[banana].search = this.podpesquisa

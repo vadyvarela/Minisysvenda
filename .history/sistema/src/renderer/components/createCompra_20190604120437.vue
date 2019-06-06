@@ -252,7 +252,7 @@
                     <v-flex xs12 sm2 md2>
                       <v-btn style="display:none;" v-shortkey="['ctrl','p']" @shortkey="searchProd" @click.stop="searchProd"></v-btn>
                       <v-text-field box v-model.trim="produto.search" ref="search" autofocus v-on:keyup.enter="pesquisar(index)" type="text"></v-text-field>
-                      <!--input v-model="produto.search" type="hidden" /-->
+                      <input v-model="produto.search" type="hidden" />
                       <input v-model="produto.CompraId" type="hidden"/>
                       <input v-model="produto.ProdutoId" type="hidden"/>
                     </v-flex>
@@ -544,8 +544,8 @@ export default {
     },
     async pesquisar(index) {
       try {
-        this.search = this.produtos[index].search
-        this.produtos[index].search = this.search
+        this.search = this.podpesquisa
+        this.produtos[index].search = this.podpesquisa
         this.produtos[index].idProduto = (await filterServices.bynamecompra(this.search)).data
         Object.keys(this.produtos[index].idProduto).forEach(key => {
           this.produtos[index].idProduto = this.produtos[index].idProduto[key];

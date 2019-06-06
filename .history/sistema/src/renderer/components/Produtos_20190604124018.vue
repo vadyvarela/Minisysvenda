@@ -235,7 +235,7 @@
                 single-line
                 hide-details
                 solo
-                placeholder="Pesquisar produto por nome ou código de barra!"
+                placeholder="Pesquisar produto"
               ></v-text-field>
             </v-card-title>
            

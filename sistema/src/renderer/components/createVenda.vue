@@ -537,9 +537,11 @@
                 <h4 class="primary--text text-md-center" style="font-size:2em;">DIGITE O NOME PRODUTO </h4>
                 <p class="red--text" style="text-align:center; font-size:2em;">
                   <v-autocomplete
+                    v-if="dialogPesquisa"
                     box
+                    autofocus
                     :items="listaprodutos"
-                    color="white"
+                    color="black"
                     v-model="podpesquisa"
                     item-text="produto_nome"
                     item-value="produto_nome"
@@ -1506,10 +1508,10 @@ export default {
             .align('lt')
             .style('bu')
             .size(2, 1.6)
-            .text('Solid Invest - Investimentos e Comércio Geral Sociedade Unipessoal, Lda')
-            .text('Rui Vaz')
-            .text('NIF: 235491705')
-            .text('TEL/FAX: +238 9188849')
+            .text('YU - Investimentos e Comércio Geral, Sociedade, Unipessoal, Lda.')
+            .text('Fazenda - Praia')
+            .text('NIF: 260 623 205')
+            //.text('TEL/FAX: +238 9188849')
             .text('------------------------------------------------')
             .text('\n')
             .text('Fatura/Recibo nº ' + idvenda + ' / ' + ano)
@@ -1585,7 +1587,7 @@ export default {
             .align('ct')
             .size(1, 1)
             .text('\n')
-            .text('Processado pelo programa Ivenda, Licenciado exclusivamente pelo contribuinte Solid Invest')
+            .text('Processado pelo programa Ivenda, Licenciado exclusivamente pelo contribuinte YU')
             .text('Obrigado e volte sempre')
             .text('\n')
             .cut()

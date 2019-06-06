@@ -45,16 +45,40 @@
           </v-card>
         </v-flex>
     </v-layout>
+    <v-snackbar
+        v-model="snackbarnorow"
+        :color="colornorow"
+        :multi-line="mode === 'multi-line'"
+        :timeout="timeout"
+        :vertical="mode === 'vertical'">
+        {{ textnorow }}
+        <v-btn
+          dark
+          flat
+          @click="snackbarnorow = false">
+          Fechar
+        </v-btn>
+      </v-snackbar>
+
+    <v-dialog
+      v-model="meuloadingwindow"
+      persistent
+      width="300">
+      <v-card color="primary" dark>
+        <v-card-text>
+          Preparando seu ambiente de venda, Aguarde...
+          <v-progress-linear indeterminate color="white" class="mb-0" ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
     <v-dialog
         v-model="meuloading"
         persistent
-        width="300"
-      >
+        width="300">
         <v-card
           color="primary"
-          dark
-        >
+          dark>
           <v-card-text>
             Carregando os dados, Aguarde...
             <v-progress-linear
@@ -248,10 +272,16 @@ export default {
   data () {
     return {
       meuloading: false,
+      meuloadingwindow: false,
       items: ['Diário', 'Semanal', 'Mensal', 'Trimestral'],
       vendedores: [],
       menu1: false,
       menu2: false,
+      snackbarnorow: false,
+      colornorow: 'error',
+      textnorow: 'Erro ao ligar a base de dados! Verifica sua conexão com a internet!',
+      mode: '',
+      timeout: 6000,
       data_ini: null,
       data_fim: null,
       total: null,
@@ -277,26 +307,45 @@ export default {
   },
   methods: {
     async pesByVendedor() {
-      this.desserts = (await VendaServices.byVendedor({
-        idVendedor: this.filtroV
-      })).data;
-      this.total = this.desserts.length
-    },
-    async pesByFiltro(){
-      this.meuloading = true
-      if (this.filtro == 'Semanal') {
-        this.desserts = (await VendaServices.semanal()).data;
+      try{
+        this.meuloading = true
+        this.desserts = (await VendaServices.byVendedor({
+          idVendedor: this.filtroV
+        })).data;
         this.meuloading = false
         this.total = this.desserts.length
-      } else if (this.filtro == 'Diário') {
-        this.desserts = (await VendaServices.diario()).data;
-        this.total = this.desserts.length
-      } else if (this.filtro == 'Mensal') {
-        this.desserts = (await VendaServices.mensal()).data;
-        this.total = this.desserts.length
-      } else if (this.filtro == 'Trimestral') {
-        this.desserts = (await VendaServices.trimestral()).data;
-        this.total = this.desserts.length
+      }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarnorow = true
+        }
+      }
+    },
+    async pesByFiltro(){
+      try{
+        this.meuloading = true
+        if (this.filtro == 'Semanal') {
+          this.desserts = (await VendaServices.semanal()).data;
+          this.meuloading = false
+          this.total = this.desserts.length
+        } else if (this.filtro == 'Diário') {
+          this.desserts = (await VendaServices.diario()).data;
+          this.meuloading = false
+          this.total = this.desserts.length
+        } else if (this.filtro == 'Mensal') {
+          this.desserts = (await VendaServices.mensal()).data;
+          this.meuloading = false
+          this.total = this.desserts.length
+        } else if (this.filtro == 'Trimestral') {
+          this.desserts = (await VendaServices.trimestral()).data;
+          this.meuloading = false
+          this.total = this.desserts.length
+        }
+      }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarnorow = true
+        }
       }
     },
     async reload() {
@@ -367,10 +416,10 @@ export default {
             .align('lt')
             .style('bu')
             .size(1, 1)
-            .text('Solid Invest - Investimentos e Comércio Geral Sociedade Unipessoal, Lda')
-            .text('Rui Vaz')
-            .text('NIF: 235491705')
-            .text('TEL/FAX: +238 9188849')
+            .text('YU - Investimentos e Comércio Geral, Sociedade, Unipessoal, Lda.')
+            .text('Fazenda - Praia')
+            .text('NIF: 260 623 205')
+            //.text('TEL/FAX: +238 9188849')
             .text('------------------------------------------------')
             .text('\n')
             .text('Fatura/Recibo nº ' + idvenda + ' / ' + ano)
@@ -446,7 +495,7 @@ export default {
             .align('ct')
             .size(1, 1)
             .text('\n')
-            .text('Processado pelo programa Ivenda, Licenciado exclusivamente pelo contribuinte Solid Invest')
+            .text('Processado pelo programa Ivenda, Licenciado exclusivamente pelo contribuinte YU')
             .text('Obrigado e volte sempre')
             .text('\n')
             .cut()
@@ -477,26 +526,45 @@ export default {
       }
     },
     async pesquisar() {
-      //Lista venda
-      this.desserts = (await VendaServices.DadosGeral({
-        dataIni: this.data_ini,
-        dataFim: this.data_fim
-      })).data;
-      this.total = this.desserts.length
-      console.log("Pesquisa: ", this.desserts)
+      try{
+        this.meuloading = true
+        //Lista venda
+        this.desserts = (await VendaServices.DadosGeral({
+          dataIni: this.data_ini,
+          dataFim: this.data_fim
+        })).data;
+        this.meuloading = false
+        this.total = this.desserts.length
+        console.log("Pesquisa: ", this.desserts)
+      }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarnorow = true
+        }
+      }
     }
   },
   async mounted() {
-    this.vendedores = (await UsuariosServices.index()).data;
-    this.VendasT = (await VendaServices.total()).data;
-    this.totalVendas = this.VendasT.length
-    this.Produtos = (await ProdutosService.index()).data;
-    this.totalProdutos = this.Produtos.length
-    this.Stock = (await StockServices.soma()).data[0].total;
-    this.totalStock = this.Stock.toFixed(3);
-    console.log('TESTE DE SOA DE PROD --- ', this.totalStock);
-    this.Compras = (await listaCompraServices.index()).data;
-    this.totalCompras = this.Compras.length
+    this.meuloadingwindow = true
+    try{
+      this.vendedores = (await UsuariosServices.index()).data;
+      this.VendasT = (await VendaServices.total()).data;
+      this.totalVendas = this.VendasT.length
+      this.Produtos = (await ProdutosService.index()).data;
+      this.totalProdutos = this.Produtos.length
+      this.Stock = (await StockServices.soma()).data[0].total;
+      this.totalStock = (Number(this.Stock).toFixed(2));
+      console.log('TESTE DE SOA DE PROD --- ', this.totalStock);
+      this.Compras = (await listaCompraServices.index()).data;
+      this.totalCompras = this.Compras.length
+      this.meuloadingwindow = false
+    }catch (error) {
+      if (!error.response) {
+        this.meuloadingwindow = false
+        this.snackbarnorow = true
+      }
+    }
+    
   }
 }
 </script>

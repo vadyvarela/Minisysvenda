@@ -28,16 +28,19 @@
         :color="colornorow"
         :multi-line="mode === 'multi-line'"
         :timeout="timeout"
-        :vertical="mode === 'vertical'"
-      >
+        :vertical="mode === 'vertical'">
         {{ textnorow }}
-        <v-btn
-          dark
-          flat
-          @click="snackbarnorow = false"
-        >
-          Fechar
-        </v-btn>
+        <v-btn dark flat @click="snackbarnorow = false"> Fechar </v-btn>
+      </v-snackbar>
+
+      <v-snackbar
+        v-model="snackbarintenet"
+        :color="colorinternet"
+        :multi-line="mode === 'multi-line'"
+        :timeout="timeout"
+        :vertical="mode === 'vertical'">
+        {{ textinternet }}
+        <v-btn dark flat @click="snackbarintenet = false"> Fechar </v-btn>
       </v-snackbar>
 
       <v-snackbar
@@ -45,17 +48,25 @@
         :color="color"
         :multi-line="mode === 'multi-line'"
         :timeout="timeout"
-        :vertical="mode === 'vertical'"
-      >
+        :vertical="mode === 'vertical'">
         {{ text }}
         <v-btn
           dark
           flat
-          @click="snackbar = false"
-        >
+          @click="snackbar = false">
           Fechar
         </v-btn>
       </v-snackbar>
+
+      <v-dialog
+        v-model="meuloading"
+        width="150">
+        <v-card color="primary" dark>
+          <v-card-text>
+            <v-progress-linear indeterminate color="white" class="mb-0" ></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
 
       <v-card class="marginmeu hide-overflow" color="white lighten-1">
         <v-card-text>
@@ -526,9 +537,11 @@
                 <h4 class="primary--text text-md-center" style="font-size:2em;">DIGITE O NOME PRODUTO </h4>
                 <p class="red--text" style="text-align:center; font-size:2em;">
                   <v-autocomplete
+                    v-if="dialogPesquisa"
                     box
+                    autofocus
                     :items="listaprodutos"
-                    color="white"
+                    color="black"
                     v-model="podpesquisa"
                     item-text="produto_nome"
                     item-value="produto_nome"
@@ -882,6 +895,13 @@ import moment from 'moment'
 export default {
   data() {
     return {
+      snackbarnorow: false,
+      colornorow: 'error',
+      snack: false,
+      snackColor: '',
+      showNav: true,
+      snackText: '',
+      meuloading: false,
       podpesquisa: '',
       valorentregadoU: '',
       valorentregadovint4U: '',
@@ -931,6 +951,10 @@ export default {
       mode: '',
       timeout: 6000,
       text: this.$t('message.semprod'),
+
+      snackbarintenet: false,
+      colorinternet: 'error',
+      textinternet: 'Erro ao ligar a base de dados! Verifica sua conexão com a internet!',
 
       snackbarnorow: false,
       colornorow: 'error',
@@ -1134,20 +1158,30 @@ export default {
       }
     },
     async searchIdProd() {
-      if (this.idSearch !== '') {
-        this.res = (await VendaServices.byIdVenda({
-          userId: this.user.id,
-          idSearch: this.idSearch
-        })).data
-        if(this.res.length !== 0 ) {
-          this.pagamento = this.res[0]
-          this.produtos = this.res[0].ListaVendas
-          console.log("Produto restornados -»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»", this.produtos)
-        }else{
-          this.$toast.error({
-            title: "Aviso",
-            message: "Venda com esse id de registro nao existe no sistema!"
-          })
+      try{
+        if (this.idSearch !== '') {
+          this.meuloading = true
+          this.res = (await VendaServices.byIdVenda({
+            userId: this.user.id,
+            idSearch: this.idSearch
+          })).data
+          this.meuloading = false
+          if(this.res.length !== 0 ) {
+            this.pagamento = this.res[0]
+            this.produtos = this.res[0].ListaVendas
+            console.log("Produto restornados -»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»", this.produtos)
+          }else{
+            this.meuloading = false
+            this.$toast.error({
+              title: "Aviso",
+              message: "Venda com esse id de registro nao existe no sistema!"
+            })
+          }
+        }
+      }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarintenet = true
         }
       }
     },
@@ -1208,8 +1242,10 @@ export default {
           this.adminPVenda = ''*/
           this.produtos[index].adminPVenda = ''
         }
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        if (!error.response) {
+          this.snackbarintenet = true
+        }
       }
     },
     async pesquisarbyCat(index, nome) {
@@ -1246,7 +1282,9 @@ export default {
         this.search = this.podpesquisa
         this.produtos[banana].search = this.podpesquisa
         if (this.search !== '') {
+          this.meuloading = true
           this.produtos[banana].idProduto = (await filterServices.bynamevenda(this.search)).data
+          this.meuloading = false
           console.log(this.produtos[banana].idProduto)
           Object.keys(this.produtos[banana].idProduto).forEach(key => {
             this.produtos[banana].idProduto = this.produtos[banana].idProduto[key];
@@ -1263,15 +1301,20 @@ export default {
               }
           this.produtos[banana].adminPVenda = ''
         }
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarintenet = true
+        }
       }
     },
     async pesquisar(index, nome) {
       try {
         this.search = this.produtos[index].search
         if (this.search !== '') {
+          this.meuloading = true
           this.produtos[index].idProduto = (await filterServices.bynamevenda(this.search)).data
+          this.meuloading = false
           console.log("PROD-----", this.produtos[index].idProduto)
           Object.keys(this.produtos[index].idProduto).forEach(key => {
             this.produtos[index].idProduto = this.produtos[index].idProduto[key];
@@ -1291,19 +1334,27 @@ export default {
           this.adminPVenda = ''*/
           this.produtos[index].adminPVenda = ''
         }
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarintenet = true
+        }
       }
     },
     async pesquisarCliente() {
       try {
+        this.meuloading = true
         this.search = this.cliente.search
         this.clienteNow = ''
         if (this.search !== '') {
           this.clipesquisa = (await ClienteServices.byname(this.search)).data[0]
         }
-      } catch (err) {
-        console.log(err);
+        this.meuloading = false
+      } catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarintenet = true
+        }
       }
     },
     async modoPagamento() {
@@ -1336,13 +1387,19 @@ export default {
       this.clipesquisa = ''
       // Create nova venda
       try {
+        this.meuloading = true
         await ClienteServices.post(this.cliente)
         this.$toast.success({
           title: "Sucesso",
           message: "Cliente adicionada com sucesso no sistema!"
         })
         this.clienteNow = (await ClienteServices.lastid()).data[0]
+        this.meuloading = false
       } catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarintenet = true
+        }
         this.error = error.response.data.error;
         this.snackbarcliente = true
       }
@@ -1440,7 +1497,7 @@ export default {
           cheque = ''
         }*/
 
-        /*const escpos = require('escpos')
+        const escpos = require('escpos')
         const device = new escpos.USB()
         const options = { encoding: 'CP860' }
         const printer = new escpos.Printer(device, options)
@@ -1451,10 +1508,10 @@ export default {
             .align('lt')
             .style('bu')
             .size(2, 1.6)
-            .text('Solid Invest - Investimentos e Comércio Geral Sociedade Unipessoal, Lda')
-            .text('Rui Vaz')
-            .text('NIF: 235491705')
-            .text('TEL/FAX: +238 9188849')
+            .text('YU - Investimentos e Comércio Geral, Sociedade, Unipessoal, Lda.')
+            .text('Fazenda - Praia')
+            .text('NIF: 260 623 205')
+            //.text('TEL/FAX: +238 9188849')
             .text('------------------------------------------------')
             .text('\n')
             .text('Fatura/Recibo nº ' + idvenda + ' / ' + ano)
@@ -1530,150 +1587,178 @@ export default {
             .align('ct')
             .size(1, 1)
             .text('\n')
-            .text('Processado pelo programa Ivenda, Licenciado exclusivamente pelo contribuinte Solid Invest')
+            .text('Processado pelo programa Ivenda, Licenciado exclusivamente pelo contribuinte YU')
             .text('Obrigado e volte sempre')
             .text('\n')
             .cut()
             .close()
-          })*/
+          })
     },
     async createVendaProdnoPrinter(banana) {
-      listaVendaServices.post(this.produtos)
-      stockServices.putvendas(this.produtos)
-      VendaServices.putidpagamento(this.pagamento)
-      
-      console.log("MEU PROD ---- ", this.produtos)
-      // Create nova venda
-      await VendaServices.post(this.venda)
-      this.idVenda = (await VendaServices.lastid()).data[0].id;
+      try{
+        listaVendaServices.post(this.produtos)
+        stockServices.putvendas(this.produtos)
+        VendaServices.putidpagamento(this.pagamento)
+        
+        console.log("MEU PROD ---- ", this.produtos)
+        // Create nova venda
+        this.meuloading = true
+        await VendaServices.post(this.venda)
+        this.idVenda = (await VendaServices.lastid()).data[0].id;
+        this.meuloading = false
 
-      if (this.isUserLoggedIn) {
-        this.recibo = (await VendaServices.index({
-          userId: this.user.id
-        })).data[0].ListaVendas;
-      }
+        if (this.isUserLoggedIn) {
+          this.recibo = (await VendaServices.index({
+            userId: this.user.id
+          })).data[0].ListaVendas;
+        }
 
-      this.dialog = false
-      this.clipesquisa = '',
-      this.produtos = [{
-        adminPVenda: '',
-        input: null,
-        idSearch: '',
-        total: '',
-        totalIva: '',
-        totalLiquido: '',
-        preco_venda: '',
-        VendaId: '',
-        ProdutoId: '',
-        idProduto: '',
-        quantidade: '1',
-        search: '',
-        stock_id: ''
-      }],
-      this.pagamento = {
-        valorentregado: '',
-        valorentregadovint4: '',
-        valorentregadocheque: ''
+        this.dialog = false
+        this.clipesquisa = '',
+        this.produtos = [{
+          adminPVenda: '',
+          input: null,
+          idSearch: '',
+          total: '',
+          totalIva: '',
+          totalLiquido: '',
+          preco_venda: '',
+          VendaId: '',
+          ProdutoId: '',
+          idProduto: '',
+          quantidade: '1',
+          search: '',
+          stock_id: ''
+        }],
+        this.pagamento = {
+          valorentregado: '',
+          valorentregadovint4: '',
+          valorentregadocheque: ''
+        }
+        this.$refs.search[0].focus()
+        this.$toast.success({
+          title: "Sucesso",
+          message: "Venda adicionada com sucesso no sistema!"
+        })
+      }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarintenet = true
+        }
       }
-      this.$refs.search[0].focus()
-      this.$toast.success({
-        title: "Sucesso",
-        message: "Venda adicionada com sucesso no sistema!"
-      })
     },
     async createVendaProd(banana) {
-      console.log(this.produtos)
-      console.log('ID PAGAMENTO: ', this.pagamento)
-      listaVendaServices.post(this.produtos)
-      stockServices.putvendas(this.produtos)
-      VendaServices.putidpagamento(this.pagamento)
+      try{
+        this.meuloading = true
+        listaVendaServices.post(this.produtos)
+        stockServices.putvendas(this.produtos)
+        VendaServices.putidpagamento(this.pagamento)
 
-      // Create nova venda
-      await VendaServices.post(this.venda)
-      this.idVenda = (await VendaServices.lastid()).data[0].id;
+        await VendaServices.post(this.venda)
+        this.idVenda = (await VendaServices.lastid()).data[0].id;
 
-      if (this.isUserLoggedIn) {
-        this.recibo = (await VendaServices.index({
-          userId: this.user.id
-        })).data[0].ListaVendas;
+        if (this.isUserLoggedIn) {
+          this.recibo = (await VendaServices.index({
+            userId: this.user.id
+          })).data[0].ListaVendas;
+        }
+        this.PrintVenda()
+        this.meuloading = false
+        this.clipesquisa = '',
+        this.dialog = false
+        this.produtos = [{
+          adminPVenda: '',
+          total: '',
+          totalIva: '',
+          totalLiquido: '',
+          preco_venda: '',
+          VendaId: '',
+          ProdutoId: '',
+          idProduto: '',
+          quantidade: '1',
+          search: '',
+          stock_id: ''
+        }],
+        this.pagamento = {
+          valorentregado: '',
+          valorentregadovint4: '',
+          valorentregadocheque: ''
+        }
+        this.$refs.search[0].focus()
+        this.$toast.success({
+          title: "Sucesso",
+          message: "Venda adicionada com sucesso no sistema"
+        })
+      }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarintenet = true
+        }
       }
-      console.log('Dados venda: - ', this.recibo)
-      console.log('DADO VENDA: ', this.pagamento)
-      this.PrintVenda()
-
-      this.clipesquisa = '',
-      this.dialog = false
-      this.produtos = [{
-        adminPVenda: '',
-        total: '',
-        totalIva: '',
-        totalLiquido: '',
-        preco_venda: '',
-        VendaId: '',
-        ProdutoId: '',
-        idProduto: '',
-        quantidade: '1',
-        search: '',
-        stock_id: ''
-      }],
-      this.pagamento = {
-        valorentregado: '',
-        valorentregadovint4: '',
-        valorentregadocheque: ''
-      }
-      this.$refs.search[0].focus()
-      this.$toast.success({
-        title: "Sucesso",
-        message: "Venda adicionada com sucesso no sistema"
-      })
     },
     async updateVenda(banana) {
-      listaVendaServices.postnewprod(this.produtos)
-      VendaServices.putidpagamento(this.pagamento)
-      this.PrintVenda()
-      
-      this.dialog = false
-      this.produtos = [{
-        adminPVenda: '',
-        total: '',
-        totalIva: '',
-        totalLiquido: '',
-        preco_venda: '',
-        VendaId: '',
-        ProdutoId: '',
-        idProduto: '',
-        quantidade: '1',
-        search: '',
-        stock_id: ''
-      }],
-      this.pagamento = {
-        valorentregado: '',
-        valorentregadovint4: '',
-        valorentregadocheque: ''
-      },
-      this.idSearch = ''
-      this.valorentregadoU = '',
-      this.valorentregadovint4U = '',
-      this.valorentregadochequeU = ''
-      this.$refs.search[0].focus()
-      this.$toast.success({
-        title: "Sucesso",
-        message: "Venda atualizada com sucesso no sistema!"
-      })
+      try{
+        this.meuloading = true
+        listaVendaServices.postnewprod(this.produtos)
+        VendaServices.putidpagamento(this.pagamento)
+        this.PrintVenda()
+        this.meuloading = false
+        
+        this.dialog = false
+        this.produtos = [{
+          adminPVenda: '',
+          total: '',
+          totalIva: '',
+          totalLiquido: '',
+          preco_venda: '',
+          VendaId: '',
+          ProdutoId: '',
+          idProduto: '',
+          quantidade: '1',
+          search: '',
+          stock_id: ''
+        }],
+        this.pagamento = {
+          valorentregado: '',
+          valorentregadovint4: '',
+          valorentregadocheque: ''
+        },
+        this.idSearch = ''
+        this.valorentregadoU = '',
+        this.valorentregadovint4U = '',
+        this.valorentregadochequeU = ''
+        this.$refs.search[0].focus()
+        this.$toast.success({
+          title: "Sucesso",
+          message: "Venda atualizada com sucesso no sistema!"
+        })
+      }catch (error) {
+        if (!error.response) {
+          this.meuloading = false
+          this.snackbarintenet = true
+        }
+      }
     }
   },
   
   async mounted() {
-    this.listaprodutos = (await ProdutosService.index()).data;
-    console.log('Meus Produtos', this.listaprodutos)
-    this.listaclientes = (await ClienteServices.index()).data;
-    console.log("MEUS CLI:", this.listaclientes)
-    this.metodoPagamento = (await metodoPagamentoServices.index()).data;
-    console.log('Metodos pagamento', this.metodoPagamento)
-    this.idVenda = (await VendaServices.lastid()).data[0].id;
-    console.log("ID VENDA: ", this.idVenda)
-    this.categorias = (await CategoriasService.indexImage()).data;
-    console.log("MEUS CAT:", this.categorias)
+    try{
+      this.listaprodutos = (await ProdutosService.index()).data;
+      console.log('Meus Produtos', this.listaprodutos)
+      this.listaclientes = (await ClienteServices.index()).data;
+      console.log("MEUS CLI:", this.listaclientes)
+      this.metodoPagamento = (await metodoPagamentoServices.index()).data;
+      console.log('Metodos pagamento', this.metodoPagamento)
+      this.idVenda = (await VendaServices.lastid()).data[0].id;
+      console.log("ID VENDA: ", this.idVenda)
+      this.categorias = (await CategoriasService.indexImage()).data;
+      console.log("MEUS CAT:", this.categorias)
+    }catch (error) {
+      if (!error.response) {
+        this.meuloading = false
+        this.snackbarintenet = true
+      }
+    }
   },
   computed: {
     networkStatus () {

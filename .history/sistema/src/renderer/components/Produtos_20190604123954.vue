@@ -235,7 +235,7 @@
                 single-line
                 hide-details
                 solo
-                placeholder="Pesquisar produto por nome ou código de barra!"
+                placeholder="Pesquisar produto"
               ></v-text-field>
             </v-card-title>
            
@@ -350,7 +350,7 @@ export default {
       headers: [
         { text: "Nome produto", value: "produto_nome", align: "left", sortable: true },
         { text: "C. Barra", value: "produto_barcode", align: "left" },
-        { text: "Preço", value: "produto_preco", align: "center", sortable: true },
+        { text: "Preço", value: "produto_preco", align: "left", sortable: true },
         { text: "Fornecedor", sortable: false },
         { text: "Valor Iva (%)", sortable: false },
         { text: "Categoria ", sortable: false },
