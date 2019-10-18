@@ -63,7 +63,7 @@
                     ref="file"
                     @change="selectFile"
                   >-->
-                    <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
+                    <!-- <v-flex xs12 class="text-xs-center text-sm-center text-md-center text-lg-center">
                       <img :src="imageUrl" height="150" v-if="imageUrl"/>
                       <v-text-field box label="Select Image" @click='pickFile' v-model='imageName' append-icon='attach_file'></v-text-field>
                       <input
@@ -74,7 +74,7 @@
                         name=""
                         accept="image/*"
                       >
-                    </v-flex>
+                    </v-flex> -->
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn v-shortkey="['enter']" @shortkey="sendFile" :disabled="!CatIsvalid" class="primary" @click="sendFile">Cadastrar categoria</v-btn>
@@ -118,7 +118,7 @@ export default {
     };
   },
   methods: {
-    onFilePicked (e) {
+    /*onFilePicked (e) {
       this.categoria.categoria_file = this.$refs.file.files[0]
 			const files = e.target.files
 			if(files[0] !== undefined) {
@@ -140,15 +140,16 @@ export default {
 		},
     pickFile () {
         this.$refs.file.click ()
-    },
+    },*/
     async sendFile() {
-      const formData = new FormData()
+      /*const formData = new FormData()
       formData.append('file', this.categoria.categoria_file)
       formData.append('categoria_nome', this.categoria.categoria_nome)
-      formData.append('categoria_desc', this.categoria.categoria_desc)
+      formData.append('categoria_desc', this.categoria.categoria_desc)*/
       try {
         this.meuloading = true
-        await CategoriasService.post(formData)
+        //await CategoriasService.post(formData)
+        await CategoriasService.post(this.categoria)
         this.alert = false;
         this.$toast.success({
             title: "Sucesso",
